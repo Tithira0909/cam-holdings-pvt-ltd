@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Crown Asia Majestic | Premium Property Development</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              luxury: {
+                white: '#FFFFFF',
+                offwhite: '#F8F8F8',
+                black: '#0B0B0B',
+                charcoal: '#111111',
+                gold: '#EAC137', 
+                golddark: '#D4AF37', 
+                goldlight: '#F4D472', 
+                border: '#E9E9E9',
+                gray: '#757575'
+              }
+            },
+            fontFamily: {
+              sans: ['Ubuntu', 'sans-serif'],
+              serif: ['Bricolage Grotesque', 'sans-serif'],
+            },
+            letterSpacing: {
+              'luxury': '0.15em',
+              'brand': '0.25em',
+            },
+            borderRadius: {
+              'xl': '16px',
+              '2xl': '20px',
+            },
+            boxShadow: {
+              'gold-glow': '0 4px 15px rgba(234, 193, 55, 0.4)',
+              'gold-glow-lg': '0 10px 25px rgba(234, 193, 55, 0.3)',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #FFFFFF;
+        color: #0B0B0B;
+        font-family: 'Ubuntu', sans-serif;
+        -webkit-tap-highlight-color: transparent;
+        overflow-x: hidden;
+      }
+      .bricolage { font-family: 'Bricolage Grotesque', sans-serif; }
+      .nav-blur {
+        backdrop-filter: blur(15px);
+        background-color: rgba(255, 255, 255, 0.85);
+      }
+      @keyframes cinematicMotion {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.08); }
+        100% { transform: scale(1); }
+      }
+      
+      /* Mobile safe padding adjustment */
+      @media (max-width: 375px) { .px-mobile { padding-left: 16px; padding-right: 16px; } }
+      @media (min-width: 376px) { .px-mobile { padding-left: 20px; padding-right: 20px; } }
+
+      select {
+        transition: all 0.3s ease;
+      }
+      select:focus {
+        border-color: #EAC137 !important;
+        box-shadow: 0 0 12px rgba(234, 193, 55, 0.25);
+      }
+      
+      .nav-text-shadow {
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+      }
+
+      /* Custom scrollbar for premium feel */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #EAC137;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #D4AF37;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://esm.sh/@google/genai@^1.39.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4"
+  }
+}
+</script>
+</head>
+  <body class="selection:bg-luxury-gold selection:text-white">
+    <div id="root"></div>
+  </body>
+</html>

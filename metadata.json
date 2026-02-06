@@ -1,0 +1,8 @@
+{
+  "name": "CAM Holdings Premium Real Estate",
+  "description": "A high-end, conversion-focused real estate and property development platform for CAM Holdings (PVT) LTD, featuring architectural design and an AI project consultant.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
