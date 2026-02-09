@@ -193,7 +193,7 @@ const App: React.FC = () => {
                 },
                 { 
                   icon: Settings, 
-                  title: 'Project Management', 
+                  title: 'Property Management',
                   desc: 'Our team ensures that your project is completed on time, within budget, and to the highest quality through single-point accountability.' 
                 },
                 { 
