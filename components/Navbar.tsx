@@ -43,14 +43,23 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
         <div className="max-w-7xl mx-auto w-full h-full px-mobile flex justify-between items-center">
           
           {/* Logo */}
-          <div 
-            onClick={() => onNavigate('home')} 
-            className="flex items-center gap-3 cursor-pointer group"
-          >
-            <div className={`font-serif text-3xl md:text-4xl font-bold tracking-brand transition-colors ${logoColorClass}`}>
-              <span className="text-luxury-gold">C</span>AM
-            </div>
-          </div>
+        <div
+  onClick={() => onNavigate("home")}
+  className="flex items-center gap-3 cursor-pointer group"
+>
+  <img
+    src="/assets/cam_logo.png"
+    alt="Crown Asia Majestic Holdings (Pvt) Ltd"
+    className="h-10 md:h-12 w-auto object-contain"
+  />
+
+  <div
+    className={`font-serif text-3xl md:text-4xl font-bold tracking-brand transition-colors ${logoColorClass}`}
+  >
+
+  </div>
+</div>
+
 
           {/* Menu */}
           <div className="hidden lg:flex items-center gap-6 ml-auto">
