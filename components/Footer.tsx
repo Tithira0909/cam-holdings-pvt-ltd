@@ -61,7 +61,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 <p className="flex items-center gap-2">+94 112 699 822</p>
                 <p className="flex items-center gap-2">+94 112 030 890</p>
               </div>
-              <p className="text-luxury-gold font-medium">info@primelands.lk</p>
+              <p className="text-luxury-gold font-medium">info@camholdings.lk</p>
             </div>
           </div>
         </div>
