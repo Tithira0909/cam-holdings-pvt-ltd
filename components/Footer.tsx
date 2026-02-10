@@ -214,6 +214,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             © 2024 CROWN ASIA MAJESTIC HOLDINGS (PVT) LTD. ALL RIGHTS RESERVED.
             <br />
             Design and Developed by Zeatralabs.com
+            <button onClick={() => onNavigate('admin')} className="text-[10px] text-white/20 hover:text-luxury-gold transition-colors ml-4">ADMIN</button>
           </div>
         </div>
       </div>
