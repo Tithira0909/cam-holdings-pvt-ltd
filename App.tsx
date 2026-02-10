@@ -6,6 +6,8 @@ import Newsletter from './components/Newsletter';
 import PropertyCard from './components/PropertyCard';
 import ConsultationModal from './components/ConsultationModal';
 import Footer from './components/Footer';
+import Login from './components/admin/Login';
+import Dashboard from './components/admin/Dashboard';
 import { PROPERTIES, PROJECTS } from './constants';
 import { PropertyType } from './types';
 import { 
@@ -34,12 +36,13 @@ import {
   History
 } from 'lucide-react';
 
-type Page = 'home' | 'projects' | 'lands' | 'houses' | 'detail' | 'services' | 'about' | 'contact' | 'portfolio' | 'testimonials' | 'kyc' | 'privacy' | 'terms' | 'virtual-tour' | 'news' | 'publications' | 'blogs';
+type Page = 'home' | 'projects' | 'lands' | 'houses' | 'detail' | 'services' | 'about' | 'contact' | 'portfolio' | 'testimonials' | 'kyc' | 'privacy' | 'terms' | 'virtual-tour' | 'news' | 'publications' | 'blogs' | 'admin';
 
 const App: React.FC = () => {
   const [activePage, setActivePage] = useState<Page>('home');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => localStorage.getItem('isAdmin') === 'true');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -49,6 +52,26 @@ const App: React.FC = () => {
     setActivePage(page);
     if (id) setSelectedProjectId(id);
   };
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+    localStorage.setItem('isAdmin', 'true');
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('isAdmin');
+    setActivePage('home');
+    setSelectedProjectId(null);
+  };
+
+  // If activePage is admin, we render the admin flow exclusively
+  if (activePage === 'admin') {
+    if (isAuthenticated) {
+      return <Dashboard onLogout={handleLogout} />;
+    }
+    return <Login onLogin={handleLogin} />;
+  }
 
   return (
     <div className={`min-h-screen bg-white selection:bg-luxury-gold selection:text-white font-sans page-${activePage}`}>
