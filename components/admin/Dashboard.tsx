@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   LayoutDashboard,
   Building,
@@ -9,12 +9,18 @@ import {
   MapPin
 } from 'lucide-react';
 import { PROPERTIES, PROJECTS } from '../../constants';
+import PropertiesList from './PropertiesList';
+import AddProperty from './AddProperty';
 
 interface DashboardProps {
   onLogout: () => void;
 }
 
+type ViewState = 'dashboard' | 'properties' | 'add-property';
+
 const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
+  const [activeView, setActiveView] = useState<ViewState>('dashboard');
+
   return (
     <div className="min-h-screen bg-[#f4f4f4] flex">
       {/* Sidebar */}
@@ -27,11 +33,25 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         </div>
 
         <nav className="flex-1 py-8 px-4 space-y-2">
-          <button className="w-full flex items-center gap-3 px-4 py-3 bg-white/10 text-luxury-gold rounded-lg font-bold text-sm uppercase tracking-wider">
+          <button
+            onClick={() => setActiveView('dashboard')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
+              activeView === 'dashboard'
+                ? 'bg-white/10 text-luxury-gold'
+                : 'text-white/60 hover:bg-white/5 hover:text-white'
+            }`}
+          >
             <LayoutDashboard size={18} />
             Dashboard
           </button>
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-white/60 hover:bg-white/5 hover:text-white rounded-lg font-medium text-sm transition-all">
+          <button
+            onClick={() => setActiveView('properties')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
+              activeView === 'properties' || activeView === 'add-property'
+                ? 'bg-white/10 text-luxury-gold'
+                : 'text-white/60 hover:bg-white/5 hover:text-white'
+            }`}
+          >
             <Building size={18} />
             Properties
           </button>
@@ -118,64 +138,82 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           </div>
         </div>
 
-        {/* Recent Properties Table */}
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-luxury-border flex justify-between items-center">
-            <h2 className="text-xl font-serif font-bold text-luxury-black">Recent Properties</h2>
-            <button className="text-sm text-luxury-gold font-bold uppercase tracking-wider hover:text-luxury-golddark">View All</button>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-luxury-offwhite text-left">
-                <tr>
-                  <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Property</th>
-                  <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Location</th>
-                  <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Type</th>
-                  <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Price</th>
-                  <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-luxury-border">
-                {PROPERTIES.map((prop) => (
-                  <tr key={prop.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-4">
-                        <img src={prop.image} alt={prop.title} className="w-12 h-12 rounded-lg object-cover" />
-                        <div>
-                          <p className="font-bold text-luxury-black text-sm">{prop.title}</p>
-                          <p className="text-xs text-luxury-gray">ID: {prop.id}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <MapPin size={14} className="text-luxury-gold" />
-                        {prop.location.split(',')[0]}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="px-3 py-1 bg-luxury-offwhite text-luxury-black text-xs font-bold rounded-full border border-luxury-border">
-                        {prop.type}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm font-bold text-luxury-black">
-                      {prop.price}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
-                        Active
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <button className="text-luxury-gray hover:text-luxury-gold transition-colors font-bold text-xs uppercase">Edit</button>
-                    </td>
+        {/* Content based on active view */}
+        {activeView === 'dashboard' && (
+          <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+            <div className="p-6 border-b border-luxury-border flex justify-between items-center">
+              <h2 className="text-xl font-serif font-bold text-luxury-black">Recent Properties</h2>
+              <button
+                onClick={() => setActiveView('properties')}
+                className="text-sm text-luxury-gold font-bold uppercase tracking-wider hover:text-luxury-golddark"
+              >
+                View All
+              </button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-luxury-offwhite text-left">
+                  <tr>
+                    <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Property</th>
+                    <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Location</th>
+                    <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Type</th>
+                    <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Price</th>
+                    <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-luxury-border">
+                  {PROPERTIES.slice(0, 5).map((prop) => (
+                    <tr key={prop.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-4">
+                          <img src={prop.image} alt={prop.title} className="w-12 h-12 rounded-lg object-cover" />
+                          <div>
+                            <p className="font-bold text-luxury-black text-sm">{prop.title}</p>
+                            <p className="text-xs text-luxury-gray">ID: {prop.id}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        <div className="flex items-center gap-2">
+                          <MapPin size={14} className="text-luxury-gold" />
+                          {prop.location.split(',')[0]}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="px-3 py-1 bg-luxury-offwhite text-luxury-black text-xs font-bold rounded-full border border-luxury-border">
+                          {prop.type}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm font-bold text-luxury-black">
+                        {prop.price}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
+                          Active
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <button className="text-luxury-gray hover:text-luxury-gold transition-colors font-bold text-xs uppercase">Edit</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        )}
+
+        {activeView === 'properties' && (
+          <PropertiesList onAddProperty={() => setActiveView('add-property')} />
+        )}
+
+        {activeView === 'add-property' && (
+          <AddProperty
+            onSuccess={() => setActiveView('properties')}
+            onCancel={() => setActiveView('properties')}
+          />
+        )}
       </main>
     </div>
   );
