@@ -4,6 +4,7 @@ import { Property, PropertyType } from '../../types';
 
 interface PropertiesListProps {
   onAddProperty: () => void;
+  onEditProperty: (id: string) => void;
 }
 
 // Extend Property type to include status if not present in types.ts
@@ -11,7 +12,7 @@ interface AdminProperty extends Property {
   status?: string;
 }
 
-const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty }) => {
+const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditProperty }) => {
   const [properties, setProperties] = useState<AdminProperty[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,13 +29,33 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty }) => {
         throw new Error('Failed to fetch properties');
       }
       const data = await response.json();
-      setProperties(data);
+      setProperties(data.map((p: any) => ({ ...p, id: String(p.id) })));
       setError(null);
     } catch (err) {
       console.error('Error fetching properties:', err);
       setError('Failed to load properties. Please try again later.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this property?')) return;
+
+    try {
+      const response = await fetch(`/api/properties/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete property');
+      }
+
+      // Refresh list
+      fetchProperties();
+    } catch (err) {
+      console.error('Error deleting property:', err);
+      alert('Failed to delete property');
     }
   };
 
@@ -143,10 +164,16 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty }) => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <button className="p-2 text-luxury-gray hover:text-luxury-gold transition-colors rounded-full hover:bg-luxury-offwhite">
+                      <button
+                        onClick={() => onEditProperty(prop.id)}
+                        className="p-2 text-luxury-gray hover:text-luxury-gold transition-colors rounded-full hover:bg-luxury-offwhite"
+                      >
                         <Edit size={16} />
                       </button>
-                      <button className="p-2 text-luxury-gray hover:text-red-500 transition-colors rounded-full hover:bg-red-50">
+                      <button
+                        onClick={() => handleDelete(prop.id)}
+                        className="p-2 text-luxury-gray hover:text-red-500 transition-colors rounded-full hover:bg-red-50"
+                      >
                         <Trash2 size={16} />
                       </button>
                     </div>

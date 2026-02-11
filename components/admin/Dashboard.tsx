@@ -11,15 +11,17 @@ import {
 import { PROPERTIES, PROJECTS } from '../../constants';
 import PropertiesList from './PropertiesList';
 import AddProperty from './AddProperty';
+import EditProperty from './EditProperty';
 
 interface DashboardProps {
   onLogout: () => void;
 }
 
-type ViewState = 'dashboard' | 'properties' | 'add-property';
+type ViewState = 'dashboard' | 'properties' | 'add-property' | 'edit-property';
 
 const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [activeView, setActiveView] = useState<ViewState>('dashboard');
+  const [editingPropertyId, setEditingPropertyId] = useState<string | null>(null);
 
   return (
     <div className="min-h-screen bg-[#f4f4f4] flex">
@@ -47,7 +49,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           <button
             onClick={() => setActiveView('properties')}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
-              activeView === 'properties' || activeView === 'add-property'
+              activeView === 'properties' || activeView === 'add-property' || activeView === 'edit-property'
                 ? 'bg-white/10 text-luxury-gold'
                 : 'text-white/60 hover:bg-white/5 hover:text-white'
             }`}
@@ -205,11 +207,25 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         )}
 
         {activeView === 'properties' && (
-          <PropertiesList onAddProperty={() => setActiveView('add-property')} />
+          <PropertiesList
+            onAddProperty={() => setActiveView('add-property')}
+            onEditProperty={(id) => {
+              setEditingPropertyId(id);
+              setActiveView('edit-property');
+            }}
+          />
         )}
 
         {activeView === 'add-property' && (
           <AddProperty
+            onSuccess={() => setActiveView('properties')}
+            onCancel={() => setActiveView('properties')}
+          />
+        )}
+
+        {activeView === 'edit-property' && editingPropertyId && (
+          <EditProperty
+            propertyId={editingPropertyId}
             onSuccess={() => setActiveView('properties')}
             onCancel={() => setActiveView('properties')}
           />

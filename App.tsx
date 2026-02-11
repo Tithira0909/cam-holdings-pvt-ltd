@@ -8,8 +8,7 @@ import ConsultationModal from './components/ConsultationModal';
 import Footer from './components/Footer';
 import Login from './components/admin/Login';
 import Dashboard from './components/admin/Dashboard';
-import { PROPERTIES, PROJECTS } from './constants';
-import { PropertyType } from './types';
+import { Property, PropertyType, Project } from './types';
 import { 
   Search, 
   ArrowRight, 
@@ -33,7 +32,8 @@ import {
   BookOpen,
   Award,
   Target,
-  History
+  History,
+  Loader2
 } from 'lucide-react';
 
 type Page = 'home' | 'projects' | 'lands' | 'houses' | 'detail' | 'services' | 'about' | 'contact' | 'portfolio' | 'testimonials' | 'kyc' | 'privacy' | 'terms' | 'virtual-tour' | 'news' | 'publications' | 'blogs' | 'admin';
@@ -44,9 +44,42 @@ const App: React.FC = () => {
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => localStorage.getItem('isAdmin') === 'true');
 
+  // Data State
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [activePage, selectedProjectId]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const [propsRes, projsRes] = await Promise.all([
+        fetch('/api/properties'),
+        fetch('/api/projects')
+      ]);
+
+      if (propsRes.ok) {
+        const propsData = await propsRes.json();
+        // Ensure id is string
+        setProperties(propsData.map((p: any) => ({ ...p, id: String(p.id) })));
+      }
+
+      if (projsRes.ok) {
+        const projsData = await projsRes.json();
+        setProjects(projsData.map((p: any) => ({ ...p, id: String(p.id) })));
+      }
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const navigate = (page: Page, id?: string) => {
     setActivePage(page);
@@ -72,6 +105,16 @@ const App: React.FC = () => {
     }
     return <Login onLogin={handleLogin} />;
   }
+
+  if (loading) {
+     return (
+       <div className="min-h-screen bg-white flex items-center justify-center text-luxury-gold">
+         <Loader2 size={48} className="animate-spin" />
+       </div>
+     );
+  }
+
+  const selectedProperty = properties.find(p => p.id === selectedProjectId);
 
   return (
     <div className={`min-h-screen bg-white selection:bg-luxury-gold selection:text-white font-sans page-${activePage}`}>
@@ -107,7 +150,7 @@ const App: React.FC = () => {
               <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto">Explore our exclusive land projects in prime locations that offer immense potential for investment and development.</p>
             </div>
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[30px]">
-              {PROPERTIES.filter(p => p.type === PropertyType.LAND).map(prop => (
+              {properties.filter(p => p.type === PropertyType.LAND).map(prop => (
                 <PropertyCard key={prop.id} property={prop} onClick={() => navigate('detail', prop.id)} />
               ))}
             </div>
@@ -122,7 +165,7 @@ const App: React.FC = () => {
               <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto">Discover luxurious homes that combine comfort and design, ideal for families seeking premium living.</p>
             </div>
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[30px]">
-              {PROPERTIES.filter(p => p.type === PropertyType.HOUSE).map(prop => (
+              {properties.filter(p => p.type === PropertyType.HOUSE).map(prop => (
                 <PropertyCard key={prop.id} property={prop} onClick={() => navigate('detail', prop.id)} />
               ))}
             </div>
@@ -246,7 +289,7 @@ const App: React.FC = () => {
             </div>
 
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px]">
-              {PROJECTS.map(proj => (
+              {projects.map(proj => (
                 <div key={proj.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <img src={proj.image} alt={proj.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
@@ -274,7 +317,7 @@ const App: React.FC = () => {
             </div>
 
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px]">
-              {PROPERTIES.map(prop => (
+              {properties.map(prop => (
                 <div key={prop.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <img src={prop.image} alt={prop.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
@@ -366,15 +409,15 @@ const App: React.FC = () => {
         {activePage === 'detail' && (
           <div className="animate-in fade-in duration-500 bg-white pb-32">
             <div className="relative h-[60vh] w-full overflow-hidden">
-              <img src={PROPERTIES.find(p => p.id === selectedProjectId)?.image || PROPERTIES[0].image} className="w-full h-full object-cover" alt="Detail" />
+              <img src={selectedProperty?.image || properties[0]?.image} className="w-full h-full object-cover" alt="Detail" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
               <div className="absolute bottom-12 px-mobile w-full flex justify-center">
                 <div className="max-w-7xl w-full">
                   <div className="flex items-center gap-3 text-luxury-gold mb-4">
                     <MapPin size={20} />
-                    <span className="text-sm uppercase font-bold tracking-brand">{PROPERTIES.find(p => p.id === selectedProjectId)?.location || 'Location'}</span>
+                    <span className="text-sm uppercase font-bold tracking-brand">{selectedProperty?.location || 'Location'}</span>
                   </div>
-                  <h1 className="text-4xl md:text-6xl font-serif text-white leading-tight mb-4 uppercase">{PROPERTIES.find(p => p.id === selectedProjectId)?.title || 'Property Detail'}</h1>
+                  <h1 className="text-4xl md:text-6xl font-serif text-white leading-tight mb-4 uppercase">{selectedProperty?.title || 'Property Detail'}</h1>
                 </div>
               </div>
             </div>
