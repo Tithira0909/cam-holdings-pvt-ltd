@@ -32,3 +32,29 @@ CREATE TABLE IF NOT EXISTS property_images (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS inquiries (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  full_name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  phone VARCHAR(50),
+  subject VARCHAR(255),
+  service VARCHAR(255),
+  message TEXT,
+  status ENUM('new', 'replied', 'closed') DEFAULT 'new',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS inquiry_replies (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  inquiry_id INT NOT NULL,
+  admin_user VARCHAR(255),
+  reply_subject VARCHAR(255),
+  reply_message TEXT,
+  sent_to_email VARCHAR(255),
+  sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  delivery_status VARCHAR(50),
+  error_message TEXT,
+  message_id VARCHAR(255),
+  FOREIGN KEY (inquiry_id) REFERENCES inquiries(id) ON DELETE CASCADE
+);

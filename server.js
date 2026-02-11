@@ -7,6 +7,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { query } from './server/db.js';
+import nodemailer from 'nodemailer';
 
 dotenv.config();
 
@@ -39,6 +40,17 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+// Email Transporter
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: parseInt(process.env.SMTP_PORT || '587'),
+  secure: false, // true for 465, false for other ports
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
 
 // Routes
 
@@ -88,7 +100,6 @@ app.post('/api/properties', upload.fields([{ name: 'image', maxCount: 1 }, { nam
     }
 
     // Insert property
-    // Note: Use '?' for parameters. db.js handles it for both MySQL and SQLite (better-sqlite3 supports ?)
     const result = await query(
       'INSERT INTO properties (title, slug, location, price, type, status, description, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
       [title, slug, location, price, type, status || 'Active', description, mainImageUrl]
@@ -107,7 +118,6 @@ app.post('/api/properties', upload.fields([{ name: 'image', maxCount: 1 }, { nam
       }
     }
 
-    // Fetch created property
     const newProperty = await query('SELECT * FROM properties WHERE id = ?', [propertyId]);
     res.status(201).json(newProperty[0]);
 
@@ -123,7 +133,6 @@ app.put('/api/properties/:id', upload.fields([{ name: 'image', maxCount: 1 }, { 
     const { id } = req.params;
     const { title, slug, location, price, type, status, description } = req.body;
 
-    // Check if property exists
     const existing = await query('SELECT * FROM properties WHERE id = ?', [id]);
     if (!existing || existing.length === 0) {
       return res.status(404).json({ error: 'Property not found' });
@@ -139,7 +148,6 @@ app.put('/api/properties/:id', upload.fields([{ name: 'image', maxCount: 1 }, { 
       [title, slug, location, price, type, status, description, mainImageUrl, id]
     );
 
-    // Handle gallery images (Append new ones)
     if (req.files['gallery']) {
       for (const file of req.files['gallery']) {
         const imageUrl = `/uploads/${file.filename}`;
@@ -149,9 +157,6 @@ app.put('/api/properties/:id', upload.fields([{ name: 'image', maxCount: 1 }, { 
         );
       }
     }
-
-    // Note: Deleting specific gallery images isn't implemented in this simple PUT.
-    // Usually that would be a separate endpoint or a more complex update logic.
 
     const updatedProperty = await query('SELECT * FROM properties WHERE id = ?', [id]);
     res.json(updatedProperty[0]);
@@ -187,6 +192,141 @@ app.get('/api/projects', async (req, res) => {
   } catch (err) {
     console.error('Error fetching projects:', err);
     res.status(500).json({ error: 'Failed to fetch projects' });
+  }
+});
+
+
+// --- INQUIRIES ---
+
+// POST new inquiry (public)
+app.post('/api/inquiries', async (req, res) => {
+  try {
+    const { full_name, email, phone, subject, service, message } = req.body;
+
+    // Basic validation
+    if (!full_name || !email || !message) {
+      return res.status(400).json({ error: 'Name, email, and message are required.' });
+    }
+
+    await query(
+      'INSERT INTO inquiries (full_name, email, phone, subject, service, message) VALUES (?, ?, ?, ?, ?, ?)',
+      [full_name, email, phone, subject, service, message]
+    );
+
+    res.status(201).json({ message: 'Inquiry submitted successfully.' });
+  } catch (error) {
+    console.error('Error submitting inquiry:', error);
+    res.status(500).json({ error: 'Failed to submit inquiry.' });
+  }
+});
+
+// GET admin inquiries list
+app.get('/api/admin/inquiries', async (req, res) => {
+  try {
+    const inquiries = await query('SELECT * FROM inquiries ORDER BY created_at DESC');
+    res.json(inquiries);
+  } catch (error) {
+    console.error('Error fetching inquiries:', error);
+    res.status(500).json({ error: 'Failed to fetch inquiries' });
+  }
+});
+
+// GET admin inquiry details + replies
+app.get('/api/admin/inquiries/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const inquiries = await query('SELECT * FROM inquiries WHERE id = ?', [id]);
+    if (!inquiries || inquiries.length === 0) {
+      return res.status(404).json({ error: 'Inquiry not found' });
+    }
+    const inquiry = inquiries[0];
+
+    const replies = await query('SELECT * FROM inquiry_replies WHERE inquiry_id = ? ORDER BY sent_at ASC', [id]);
+    inquiry.replies = replies;
+
+    res.json(inquiry);
+  } catch (error) {
+    console.error('Error fetching inquiry details:', error);
+    res.status(500).json({ error: 'Failed to fetch inquiry details' });
+  }
+});
+
+// POST admin reply
+app.post('/api/admin/inquiries/:id/reply', async (req, res) => {
+  const { id } = req.params;
+  const { subject, message, admin_user } = req.body;
+
+  try {
+    const inquiries = await query('SELECT * FROM inquiries WHERE id = ?', [id]);
+    if (!inquiries || inquiries.length === 0) {
+      return res.status(404).json({ error: 'Inquiry not found' });
+    }
+    const inquiry = inquiries[0];
+    const customerEmail = inquiry.email;
+
+    // Send Email
+    let deliveryStatus = 'sent';
+    let errorMessage = null;
+    let messageId = null;
+
+    try {
+      const info = await transporter.sendMail({
+        from: process.env.FROM_EMAIL,
+        replyTo: process.env.FROM_EMAIL,
+        to: customerEmail,
+        subject: subject,
+        text: message,
+      });
+      messageId = info.messageId;
+      console.log('Email sent: %s', info.messageId);
+    } catch (emailError) {
+      console.error('Email sending failed:', emailError);
+      deliveryStatus = 'failed';
+      errorMessage = emailError.message;
+    }
+
+    // Save Reply
+    await query(
+      'INSERT INTO inquiry_replies (inquiry_id, admin_user, reply_subject, reply_message, sent_to_email, delivery_status, error_message, message_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [id, admin_user || 'Admin', subject, message, customerEmail, deliveryStatus, errorMessage, messageId]
+    );
+
+    // Update Inquiry Status
+    if (deliveryStatus === 'sent') {
+      await query("UPDATE inquiries SET status = 'replied' WHERE id = ?", [id]);
+    }
+
+    res.json({ message: 'Reply processed', deliveryStatus });
+
+  } catch (error) {
+    console.error('Error replying to inquiry:', error);
+    res.status(500).json({ error: 'Failed to reply to inquiry' });
+  }
+});
+
+// Helper route to get all inquiries for admin list
+app.get('/api/admin/inquiries', async (req, res) => {
+  try {
+    const inquiries = await query('SELECT * FROM inquiries ORDER BY created_at DESC');
+    res.json(inquiries);
+  } catch (error) {
+    console.error('Error replying to inquiry:', error);
+    res.status(500).json({ error: 'Failed to reply to inquiry' });
+  }
+});
+
+// PUT update inquiry status
+app.put('/api/admin/inquiries/:id/status', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    await query("UPDATE inquiries SET status = ? WHERE id = ?", [status, id]);
+    res.json({ message: 'Status updated' });
+  } catch (error) {
+    console.error('Error updating status:', error);
+    res.status(500).json({ error: 'Failed to update status' });
   }
 });
 

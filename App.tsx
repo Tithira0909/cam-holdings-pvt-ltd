@@ -355,10 +355,41 @@ const App: React.FC = () => {
             <section id="contact-form" className="py-24 px-mobile bg-[#f4f4f4]">
               <div className="max-w-3xl mx-auto text-center">
                 <h2 className="text-4xl font-serif font-bold text-luxury-black mb-10 uppercase">Send Us a Message</h2>
-                <form className="space-y-4">
-                  <input type="text" placeholder="Your Name" required className="w-full p-[12px] border border-luxury-gold rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all" />
-                  <input type="email" placeholder="Your Email" required className="w-full p-[12px] border border-luxury-gold rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all" />
-                  <textarea placeholder="Your Message" required rows={6} className="w-full p-[12px] border border-luxury-gold rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all resize-none"></textarea>
+                <form
+                  className="space-y-4"
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    const form = e.target as HTMLFormElement;
+                    const formData = new FormData(form);
+                    const data = {
+                      full_name: formData.get('full_name'),
+                      email: formData.get('email'),
+                      message: formData.get('message'),
+                      subject: 'Contact Form Inquiry',
+                      service: 'General'
+                    };
+
+                    try {
+                       const res = await fetch('/api/inquiries', {
+                         method: 'POST',
+                         headers: { 'Content-Type': 'application/json' },
+                         body: JSON.stringify(data)
+                       });
+                       if (res.ok) {
+                         alert('Message sent successfully!');
+                         form.reset();
+                       } else {
+                         alert('Failed to send message.');
+                       }
+                    } catch (err) {
+                      console.error(err);
+                      alert('An error occurred.');
+                    }
+                  }}
+                >
+                  <input name="full_name" type="text" placeholder="Your Name" required className="w-full p-[12px] border border-luxury-gold rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all" />
+                  <input name="email" type="email" placeholder="Your Email" required className="w-full p-[12px] border border-luxury-gold rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all" />
+                  <textarea name="message" placeholder="Your Message" required rows={6} className="w-full p-[12px] border border-luxury-gold rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all resize-none"></textarea>
                   <button type="submit" className="bg-luxury-gold text-white px-10 py-4 rounded-lg font-bold uppercase tracking-brand hover:bg-luxury-golddark transition-all w-full md:w-auto">Send Message</button>
                 </form>
               </div>
