@@ -22,8 +22,8 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
   const navLinks = [
     { label: 'Home', page: 'home' },
     { label: 'Services', page: 'services' },
-    { label: 'Portfolio', page: 'portfolio' },
-    { label: 'Properties', page: 'projects' },
+    { label: 'Lands', page: 'lands' },
+    { label: 'Properties', page: 'houses' },
     { label: 'About Us', page: 'about' },
     { label: 'Contact Us', page: 'contact' },
   ];
