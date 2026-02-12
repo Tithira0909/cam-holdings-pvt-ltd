@@ -12,6 +12,20 @@ CREATE TABLE IF NOT EXISTS properties (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS services (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(150) NOT NULL,
+  slug VARCHAR(180) NOT NULL UNIQUE,
+  short_desc VARCHAR(255),
+  description TEXT,
+  cover_image VARCHAR(255),
+  icon VARCHAR(100),
+  sort_order INT DEFAULT 0,
+  status ENUM('active','inactive') DEFAULT 'active',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS projects (
   id INT AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
@@ -20,8 +34,10 @@ CREATE TABLE IF NOT EXISTS projects (
   year VARCHAR(4),
   description TEXT,
   image VARCHAR(255),
+  service_id INT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS property_images (
@@ -31,4 +47,30 @@ CREATE TABLE IF NOT EXISTS property_images (
   is_main BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS inquiries (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  full_name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  phone VARCHAR(50),
+  subject VARCHAR(255),
+  service VARCHAR(255),
+  message TEXT,
+  status ENUM('new', 'replied', 'closed') DEFAULT 'new',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS inquiry_replies (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  inquiry_id INT NOT NULL,
+  admin_user VARCHAR(255),
+  reply_subject VARCHAR(255),
+  reply_message TEXT,
+  sent_to_email VARCHAR(255),
+  sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  delivery_status VARCHAR(50),
+  error_message TEXT,
+  message_id VARCHAR(255),
+  FOREIGN KEY (inquiry_id) REFERENCES inquiries(id) ON DELETE CASCADE
 );

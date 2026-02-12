@@ -14,17 +14,20 @@ import AddProperty from './AddProperty';
 import EditProperty from './EditProperty';
 import InquiriesList from './InquiriesList';
 import InquiryDetail from './InquiryDetail';
+import ServicesList from './ServicesList';
+import ServiceForm from './ServiceForm';
 
 interface DashboardProps {
   onLogout: () => void;
 }
 
-type ViewState = 'dashboard' | 'properties' | 'add-property' | 'edit-property' | 'inquiries' | 'inquiry-detail';
+type ViewState = 'dashboard' | 'properties' | 'add-property' | 'edit-property' | 'inquiries' | 'inquiry-detail' | 'services' | 'add-service' | 'edit-service';
 
 const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [activeView, setActiveView] = useState<ViewState>('dashboard');
   const [editingPropertyId, setEditingPropertyId] = useState<string | null>(null);
   const [viewingInquiryId, setViewingInquiryId] = useState<string | null>(null);
+  const [editingServiceId, setEditingServiceId] = useState<string | null>(null);
 
   return (
     <div className="min-h-screen bg-[#f4f4f4] flex">
@@ -63,6 +66,17 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           <button className="w-full flex items-center gap-3 px-4 py-3 text-white/60 hover:bg-white/5 hover:text-white rounded-lg font-medium text-sm transition-all">
             <FolderOpen size={18} />
             Projects
+          </button>
+          <button
+            onClick={() => setActiveView('services')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
+              activeView === 'services' || activeView === 'add-service' || activeView === 'edit-service'
+                ? 'bg-white/10 text-luxury-gold'
+                : 'text-white/60 hover:bg-white/5 hover:text-white'
+            }`}
+          >
+            <Settings size={18} />
+            Services
           </button>
           <button
             onClick={() => setActiveView('inquiries')}
@@ -254,6 +268,31 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           <InquiryDetail
             inquiryId={viewingInquiryId}
             onBack={() => setActiveView('inquiries')}
+          />
+        )}
+
+        {activeView === 'services' && (
+          <ServicesList
+            onAddService={() => setActiveView('add-service')}
+            onEditService={(id) => {
+              setEditingServiceId(id);
+              setActiveView('edit-service');
+            }}
+          />
+        )}
+
+        {activeView === 'add-service' && (
+          <ServiceForm
+            onSuccess={() => setActiveView('services')}
+            onCancel={() => setActiveView('services')}
+          />
+        )}
+
+        {activeView === 'edit-service' && editingServiceId && (
+          <ServiceForm
+            serviceId={editingServiceId}
+            onSuccess={() => setActiveView('services')}
+            onCancel={() => setActiveView('services')}
           />
         )}
       </main>

@@ -54,6 +54,138 @@ const transporter = nodemailer.createTransport({
 
 // Routes
 
+// --- SERVICES ---
+
+// GET public services (active, sorted)
+app.get('/api/services', async (req, res) => {
+  try {
+    const services = await query("SELECT * FROM services WHERE status = 'active' ORDER BY sort_order ASC");
+    res.json(services);
+  } catch (err) {
+    console.error('Error fetching services:', err);
+    res.status(500).json({ error: 'Failed to fetch services' });
+  }
+});
+
+// GET service detail (public)
+app.get('/api/services/:slug', async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const services = await query("SELECT * FROM services WHERE slug = ? AND status = 'active'", [slug]);
+
+    if (!services || services.length === 0) {
+      return res.status(404).json({ error: 'Service not found' });
+    }
+    res.json(services[0]);
+  } catch (err) {
+    console.error('Error fetching service:', err);
+    res.status(500).json({ error: 'Failed to fetch service' });
+  }
+});
+
+// GET admin services list
+app.get('/api/admin/services', async (req, res) => {
+  try {
+    const services = await query('SELECT * FROM services ORDER BY sort_order ASC, created_at DESC');
+    res.json(services);
+  } catch (err) {
+    console.error('Error fetching services:', err);
+    res.status(500).json({ error: 'Failed to fetch services' });
+  }
+});
+
+// GET admin single service
+app.get('/api/admin/services/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const services = await query('SELECT * FROM services WHERE id = ?', [id]);
+    if (!services || services.length === 0) {
+      return res.status(404).json({ error: 'Service not found' });
+    }
+    res.json(services[0]);
+  } catch (err) {
+    console.error('Error fetching service:', err);
+    res.status(500).json({ error: 'Failed to fetch service' });
+  }
+});
+
+// POST create service
+app.post('/api/admin/services', upload.single('cover_image'), async (req, res) => {
+  try {
+    const { title, slug, short_desc, description, icon, sort_order, status } = req.body;
+
+    // Validation
+    if (!title || !slug || !status) {
+      return res.status(400).json({ error: 'Title, slug, and status are required.' });
+    }
+
+    let coverImageUrl = null;
+    if (req.file) {
+      coverImageUrl = `/uploads/${req.file.filename}`;
+    }
+
+    const result = await query(
+      'INSERT INTO services (title, slug, short_desc, description, cover_image, icon, sort_order, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [title, slug, short_desc, description, coverImageUrl, icon, sort_order || 0, status]
+    );
+
+    const newService = await query('SELECT * FROM services WHERE id = ?', [result.insertId]);
+    res.status(201).json(newService[0]);
+
+  } catch (err) {
+    console.error('Error creating service:', err);
+    res.status(500).json({ error: 'Failed to create service: ' + err.message });
+  }
+});
+
+// PUT update service
+app.put('/api/admin/services/:id', upload.single('cover_image'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, slug, short_desc, description, icon, sort_order, status } = req.body;
+
+    const existing = await query('SELECT * FROM services WHERE id = ?', [id]);
+    if (!existing || existing.length === 0) {
+      return res.status(404).json({ error: 'Service not found' });
+    }
+
+    let coverImageUrl = existing[0].cover_image;
+    if (req.file) {
+      coverImageUrl = `/uploads/${req.file.filename}`;
+    }
+
+    await query(
+      'UPDATE services SET title = ?, slug = ?, short_desc = ?, description = ?, cover_image = ?, icon = ?, sort_order = ?, status = ? WHERE id = ?',
+      [title, slug, short_desc, description, coverImageUrl, icon, sort_order, status, id]
+    );
+
+    const updatedService = await query('SELECT * FROM services WHERE id = ?', [id]);
+    res.json(updatedService[0]);
+
+  } catch (err) {
+    console.error('Error updating service:', err);
+    res.status(500).json({ error: 'Failed to update service' });
+  }
+});
+
+// DELETE service
+app.delete('/api/admin/services/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await query('DELETE FROM services WHERE id = ?', [id]);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Service not found' });
+    }
+    res.json({ message: 'Service deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting service:', err);
+    res.status(500).json({ error: 'Failed to delete service' });
+  }
+});
+
+
+// --- PROPERTIES ---
+
 // GET all properties
 app.get('/api/properties', async (req, res) => {
   try {
@@ -184,9 +316,12 @@ app.delete('/api/properties/:id', async (req, res) => {
   }
 });
 
+// --- PROJECTS ---
+
 // GET all projects
 app.get('/api/projects', async (req, res) => {
   try {
+    // Include service_id in result
     const projects = await query('SELECT * FROM projects ORDER BY created_at DESC');
     res.json(projects);
   } catch (err) {
@@ -299,17 +434,6 @@ app.post('/api/admin/inquiries/:id/reply', async (req, res) => {
 
     res.json({ message: 'Reply processed', deliveryStatus });
 
-  } catch (error) {
-    console.error('Error replying to inquiry:', error);
-    res.status(500).json({ error: 'Failed to reply to inquiry' });
-  }
-});
-
-// Helper route to get all inquiries for admin list
-app.get('/api/admin/inquiries', async (req, res) => {
-  try {
-    const inquiries = await query('SELECT * FROM inquiries ORDER BY created_at DESC');
-    res.json(inquiries);
   } catch (error) {
     console.error('Error replying to inquiry:', error);
     res.status(500).json({ error: 'Failed to reply to inquiry' });

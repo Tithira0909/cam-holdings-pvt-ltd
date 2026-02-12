@@ -36,22 +36,36 @@ import {
   Loader2
 } from 'lucide-react';
 
-type Page = 'home' | 'projects' | 'lands' | 'houses' | 'detail' | 'services' | 'about' | 'contact' | 'portfolio' | 'testimonials' | 'kyc' | 'privacy' | 'terms' | 'virtual-tour' | 'news' | 'publications' | 'blogs' | 'admin';
+type Page = 'home' | 'projects' | 'lands' | 'houses' | 'detail' | 'services' | 'service-detail' | 'about' | 'contact' | 'portfolio' | 'testimonials' | 'kyc' | 'privacy' | 'terms' | 'virtual-tour' | 'news' | 'publications' | 'blogs' | 'admin';
+
+interface Service {
+  id: string;
+  title: string;
+  slug: string;
+  short_desc: string;
+  description: string;
+  cover_image: string;
+  icon: string;
+  sort_order: number;
+}
 
 const App: React.FC = () => {
   const [activePage, setActivePage] = useState<Page>('home');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const [selectedServiceSlug, setSelectedServiceSlug] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => localStorage.getItem('isAdmin') === 'true');
 
   // Data State
   const [properties, setProperties] = useState<Property[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
+  const [currentService, setCurrentService] = useState<Service | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [activePage, selectedProjectId]);
+  }, [activePage, selectedProjectId, selectedServiceSlug]);
 
   useEffect(() => {
     fetchData();
@@ -59,20 +73,25 @@ const App: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const [propsRes, projsRes] = await Promise.all([
+      const [propsRes, projsRes, svcsRes] = await Promise.all([
         fetch('/api/properties'),
-        fetch('/api/projects')
+        fetch('/api/projects'),
+        fetch('/api/services')
       ]);
 
       if (propsRes.ok) {
         const propsData = await propsRes.json();
-        // Ensure id is string
         setProperties(propsData.map((p: any) => ({ ...p, id: String(p.id) })));
       }
 
       if (projsRes.ok) {
         const projsData = await projsRes.json();
         setProjects(projsData.map((p: any) => ({ ...p, id: String(p.id) })));
+      }
+
+      if (svcsRes.ok) {
+        const svcsData = await svcsRes.json();
+        setServices(svcsData.map((s: any) => ({ ...s, id: String(s.id) })));
       }
     } catch (error) {
       console.error('Failed to fetch data:', error);
@@ -81,9 +100,30 @@ const App: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    if (activePage === 'service-detail' && selectedServiceSlug) {
+      const fetchServiceDetail = async () => {
+        try {
+          const res = await fetch(`/api/services/${selectedServiceSlug}`);
+          if (res.ok) {
+            const data = await res.json();
+            setCurrentService(data);
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      fetchServiceDetail();
+    }
+  }, [activePage, selectedServiceSlug]);
+
   const navigate = (page: Page, id?: string) => {
     setActivePage(page);
-    if (id) setSelectedProjectId(id);
+    if (page === 'detail' && id) setSelectedProjectId(id);
+    if (page === 'service-detail' && id) {
+      setSelectedServiceSlug(id);
+      setCurrentService(null); // Reset while loading
+    }
   };
 
   const handleLogin = () => {
@@ -98,7 +138,13 @@ const App: React.FC = () => {
     setSelectedProjectId(null);
   };
 
-  // If activePage is admin, we render the admin flow exclusively
+  // Helper to render dynamic icon
+  const renderIcon = (iconName: string, size = 40, className = '') => {
+    const icons: any = { Building, Settings, Users, CheckCircle, Award, Target, History };
+    const IconComponent = icons[iconName] || Building; // Default
+    return <IconComponent size={size} className={className} />;
+  };
+
   if (activePage === 'admin') {
     if (isAuthenticated) {
       return <Dashboard onLogout={handleLogout} />;
@@ -251,32 +297,62 @@ const App: React.FC = () => {
             </div>
 
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-              {[
-                { 
-                  icon: Building, 
-                  title: 'Property Development', 
-                  desc: 'We specialize in the development of premium residential and commercial properties, setting new standards in Sri Lankan architecture.' 
-                },
-                { 
-                  icon: Settings, 
-                  title: 'Property Management',
-                  desc: 'Our team ensures that your project is completed on time, within budget, and to the highest quality through single-point accountability.' 
-                },
-                { 
-                  icon: Users, 
-                  title: 'Consultancy Services', 
-                  desc: 'We offer professional advice to guide you through the real estate process from start to finish, ensuring investment growth.' 
-                }
-              ].map((service, idx) => (
-                <div key={idx} className="bg-white rounded-xl shadow-[0px_4px_10px_rgba(0,0,0,0.1)] p-10 text-center flex flex-col items-center group hover:shadow-xl transition-all border-b-4 border-transparent hover:border-luxury-gold">
-                  <div className="w-20 h-20 bg-luxury-offwhite rounded-full flex items-center justify-center mb-6 group-hover:bg-luxury-gold/10 transition-colors">
-                    <service.icon size={40} className="text-luxury-gold" />
+              {services.map((service, idx) => (
+                <div key={idx}
+                  onClick={() => navigate('service-detail', service.slug)}
+                  className="bg-white rounded-xl shadow-[0px_4px_10px_rgba(0,0,0,0.1)] p-10 text-center flex flex-col items-center group hover:shadow-xl transition-all border-b-4 border-transparent hover:border-luxury-gold cursor-pointer"
+                >
+                  <div className="w-20 h-20 bg-luxury-offwhite rounded-full flex items-center justify-center mb-6 group-hover:bg-luxury-gold/10 transition-colors overflow-hidden">
+                    {service.cover_image ? (
+                        <img src={service.cover_image} alt={service.title} className="w-full h-full object-cover" />
+                    ) : (
+                        <div className="text-luxury-gold">{renderIcon(service.icon)}</div>
+                    )}
                   </div>
                   <h3 className="text-[22px] font-serif font-bold text-luxury-black mb-4">{service.title}</h3>
-                  <p className="text-[16px] text-[#777] leading-relaxed font-light">{service.desc}</p>
+                  <p className="text-[16px] text-[#777] leading-relaxed font-light line-clamp-3">{service.short_desc}</p>
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* 2a. Service Detail Page */}
+        {activePage === 'service-detail' && (
+          <div className="animate-in fade-in duration-500 min-h-screen bg-white">
+             {currentService ? (
+               <>
+                 <div className="relative h-[50vh] w-full overflow-hidden">
+                    {currentService.cover_image ? (
+                        <img src={currentService.cover_image} alt={currentService.title} className="w-full h-full object-cover" />
+                    ) : (
+                        <div className="w-full h-full bg-luxury-black flex items-center justify-center">
+                            <span className="text-white/20 text-6xl font-serif">CAM</span>
+                        </div>
+                    )}
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                        <div className="text-center px-4">
+                            <h1 className="text-4xl md:text-6xl font-serif text-white uppercase tracking-tight mb-4">{currentService.title}</h1>
+                            <p className="text-xl text-white/80 max-w-2xl mx-auto">{currentService.short_desc}</p>
+                        </div>
+                    </div>
+                 </div>
+                 <div className="max-w-4xl mx-auto py-24 px-mobile">
+                    <div className="prose prose-lg max-w-none text-gray-600 font-light leading-relaxed whitespace-pre-wrap">
+                        {currentService.description}
+                    </div>
+                    <div className="mt-16 text-center">
+                        <button onClick={() => navigate('contact')} className="bg-luxury-gold text-white px-10 py-4 rounded-lg font-bold uppercase tracking-brand hover:bg-luxury-golddark transition-all">
+                            Enquire About This Service
+                        </button>
+                    </div>
+                 </div>
+               </>
+             ) : (
+               <div className="h-screen flex items-center justify-center text-luxury-gold">
+                   <Loader2 size={48} className="animate-spin" />
+               </div>
+             )}
           </div>
         )}
 
