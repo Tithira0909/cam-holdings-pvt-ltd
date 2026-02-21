@@ -132,26 +132,57 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, onClose }
           </div>
 
           {activeTab === 'form' && (
-            <form className="space-y-8 animate-in fade-in duration-500">
+            <form
+              className="space-y-8 animate-in fade-in duration-500"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const form = e.target as HTMLFormElement;
+                const formData = new FormData(form);
+                const data = {
+                  full_name: formData.get('full_name'),
+                  email: formData.get('email'),
+                  service: formData.get('service'),
+                  message: 'Consultation Request', // Simple default message or add textarea
+                  subject: 'New Consultation Request'
+                };
+
+                try {
+                    const res = await fetch('/api/inquiries', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    if (res.ok) {
+                        alert('Request sent successfully! Our team will contact you shortly.');
+                        onClose();
+                    } else {
+                        alert('Failed to send request. Please try again.');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert('An error occurred.');
+                }
+              }}
+            >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-2">
                   <label className="text-[10px] uppercase tracking-luxury text-luxury-gray block font-bold">Full Name</label>
-                  <input type="text" className="w-full bg-luxury-offwhite border border-luxury-border p-4 text-sm focus:ring-1 focus:ring-luxury-gold outline-none" placeholder="Johnathan Doe" />
+                  <input name="full_name" type="text" className="w-full bg-luxury-offwhite border border-luxury-border p-4 text-sm focus:ring-1 focus:ring-luxury-gold outline-none" placeholder="Johnathan Doe" required />
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] uppercase tracking-luxury text-luxury-gray block font-bold">Email Address</label>
-                  <input type="email" className="w-full bg-luxury-offwhite border border-luxury-border p-4 text-sm focus:ring-1 focus:ring-luxury-gold outline-none" placeholder="john@elite.com" />
+                  <input name="email" type="email" className="w-full bg-luxury-offwhite border border-luxury-border p-4 text-sm focus:ring-1 focus:ring-luxury-gold outline-none" placeholder="john@elite.com" required />
                 </div>
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] uppercase tracking-luxury text-luxury-gray block font-bold">Inquiry Type</label>
-                <select className="w-full bg-luxury-offwhite border border-luxury-border p-4 text-sm focus:ring-1 focus:ring-luxury-gold outline-none appearance-none">
+                <select name="service" className="w-full bg-luxury-offwhite border border-luxury-border p-4 text-sm focus:ring-1 focus:ring-luxury-gold outline-none appearance-none">
                   <option>New Project Feasibility</option>
                   <option>Construction Management</option>
                   <option>Interior Architecture</option>
                 </select>
               </div>
-              <button className="w-full py-5 bg-luxury-gold text-luxury-black font-bold uppercase text-[10px] tracking-brand shadow-gold-glow active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+              <button type="submit" className="w-full py-5 bg-luxury-gold text-luxury-black font-bold uppercase text-[10px] tracking-brand shadow-gold-glow active:scale-[0.98] transition-all flex items-center justify-center gap-3">
                 Send Request <Send size={16} />
               </button>
             </form>

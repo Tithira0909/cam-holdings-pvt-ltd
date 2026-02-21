@@ -8,8 +8,7 @@ import ConsultationModal from './components/ConsultationModal';
 import Footer from './components/Footer';
 import Login from './components/admin/Login';
 import Dashboard from './components/admin/Dashboard';
-import { PROPERTIES, PROJECTS } from './constants';
-import { PropertyType } from './types';
+import { Property, PropertyType, Project } from './types';
 import { 
   Search, 
   ArrowRight, 
@@ -33,24 +32,98 @@ import {
   BookOpen,
   Award,
   Target,
-  History
+  History,
+  Loader2
 } from 'lucide-react';
 
-type Page = 'home' | 'projects' | 'lands' | 'houses' | 'detail' | 'services' | 'about' | 'contact' | 'portfolio' | 'testimonials' | 'kyc' | 'privacy' | 'terms' | 'virtual-tour' | 'news' | 'publications' | 'blogs' | 'admin';
+type Page = 'home' | 'projects' | 'lands' | 'houses' | 'detail' | 'services' | 'service-detail' | 'about' | 'contact' | 'portfolio' | 'testimonials' | 'kyc' | 'privacy' | 'terms' | 'virtual-tour' | 'news' | 'publications' | 'blogs' | 'admin';
+
+interface Service {
+  id: string;
+  title: string;
+  slug: string;
+  short_desc: string;
+  description: string;
+  cover_image: string;
+  icon: string;
+  sort_order: number;
+}
 
 const App: React.FC = () => {
   const [activePage, setActivePage] = useState<Page>('home');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const [selectedServiceSlug, setSelectedServiceSlug] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => localStorage.getItem('isAdmin') === 'true');
+
+  // Data State
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
+  const [currentService, setCurrentService] = useState<Service | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [activePage, selectedProjectId]);
+  }, [activePage, selectedProjectId, selectedServiceSlug]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const [propsRes, projsRes, svcsRes] = await Promise.all([
+        fetch('/api/properties'),
+        fetch('/api/projects'),
+        fetch('/api/services')
+      ]);
+
+      if (propsRes.ok) {
+        const propsData = await propsRes.json();
+        setProperties(propsData.map((p: any) => ({ ...p, id: String(p.id) })));
+      }
+
+      if (projsRes.ok) {
+        const projsData = await projsRes.json();
+        setProjects(projsData.map((p: any) => ({ ...p, id: String(p.id) })));
+      }
+
+      if (svcsRes.ok) {
+        const svcsData = await svcsRes.json();
+        setServices(svcsData.map((s: any) => ({ ...s, id: String(s.id) })));
+      }
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activePage === 'service-detail' && selectedServiceSlug) {
+      const fetchServiceDetail = async () => {
+        try {
+          const res = await fetch(`/api/services/${selectedServiceSlug}`);
+          if (res.ok) {
+            const data = await res.json();
+            setCurrentService(data);
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      fetchServiceDetail();
+    }
+  }, [activePage, selectedServiceSlug]);
 
   const navigate = (page: Page, id?: string) => {
     setActivePage(page);
-    if (id) setSelectedProjectId(id);
+    if (page === 'detail' && id) setSelectedProjectId(id);
+    if (page === 'service-detail' && id) {
+      setSelectedServiceSlug(id);
+      setCurrentService(null); // Reset while loading
+    }
   };
 
   const handleLogin = () => {
@@ -65,13 +138,29 @@ const App: React.FC = () => {
     setSelectedProjectId(null);
   };
 
-  // If activePage is admin, we render the admin flow exclusively
+  // Helper to render dynamic icon
+  const renderIcon = (iconName: string, size = 40, className = '') => {
+    const icons: any = { Building, Settings, Users, CheckCircle, Award, Target, History };
+    const IconComponent = icons[iconName] || Building; // Default
+    return <IconComponent size={size} className={className} />;
+  };
+
   if (activePage === 'admin') {
     if (isAuthenticated) {
       return <Dashboard onLogout={handleLogout} />;
     }
     return <Login onLogin={handleLogin} />;
   }
+
+  if (loading) {
+     return (
+       <div className="min-h-screen bg-white flex items-center justify-center text-luxury-gold">
+         <Loader2 size={48} className="animate-spin" />
+       </div>
+     );
+  }
+
+  const selectedProperty = properties.find(p => p.id === selectedProjectId);
 
   return (
     <div className={`min-h-screen bg-white selection:bg-luxury-gold selection:text-white font-sans page-${activePage}`}>
@@ -107,7 +196,7 @@ const App: React.FC = () => {
               <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto">Explore our exclusive land projects in prime locations that offer immense potential for investment and development.</p>
             </div>
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[30px]">
-              {PROPERTIES.filter(p => p.type === PropertyType.LAND).map(prop => (
+              {properties.filter(p => p.type === PropertyType.LAND).map(prop => (
                 <PropertyCard key={prop.id} property={prop} onClick={() => navigate('detail', prop.id)} />
               ))}
             </div>
@@ -122,7 +211,7 @@ const App: React.FC = () => {
               <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto">Discover luxurious homes that combine comfort and design, ideal for families seeking premium living.</p>
             </div>
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[30px]">
-              {PROPERTIES.filter(p => p.type === PropertyType.HOUSE).map(prop => (
+              {properties.filter(p => p.type === PropertyType.HOUSE).map(prop => (
                 <PropertyCard key={prop.id} property={prop} onClick={() => navigate('detail', prop.id)} />
               ))}
             </div>
@@ -208,32 +297,62 @@ const App: React.FC = () => {
             </div>
 
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-              {[
-                { 
-                  icon: Building, 
-                  title: 'Property Development', 
-                  desc: 'We specialize in the development of premium residential and commercial properties, setting new standards in Sri Lankan architecture.' 
-                },
-                { 
-                  icon: Settings, 
-                  title: 'Property Management',
-                  desc: 'Our team ensures that your project is completed on time, within budget, and to the highest quality through single-point accountability.' 
-                },
-                { 
-                  icon: Users, 
-                  title: 'Consultancy Services', 
-                  desc: 'We offer professional advice to guide you through the real estate process from start to finish, ensuring investment growth.' 
-                }
-              ].map((service, idx) => (
-                <div key={idx} className="bg-white rounded-xl shadow-[0px_4px_10px_rgba(0,0,0,0.1)] p-10 text-center flex flex-col items-center group hover:shadow-xl transition-all border-b-4 border-transparent hover:border-luxury-gold">
-                  <div className="w-20 h-20 bg-luxury-offwhite rounded-full flex items-center justify-center mb-6 group-hover:bg-luxury-gold/10 transition-colors">
-                    <service.icon size={40} className="text-luxury-gold" />
+              {services.map((service, idx) => (
+                <div key={idx}
+                  onClick={() => navigate('service-detail', service.slug)}
+                  className="bg-white rounded-xl shadow-[0px_4px_10px_rgba(0,0,0,0.1)] p-10 text-center flex flex-col items-center group hover:shadow-xl transition-all border-b-4 border-transparent hover:border-luxury-gold cursor-pointer"
+                >
+                  <div className="w-20 h-20 bg-luxury-offwhite rounded-full flex items-center justify-center mb-6 group-hover:bg-luxury-gold/10 transition-colors overflow-hidden">
+                    {service.cover_image ? (
+                        <img src={service.cover_image} alt={service.title} className="w-full h-full object-cover" />
+                    ) : (
+                        <div className="text-luxury-gold">{renderIcon(service.icon)}</div>
+                    )}
                   </div>
                   <h3 className="text-[22px] font-serif font-bold text-luxury-black mb-4">{service.title}</h3>
-                  <p className="text-[16px] text-[#777] leading-relaxed font-light">{service.desc}</p>
+                  <p className="text-[16px] text-[#777] leading-relaxed font-light line-clamp-3">{service.short_desc}</p>
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* 2a. Service Detail Page */}
+        {activePage === 'service-detail' && (
+          <div className="animate-in fade-in duration-500 min-h-screen bg-white">
+             {currentService ? (
+               <>
+                 <div className="relative h-[50vh] w-full overflow-hidden">
+                    {currentService.cover_image ? (
+                        <img src={currentService.cover_image} alt={currentService.title} className="w-full h-full object-cover" />
+                    ) : (
+                        <div className="w-full h-full bg-luxury-black flex items-center justify-center">
+                            <span className="text-white/20 text-6xl font-serif">CAM</span>
+                        </div>
+                    )}
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                        <div className="text-center px-4">
+                            <h1 className="text-4xl md:text-6xl font-serif text-white uppercase tracking-tight mb-4">{currentService.title}</h1>
+                            <p className="text-xl text-white/80 max-w-2xl mx-auto">{currentService.short_desc}</p>
+                        </div>
+                    </div>
+                 </div>
+                 <div className="max-w-4xl mx-auto py-24 px-mobile">
+                    <div className="prose prose-lg max-w-none text-gray-600 font-light leading-relaxed whitespace-pre-wrap">
+                        {currentService.description}
+                    </div>
+                    <div className="mt-16 text-center">
+                        <button onClick={() => navigate('contact')} className="bg-luxury-gold text-white px-10 py-4 rounded-lg font-bold uppercase tracking-brand hover:bg-luxury-golddark transition-all">
+                            Enquire About This Service
+                        </button>
+                    </div>
+                 </div>
+               </>
+             ) : (
+               <div className="h-screen flex items-center justify-center text-luxury-gold">
+                   <Loader2 size={48} className="animate-spin" />
+               </div>
+             )}
           </div>
         )}
 
@@ -246,7 +365,7 @@ const App: React.FC = () => {
             </div>
 
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px]">
-              {PROJECTS.map(proj => (
+              {projects.map(proj => (
                 <div key={proj.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <img src={proj.image} alt={proj.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
@@ -274,7 +393,7 @@ const App: React.FC = () => {
             </div>
 
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px]">
-              {PROPERTIES.map(prop => (
+              {properties.map(prop => (
                 <div key={prop.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <img src={prop.image} alt={prop.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
@@ -312,10 +431,41 @@ const App: React.FC = () => {
             <section id="contact-form" className="py-24 px-mobile bg-[#f4f4f4]">
               <div className="max-w-3xl mx-auto text-center">
                 <h2 className="text-4xl font-serif font-bold text-luxury-black mb-10 uppercase">Send Us a Message</h2>
-                <form className="space-y-4">
-                  <input type="text" placeholder="Your Name" required className="w-full p-[12px] border border-luxury-gold rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all" />
-                  <input type="email" placeholder="Your Email" required className="w-full p-[12px] border border-luxury-gold rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all" />
-                  <textarea placeholder="Your Message" required rows={6} className="w-full p-[12px] border border-luxury-gold rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all resize-none"></textarea>
+                <form
+                  className="space-y-4"
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    const form = e.target as HTMLFormElement;
+                    const formData = new FormData(form);
+                    const data = {
+                      full_name: formData.get('full_name'),
+                      email: formData.get('email'),
+                      message: formData.get('message'),
+                      subject: 'Contact Form Inquiry',
+                      service: 'General'
+                    };
+
+                    try {
+                       const res = await fetch('/api/inquiries', {
+                         method: 'POST',
+                         headers: { 'Content-Type': 'application/json' },
+                         body: JSON.stringify(data)
+                       });
+                       if (res.ok) {
+                         alert('Message sent successfully!');
+                         form.reset();
+                       } else {
+                         alert('Failed to send message.');
+                       }
+                    } catch (err) {
+                      console.error(err);
+                      alert('An error occurred.');
+                    }
+                  }}
+                >
+                  <input name="full_name" type="text" placeholder="Your Name" required className="w-full p-[12px] border border-luxury-gold rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all" />
+                  <input name="email" type="email" placeholder="Your Email" required className="w-full p-[12px] border border-luxury-gold rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all" />
+                  <textarea name="message" placeholder="Your Message" required rows={6} className="w-full p-[12px] border border-luxury-gold rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all resize-none"></textarea>
                   <button type="submit" className="bg-luxury-gold text-white px-10 py-4 rounded-lg font-bold uppercase tracking-brand hover:bg-luxury-golddark transition-all w-full md:w-auto">Send Message</button>
                 </form>
               </div>
@@ -366,15 +516,15 @@ const App: React.FC = () => {
         {activePage === 'detail' && (
           <div className="animate-in fade-in duration-500 bg-white pb-32">
             <div className="relative h-[60vh] w-full overflow-hidden">
-              <img src={PROPERTIES.find(p => p.id === selectedProjectId)?.image || PROPERTIES[0].image} className="w-full h-full object-cover" alt="Detail" />
+              <img src={selectedProperty?.image || properties[0]?.image} className="w-full h-full object-cover" alt="Detail" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
               <div className="absolute bottom-12 px-mobile w-full flex justify-center">
                 <div className="max-w-7xl w-full">
                   <div className="flex items-center gap-3 text-luxury-gold mb-4">
                     <MapPin size={20} />
-                    <span className="text-sm uppercase font-bold tracking-brand">{PROPERTIES.find(p => p.id === selectedProjectId)?.location || 'Location'}</span>
+                    <span className="text-sm uppercase font-bold tracking-brand">{selectedProperty?.location || 'Location'}</span>
                   </div>
-                  <h1 className="text-4xl md:text-6xl font-serif text-white leading-tight mb-4 uppercase">{PROPERTIES.find(p => p.id === selectedProjectId)?.title || 'Property Detail'}</h1>
+                  <h1 className="text-4xl md:text-6xl font-serif text-white leading-tight mb-4 uppercase">{selectedProperty?.title || 'Property Detail'}</h1>
                 </div>
               </div>
             </div>

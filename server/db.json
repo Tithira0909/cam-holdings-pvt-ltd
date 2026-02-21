@@ -1,0 +1,46 @@
+[
+  {
+    "id": "1",
+    "title": "The Sovereign Estate",
+    "location": "Colombo 07, Sri Lanka",
+    "price": "LKR 450,000,000",
+    "type": "House",
+    "image": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1200",
+    "status": "Active",
+    "description": "A luxurious estate in the heart of Colombo.",
+    "gallery": []
+  },
+  {
+    "id": "2",
+    "title": "Azure Heights Penthouse",
+    "location": "Bambalapitiya, Colombo 04",
+    "price": "LKR 125,000,000",
+    "type": "Apartment",
+    "image": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=1200",
+    "status": "Active",
+    "description": "Stunning penthouse with ocean views.",
+    "gallery": []
+  },
+  {
+    "id": "3",
+    "title": "Emerald Grove Plots",
+    "location": "Athurugiriya, Malabe",
+    "price": "LKR 2,500,000 per perch",
+    "type": "Land",
+    "image": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=1200",
+    "status": "Active",
+    "description": "Prime land for residential development.",
+    "gallery": []
+  },
+  {
+    "title": "Playwright Test Mansion",
+    "location": "Test Location",
+    "price": "LKR 99,000,000",
+    "type": "House",
+    "status": "Active",
+    "description": "This is a test property created by Playwright.",
+    "image": "/uploads/1770791263360-417906634.jpg",
+    "gallery": [],
+    "id": "1770791263362"
+  }
+]
