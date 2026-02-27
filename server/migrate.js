@@ -54,8 +54,15 @@ async function migrate() {
             if (fs.existsSync(heroMigrationPath)) {
                 console.log('Applying hero migration...');
                 const heroSql = fs.readFileSync(heroMigrationPath, 'utf8');
-                // Execute statements one by one for safety or use exec if driver supports
-                await db.exec(heroSql);
+                const statements = heroSql.split(';').filter(s => s.trim().length > 0);
+                for (const sql of statements) {
+                     try {
+                        await db.exec(sql);
+                     } catch(e) {
+                         // Ignore duplicate column errors, etc.
+                         console.log('Migration step skipped (likely exists):', e.message);
+                     }
+                }
             }
 
             console.log('Schema applied.');

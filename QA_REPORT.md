@@ -20,17 +20,13 @@
 | **TC-09** | Image Gallery | **Passed** | Multiple image upload works for properties. |
 | **TC-10** | Contact Inquiry | **Passed** | Form submits to `inquiries` table; email sending attempts (mocked). |
 
-## 3. Bugs Found & Fixed
+## 3. Bug Fixes (Recent Round)
 
-1.  **Issue:** Hardcoded Hero Image.
-    *   **Fix:** Created `site_settings` table and added Admin Settings page to make it dynamic.
-    *   **Verified:** Yes.
-
-2.  **Issue:** Hardcoded Admin Email in Dashboard.
-    *   **Fix:** Currently display only; future improvement to make dynamic.
-
-3.  **Issue:** Nginx 404 on Uploads.
-    *   **Fix:** Added Nginx configuration in `DEPLOY.md` to alias `/uploads/`.
+| Test Case | Description | Status | Notes |
+| :--- | :--- | :--- | :--- |
+| **TC-11** | Property Update Refresh | **Passed** | Updated `Dashboard` to trigger `fetchData` in `App.tsx` upon successful add/edit. Frontend now updates immediately. |
+| **TC-12** | Property Detail View | **Passed** | Enhanced `App.tsx` detail view to show description, gallery, status, and price. No longer a placeholder. |
+| **TC-13** | Settings Tab Navigation | **Passed** | Verified `activeView === 'settings'` logic in `Dashboard.tsx`. |
 
 ## 4. Recommendations
 

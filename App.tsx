@@ -69,7 +69,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [activePage]);
 
   const fetchData = async () => {
     try {
@@ -147,7 +147,12 @@ const App: React.FC = () => {
 
   if (activePage === 'admin') {
     if (isAuthenticated) {
-      return <Dashboard onLogout={handleLogout} />;
+      return (
+        <Dashboard
+          onLogout={handleLogout}
+          onDataUpdate={fetchData}
+        />
+      );
     }
     return <Login onLogin={handleLogin} />;
   }
@@ -513,18 +518,89 @@ const App: React.FC = () => {
         )}
 
         {/* 8. Detail Page View */}
-        {activePage === 'detail' && (
+        {activePage === 'detail' && selectedProperty && (
           <div className="animate-in fade-in duration-500 bg-white pb-32">
+            {/* Hero Section */}
             <div className="relative h-[60vh] w-full overflow-hidden">
-              <img src={selectedProperty?.image || properties[0]?.image} className="w-full h-full object-cover" alt="Detail" />
+              <img src={selectedProperty.image} className="w-full h-full object-cover" alt={selectedProperty.title} />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
               <div className="absolute bottom-12 px-mobile w-full flex justify-center">
                 <div className="max-w-7xl w-full">
                   <div className="flex items-center gap-3 text-luxury-gold mb-4">
                     <MapPin size={20} />
-                    <span className="text-sm uppercase font-bold tracking-brand">{selectedProperty?.location || 'Location'}</span>
+                    <span className="text-sm uppercase font-bold tracking-brand">{selectedProperty.location}</span>
                   </div>
-                  <h1 className="text-4xl md:text-6xl font-serif text-white leading-tight mb-4 uppercase">{selectedProperty?.title || 'Property Detail'}</h1>
+                  <h1 className="text-4xl md:text-6xl font-serif text-white leading-tight mb-4 uppercase">{selectedProperty.title}</h1>
+                  <p className="text-xl text-white/90 font-light">{selectedProperty.type} • {selectedProperty.status}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Content Section */}
+            <div className="max-w-7xl mx-auto px-mobile pt-16 grid grid-cols-1 lg:grid-cols-3 gap-16">
+              {/* Left Column: Description & Gallery */}
+              <div className="lg:col-span-2 space-y-12">
+                <div>
+                  <h2 className="text-2xl font-serif font-bold text-luxury-black mb-6 uppercase tracking-tight">Property Overview</h2>
+                  <div className="prose prose-lg max-w-none text-gray-600 font-light leading-relaxed whitespace-pre-wrap">
+                    {selectedProperty.description || "No description available for this property."}
+                  </div>
+                </div>
+
+                {/* Gallery */}
+                {selectedProperty.gallery && selectedProperty.gallery.length > 0 && (
+                  <div>
+                    <h2 className="text-2xl font-serif font-bold text-luxury-black mb-6 uppercase tracking-tight">Gallery</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {selectedProperty.gallery.map((img, idx) => (
+                        <div key={idx} className="aspect-[4/3] rounded-xl overflow-hidden shadow-sm group">
+                          <img src={img} alt={`Gallery ${idx}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Right Column: Key Details & Contact */}
+              <div className="space-y-8">
+                <div className="bg-[#f8f8f8] p-8 rounded-xl border border-luxury-border sticky top-32">
+                  <div className="mb-8">
+                    <p className="text-sm text-luxury-gray font-bold uppercase tracking-wider mb-2">Price</p>
+                    <p className="text-3xl font-serif font-bold text-luxury-black">{selectedProperty.price}</p>
+                  </div>
+
+                  <div className="space-y-6 mb-8">
+                    <div className="flex items-center gap-3 py-3 border-b border-gray-200">
+                      <Building size={20} className="text-luxury-gold" />
+                      <div>
+                        <p className="text-xs text-luxury-gray uppercase font-bold">Type</p>
+                        <p className="text-luxury-black font-medium">{selectedProperty.type}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 py-3 border-b border-gray-200">
+                      <CheckCircle size={20} className="text-luxury-gold" />
+                      <div>
+                        <p className="text-xs text-luxury-gray uppercase font-bold">Status</p>
+                        <p className="text-luxury-black font-medium">{selectedProperty.status}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 py-3 border-b border-gray-200">
+                      <MapPin size={20} className="text-luxury-gold" />
+                      <div>
+                        <p className="text-xs text-luxury-gray uppercase font-bold">Location</p>
+                        <p className="text-luxury-black font-medium">{selectedProperty.location}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="w-full bg-luxury-gold text-white py-4 rounded-lg font-bold uppercase tracking-brand shadow-gold-glow hover:bg-luxury-golddark transition-all flex items-center justify-center gap-2"
+                  >
+                    <MessageSquare size={18} />
+                    Inquire Now
+                  </button>
                 </div>
               </div>
             </div>

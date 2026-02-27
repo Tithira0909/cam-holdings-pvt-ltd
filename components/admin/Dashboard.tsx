@@ -20,11 +20,12 @@ import SettingsView from './Settings';
 
 interface DashboardProps {
   onLogout: () => void;
+  onDataUpdate?: () => void;
 }
 
 type ViewState = 'dashboard' | 'properties' | 'add-property' | 'edit-property' | 'inquiries' | 'inquiry-detail' | 'services' | 'add-service' | 'edit-service' | 'settings';
 
-const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
+const Dashboard: React.FC<DashboardProps> = ({ onLogout, onDataUpdate }) => {
   const [activeView, setActiveView] = useState<ViewState>('dashboard');
   const [editingPropertyId, setEditingPropertyId] = useState<string | null>(null);
   const [viewingInquiryId, setViewingInquiryId] = useState<string | null>(null);
@@ -250,7 +251,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
         {activeView === 'add-property' && (
           <AddProperty
-            onSuccess={() => setActiveView('properties')}
+            onSuccess={() => {
+              setActiveView('properties');
+              if (onDataUpdate) onDataUpdate();
+            }}
             onCancel={() => setActiveView('properties')}
           />
         )}
@@ -258,7 +262,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         {activeView === 'edit-property' && editingPropertyId && (
           <EditProperty
             propertyId={editingPropertyId}
-            onSuccess={() => setActiveView('properties')}
+            onSuccess={() => {
+              setActiveView('properties');
+              if (onDataUpdate) onDataUpdate();
+            }}
             onCancel={() => setActiveView('properties')}
           />
         )}
