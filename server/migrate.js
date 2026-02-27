@@ -48,6 +48,16 @@ async function migrate() {
 
             console.log(`Applying schema to SQLite DB at ${dbPath}...`);
             await db.exec(schemaSql);
+
+            // Apply hero migration
+            const heroMigrationPath = path.join(dbDir, 'migration_hero.sql');
+            if (fs.existsSync(heroMigrationPath)) {
+                console.log('Applying hero migration...');
+                const heroSql = fs.readFileSync(heroMigrationPath, 'utf8');
+                // Execute statements one by one for safety or use exec if driver supports
+                await db.exec(heroSql);
+            }
+
             console.log('Schema applied.');
 
             // Check count
@@ -70,6 +80,23 @@ async function migrate() {
             for (const sql of statements) {
                 await query(sql);
             }
+
+            // Apply hero migration
+            const heroMigrationPath = path.join(dbDir, 'migration_hero.sql');
+            if (fs.existsSync(heroMigrationPath)) {
+                console.log('Applying hero migration...');
+                const heroSql = fs.readFileSync(heroMigrationPath, 'utf8');
+                const heroStatements = heroSql.split(';').filter(s => s.trim().length > 0);
+                for (const sql of heroStatements) {
+                     // Simple error handling for already existing columns/tables
+                     try {
+                        await query(sql);
+                     } catch(e) {
+                        console.log('Migration step skipped (likely exists):', e.message);
+                     }
+                }
+            }
+
             console.log('Schema applied.');
 
             const res = await query('SELECT count(*) as count FROM properties');

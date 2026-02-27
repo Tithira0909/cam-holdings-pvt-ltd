@@ -454,6 +454,55 @@ app.put('/api/admin/inquiries/:id/status', async (req, res) => {
   }
 });
 
+// --- SETTINGS (Hero Image) ---
+
+// GET hero image
+app.get('/api/settings/hero', async (req, res) => {
+  try {
+    const settings = await query("SELECT value FROM site_settings WHERE key_name = 'hero_image'");
+    if (settings && settings.length > 0) {
+      res.json({ hero_image: settings[0].value });
+    } else {
+      // Default
+      res.json({ hero_image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1600' });
+    }
+  } catch (error) {
+    console.error('Error fetching hero image:', error);
+    res.status(500).json({ error: 'Failed to fetch hero image' });
+  }
+});
+
+// POST update hero image
+app.post('/api/admin/settings/hero', upload.single('hero_image'), async (req, res) => {
+  try {
+    let imageUrl = null;
+
+    if (req.file) {
+      imageUrl = `/uploads/${req.file.filename}`;
+    } else if (req.body.imageUrl) {
+      imageUrl = req.body.imageUrl;
+    }
+
+    if (!imageUrl) {
+       return res.status(400).json({ error: 'No image provided' });
+    }
+
+    // Upsert
+    const existing = await query("SELECT * FROM site_settings WHERE key_name = 'hero_image'");
+    if (existing && existing.length > 0) {
+      await query("UPDATE site_settings SET value = ?, updated_at = CURRENT_TIMESTAMP WHERE key_name = 'hero_image'", [imageUrl]);
+    } else {
+      await query("INSERT INTO site_settings (key_name, value) VALUES ('hero_image', ?)", [imageUrl]);
+    }
+
+    res.json({ message: 'Hero image updated', hero_image: imageUrl });
+
+  } catch (error) {
+    console.error('Error updating hero image:', error);
+    res.status(500).json({ error: 'Failed to update hero image' });
+  }
+});
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

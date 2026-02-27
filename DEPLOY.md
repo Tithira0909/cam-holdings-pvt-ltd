@@ -117,6 +117,12 @@ server {
         proxy_set_header Host $host;
         proxy_cache_bypass $http_upgrade;
     }
+
+    # Serve Uploaded Images
+    location /uploads/ {
+        alias /var/www/cam-holdings/public/uploads/;
+        try_files $uri $uri/ =404;
+    }
 }
 ```
 
