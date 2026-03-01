@@ -56,6 +56,56 @@ const transporter = nodemailer.createTransport({
 
 // --- SERVICES ---
 
+// --- SETTINGS ---
+
+app.get('/api/settings', (req, res) => {
+  const settingsPath = path.join(__dirname, 'database/settings.json');
+  try {
+    if (fs.existsSync(settingsPath)) {
+      const data = fs.readFileSync(settingsPath, 'utf8');
+      res.json(JSON.parse(data));
+    } else {
+      res.json({});
+    }
+  } catch (error) {
+    console.error('Error reading settings:', error);
+    res.status(500).json({ error: 'Failed to fetch settings' });
+  }
+});
+
+app.put('/api/settings', (req, res) => {
+  const settingsPath = path.join(__dirname, 'database/settings.json');
+  try {
+    let currentSettings = {};
+    if (fs.existsSync(settingsPath)) {
+      currentSettings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+    }
+    const updatedSettings = { ...currentSettings, ...req.body };
+    fs.writeFileSync(settingsPath, JSON.stringify(updatedSettings, null, 2), 'utf8');
+    res.json(updatedSettings);
+  } catch (error) {
+    console.error('Error updating settings:', error);
+    res.status(500).json({ error: 'Failed to update settings' });
+  }
+});
+
+app.put('/api/admin/change-password', (req, res) => {
+  // Mocking password change for now as auth is hardcoded in frontend
+  const { currentPassword, newPassword } = req.body;
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({ error: 'Current and new password are required' });
+  }
+
+  if (currentPassword !== 'admin123') { // Based on the mock auth in App.tsx/Login.tsx
+     return res.status(401).json({ error: 'Incorrect current password' });
+  }
+
+  // Normally we would hash and update the DB here
+  res.json({ message: 'Password changed successfully' });
+});
+
+// --- SERVICES ---
+
 // GET public services (active, sorted)
 app.get('/api/services', async (req, res) => {
   try {
