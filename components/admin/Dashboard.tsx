@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   LayoutDashboard,
   Building,
@@ -17,18 +17,32 @@ import InquiryDetail from './InquiryDetail';
 import ServicesList from './ServicesList';
 import ServiceForm from './ServiceForm';
 import SettingsView from './Settings';
+import ProjectsList from './ProjectsList';
+import ProjectForm from './ProjectForm';
 
 interface DashboardProps {
   onLogout: () => void;
 }
 
-type ViewState = 'dashboard' | 'properties' | 'add-property' | 'edit-property' | 'inquiries' | 'inquiry-detail' | 'services' | 'add-service' | 'edit-service' | 'settings';
+type ViewState = 'dashboard' | 'properties' | 'add-property' | 'edit-property' | 'inquiries' | 'inquiry-detail' | 'services' | 'add-service' | 'edit-service' | 'settings' | 'projects' | 'add-project' | 'edit-project';
 
 const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [activeView, setActiveView] = useState<ViewState>('dashboard');
   const [editingPropertyId, setEditingPropertyId] = useState<string | null>(null);
+  const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
   const [viewingInquiryId, setViewingInquiryId] = useState<string | null>(null);
   const [editingServiceId, setEditingServiceId] = useState<string | null>(null);
+  const [activeProjectsCount, setActiveProjectsCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch('/api/projects')
+      .then(res => res.json())
+      .then(data => {
+        const activeCount = data.filter((p: any) => p.status === 'Active' || p.status === 'active' || !p.status).length;
+        setActiveProjectsCount(activeCount);
+      })
+      .catch(err => console.error('Error fetching projects count:', err));
+  }, [activeView]); // Re-fetch when view changes so we get updated count after editing
 
   return (
     <div className="min-h-screen bg-[#f4f4f4] flex">
@@ -64,7 +78,14 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             <Building size={18} />
             Properties
           </button>
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-white/60 hover:bg-white/5 hover:text-white rounded-lg font-medium text-sm transition-all">
+          <button
+            onClick={() => setActiveView('projects')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
+              activeView === 'projects' || activeView === 'add-project' || activeView === 'edit-project'
+                ? 'bg-white/10 text-luxury-gold'
+                : 'text-white/60 hover:bg-white/5 hover:text-white'
+            }`}
+          >
             <FolderOpen size={18} />
             Projects
           </button>
@@ -147,7 +168,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             <div className="flex justify-between items-start mb-4">
               <div>
                 <p className="text-sm text-luxury-gray font-medium uppercase tracking-wider">Active Projects</p>
-                <h3 className="text-3xl font-bold text-luxury-black mt-1">{PROJECTS.length}</h3>
+                <h3 className="text-3xl font-bold text-luxury-black mt-1">
+                  {activeProjectsCount !== null ? activeProjectsCount : PROJECTS.length}
+                </h3>
               </div>
               <div className="p-3 bg-luxury-offwhite rounded-lg text-luxury-black">
                 <FolderOpen size={24} />
@@ -301,6 +324,31 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             serviceId={editingServiceId}
             onSuccess={() => setActiveView('services')}
             onCancel={() => setActiveView('services')}
+          />
+        )}
+
+        {activeView === 'projects' && (
+          <ProjectsList
+            onAddProject={() => setActiveView('add-project')}
+            onEditProject={(id) => {
+              setEditingProjectId(id);
+              setActiveView('edit-project');
+            }}
+          />
+        )}
+
+        {activeView === 'add-project' && (
+          <ProjectForm
+            onSuccess={() => setActiveView('projects')}
+            onCancel={() => setActiveView('projects')}
+          />
+        )}
+
+        {activeView === 'edit-project' && editingProjectId && (
+          <ProjectForm
+            projectId={editingProjectId}
+            onSuccess={() => setActiveView('projects')}
+            onCancel={() => setActiveView('projects')}
           />
         )}
 

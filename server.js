@@ -371,12 +371,97 @@ app.delete('/api/properties/:id', async (req, res) => {
 // GET all projects
 app.get('/api/projects', async (req, res) => {
   try {
-    // Include service_id in result
     const projects = await query('SELECT * FROM projects ORDER BY created_at DESC');
     res.json(projects);
   } catch (err) {
     console.error('Error fetching projects:', err);
     res.status(500).json({ error: 'Failed to fetch projects' });
+  }
+});
+
+// POST new project
+app.post('/api/projects', upload.single('image'), async (req, res) => {
+  try {
+    const { title, location, category, budget, status, description } = req.body;
+
+    let mainImageUrl = null;
+    if (req.file) {
+      mainImageUrl = `/uploads/${req.file.filename}`;
+    }
+
+    const result = await query(
+      'INSERT INTO projects (title, location, category, budget, status, description, image) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [title, location, category, budget, status || 'Active', description, mainImageUrl]
+    );
+
+    const newProject = await query('SELECT * FROM projects WHERE id = ?', [result.insertId]);
+    res.status(201).json(newProject[0]);
+  } catch (error) {
+    console.error('Error saving project:', error);
+    res.status(500).json({ error: 'Failed to save project' });
+  }
+});
+
+// PUT update project
+app.put('/api/projects/:id', upload.single('image'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, location, category, budget, status, description } = req.body;
+
+    const existing = await query('SELECT * FROM projects WHERE id = ?', [id]);
+    if (!existing || existing.length === 0) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+
+    let mainImageUrl = existing[0].image;
+    if (req.file) {
+      mainImageUrl = `/uploads/${req.file.filename}`;
+    }
+
+    await query(
+      'UPDATE projects SET title = ?, location = ?, category = ?, budget = ?, status = ?, description = ?, image = ? WHERE id = ?',
+      [title, location, category, budget, status, description, mainImageUrl, id]
+    );
+
+    const updatedProject = await query('SELECT * FROM projects WHERE id = ?', [id]);
+    res.json(updatedProject[0]);
+  } catch (error) {
+    console.error('Error updating project:', error);
+    res.status(500).json({ error: 'Failed to update project' });
+  }
+});
+
+// DELETE project
+app.delete('/api/projects/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await query('DELETE FROM projects WHERE id = ?', [id]);
+
+    if (result.affectedRows === 0) {
+       return res.status(404).json({ error: 'Project not found' });
+    }
+
+    res.json({ message: 'Project deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting project:', error);
+    res.status(500).json({ error: 'Failed to delete project' });
+  }
+});
+
+// GET project by ID
+app.get('/api/projects/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const projects = await query('SELECT * FROM projects WHERE id = ?', [id]);
+
+    if (!projects || projects.length === 0) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+
+    res.json(projects[0]);
+  } catch (err) {
+    console.error('Error fetching project:', err);
+    res.status(500).json({ error: 'Failed to fetch project' });
   }
 });
 
