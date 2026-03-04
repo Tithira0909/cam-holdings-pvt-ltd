@@ -50,7 +50,15 @@ interface Service {
 }
 
 const App: React.FC = () => {
-  const [activePage, setActivePage] = useState<Page>('home');
+  const [activePage, setActivePage] = useState<Page>(() => {
+    const path = window.location.pathname;
+    if (path.startsWith('/properties')) return 'projects';
+    return 'home';
+  });
+  const [activePropertiesTab, setActivePropertiesTab] = useState<'all' | 'houses'>(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('tab') === 'houses' ? 'houses' : 'all';
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [selectedServiceSlug, setSelectedServiceSlug] = useState<string | null>(null);
@@ -66,6 +74,22 @@ const App: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [activePage, selectedProjectId, selectedServiceSlug]);
+
+  // Handle browser back/forward buttons for popstate
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname;
+      if (path.startsWith('/properties')) {
+        setActivePage('projects');
+        const params = new URLSearchParams(window.location.search);
+        setActivePropertiesTab(params.get('tab') === 'houses' ? 'houses' : 'all');
+      } else {
+        setActivePage('home');
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   useEffect(() => {
     fetchData();
@@ -124,6 +148,16 @@ const App: React.FC = () => {
       setSelectedServiceSlug(id);
       setCurrentService(null); // Reset while loading
     }
+    if (page === 'projects') {
+      window.history.pushState({}, '', `/properties?tab=${activePropertiesTab}`);
+    } else if (page === 'home') {
+      window.history.pushState({}, '', '/');
+    }
+  };
+
+  const handlePropertiesTabChange = (tab: 'all' | 'houses') => {
+    setActivePropertiesTab(tab);
+    window.history.pushState({}, '', `/properties?tab=${tab}`);
   };
 
   const handleLogin = () => {
@@ -389,11 +423,37 @@ const App: React.FC = () => {
           <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
             <div className="max-w-7xl mx-auto text-center mb-12">
               <h2 className="text-[36px] font-serif font-bold text-luxury-black mb-5 uppercase tracking-tight">Our Properties</h2>
-              <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto">Explore the best properties for sale that fit your needs.</p>
+              <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto mb-8">Explore the best properties for sale that fit your needs.</p>
+
+              {/* Slim Submenu Bar */}
+              <div className="inline-flex items-center p-1 bg-luxury-black/5 backdrop-blur-sm rounded-full shadow-[inset_0_1px_4px_rgba(0,0,0,0.05)] mb-12 overflow-x-auto max-w-full">
+                <div className="flex space-x-1 min-w-max">
+                  <button
+                    onClick={() => handlePropertiesTabChange('all')}
+                    className={`px-8 py-2.5 rounded-full text-sm tracking-wider uppercase transition-all duration-300 ease-out ${
+                      activePropertiesTab === 'all'
+                        ? 'bg-luxury-gold text-white font-bold shadow-gold-glow'
+                        : 'bg-transparent text-luxury-charcoal/70 hover:text-luxury-gold hover:bg-white/50'
+                    }`}
+                  >
+                    Properties
+                  </button>
+                  <button
+                    onClick={() => handlePropertiesTabChange('houses')}
+                    className={`px-8 py-2.5 rounded-full text-sm tracking-wider uppercase transition-all duration-300 ease-out ${
+                      activePropertiesTab === 'houses'
+                        ? 'bg-luxury-gold text-white font-bold shadow-gold-glow'
+                        : 'bg-transparent text-luxury-charcoal/70 hover:text-luxury-gold hover:bg-white/50'
+                    }`}
+                  >
+                    Houses
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px]">
-              {properties.map(prop => (
+            <div key={activePropertiesTab} className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px] animate-in fade-in slide-in-from-bottom-4 duration-500">
+              {properties.filter(p => activePropertiesTab === 'houses' ? p.type === PropertyType.HOUSE || p.type.toLowerCase() === 'house' : true).map(prop => (
                 <div key={prop.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <img src={prop.image} alt={prop.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
