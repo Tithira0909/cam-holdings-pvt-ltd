@@ -40,7 +40,7 @@ const InquiryDetail: React.FC<InquiryDetailProps> = ({ inquiryId, onBack }) => {
 
   const fetchDetail = async () => {
     try {
-      const res = await fetch(`/api/admin/inquiries/${inquiryId}`);
+      const res = await fetch(`/api/inquiries/${inquiryId}`);
       if (res.ok) {
         const data = await res.json();
         setInquiry(data);
@@ -59,13 +59,12 @@ const InquiryDetail: React.FC<InquiryDetailProps> = ({ inquiryId, onBack }) => {
 
     setSending(true);
     try {
-      const res = await fetch(`/api/admin/inquiries/${inquiryId}/reply`, {
+      const res = await fetch(`/api/inquiries/${inquiryId}/reply`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           subject: replySubject,
-          message: replyMessage,
-          admin_user: 'Admin'
+          message: replyMessage
         })
       });
 
@@ -74,7 +73,8 @@ const InquiryDetail: React.FC<InquiryDetailProps> = ({ inquiryId, onBack }) => {
         setReplyMessage('');
         fetchDetail(); // Refresh to show new reply in history
       } else {
-        alert('Failed to send reply.');
+        const data = await res.json();
+        alert(`Failed to send reply: ${data.error || 'Unknown error'}`);
       }
     } catch (err) {
       console.error(err);
@@ -128,33 +128,33 @@ const InquiryDetail: React.FC<InquiryDetailProps> = ({ inquiryId, onBack }) => {
           </div>
 
           {/* Reply History */}
-          {inquiry.replies && inquiry.replies.length > 0 && (
+          {inquiry.status === 'Replied' && inquiry.reply_message && (
             <div className="space-y-6">
               <h4 className="text-sm font-bold text-luxury-gray uppercase tracking-wider flex items-center gap-2">
                 <Clock size={16} /> Reply History
               </h4>
               <div className="space-y-4">
-                {inquiry.replies.map((reply) => (
-                  <div key={reply.id} className="pl-6 border-l-2 border-luxury-gold/30 py-2">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-bold text-luxury-black text-sm">{reply.admin_user} <span className="font-normal text-gray-500">replied:</span></span>
-                      <span className="text-xs text-gray-400">{new Date(reply.sent_at).toLocaleString()}</span>
-                    </div>
-                    <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">{reply.reply_message}</p>
+                <div className="pl-6 border-l-2 border-luxury-gold py-2">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-bold text-luxury-black text-sm">Admin <span className="font-normal text-gray-500">replied:</span></span>
+                    <span className="text-xs text-gray-400">{new Date(inquiry.replied_at || '').toLocaleString()}</span>
                   </div>
-                ))}
+                  <h5 className="text-sm font-bold text-luxury-black mb-1">{inquiry.reply_subject}</h5>
+                  <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg whitespace-pre-wrap">{inquiry.reply_message}</p>
+                </div>
               </div>
             </div>
           )}
         </div>
 
         {/* Right: Reply Panel */}
-        <div className="space-y-6">
-           <div className="bg-white border border-gray-200 shadow-lg rounded-xl p-6 sticky top-8">
-             <h3 className="text-lg font-bold text-luxury-black mb-4 flex items-center gap-2">
-               <Send size={18} className="text-luxury-gold" /> Send Reply
-             </h3>
-             <form onSubmit={handleSendReply} className="space-y-4">
+        {inquiry.status !== 'Replied' && (
+          <div className="space-y-6">
+             <div className="bg-white border border-gray-200 shadow-lg rounded-xl p-6 sticky top-8">
+               <h3 className="text-lg font-bold text-luxury-black mb-4 flex items-center gap-2">
+                 <Send size={18} className="text-luxury-gold" /> Send Reply
+               </h3>
+               <form onSubmit={handleSendReply} className="space-y-4">
                <div>
                  <label className="block text-xs font-bold text-luxury-gray uppercase tracking-wider mb-1">Subject</label>
                  <input
@@ -176,17 +176,18 @@ const InquiryDetail: React.FC<InquiryDetailProps> = ({ inquiryId, onBack }) => {
                    required
                  />
                </div>
-               <button
-                 type="submit"
-                 disabled={sending}
-                 className="w-full py-3 bg-luxury-gold text-white font-bold uppercase text-xs tracking-wider rounded shadow-gold-glow hover:bg-luxury-golddark transition-all disabled:opacity-50 flex justify-center items-center gap-2"
-               >
-                 {sending ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
-                 {sending ? 'Sending...' : 'Send Email'}
-               </button>
-             </form>
-           </div>
-        </div>
+                 <button
+                   type="submit"
+                   disabled={sending}
+                   className="w-full py-3 bg-luxury-gold text-white font-bold uppercase text-xs tracking-wider rounded shadow-gold-glow hover:bg-luxury-golddark transition-all disabled:opacity-50 flex justify-center items-center gap-2"
+                 >
+                   {sending ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
+                   {sending ? 'Sending...' : 'Send Email'}
+                 </button>
+               </form>
+             </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -593,3 +593,178 @@ app.put('/api/admin/inquiries/:id/status', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+// --- EMAIL SETTINGS ---
+
+app.get('/api/settings/email', async (req, res) => {
+  try {
+    const configs = await query('SELECT id, mailer, host, port, username, encryption, from_address, from_name, status, created_at FROM email_settings WHERE status = "Active" LIMIT 1');
+    if (!configs || configs.length === 0) {
+      return res.status(404).json({ error: 'No active email configuration found' });
+    }
+    res.json(configs[0]);
+  } catch (err) {
+    console.error('Error fetching active email settings:', err);
+    res.status(500).json({ error: 'Failed to fetch active email settings' });
+  }
+});
+
+app.get('/api/settings/email/all', async (req, res) => {
+  try {
+    const configs = await query('SELECT id, mailer, host, port, username, encryption, from_address, from_name, status, created_at FROM email_settings ORDER BY created_at DESC');
+    res.json(configs);
+  } catch (err) {
+    console.error('Error fetching email settings:', err);
+    res.status(500).json({ error: 'Failed to fetch email settings' });
+  }
+});
+
+app.post('/api/settings/email', async (req, res) => {
+  try {
+    const { mailer, host, port, username, password, encryption, from_address, from_name, status } = req.body;
+
+    // If setting as Active, deactivate others first
+    if (status === 'Active') {
+      await query('UPDATE email_settings SET status = "Inactive"');
+    }
+
+    const result = await query(
+      'INSERT INTO email_settings (mailer, host, port, username, password, encryption, from_address, from_name, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [mailer || 'smtp', host, port, username, password, encryption || 'none', from_address, from_name, status || 'Inactive']
+    );
+
+    const newConfig = await query('SELECT id, mailer, host, port, username, encryption, from_address, from_name, status, created_at FROM email_settings WHERE id = ?', [result.insertId]);
+    res.status(201).json(newConfig[0]);
+  } catch (err) {
+    console.error('Error adding email setting:', err);
+    res.status(500).json({ error: 'Failed to add email setting' });
+  }
+});
+
+app.put('/api/settings/email/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { mailer, host, port, username, password, encryption, from_address, from_name, status } = req.body;
+
+    if (status === 'Active') {
+      await query('UPDATE email_settings SET status = "Inactive" WHERE id != ?', [id]);
+    }
+
+    let updateQuery;
+    let params;
+
+    if (password && password.trim() !== '') {
+        updateQuery = 'UPDATE email_settings SET mailer = ?, host = ?, port = ?, username = ?, password = ?, encryption = ?, from_address = ?, from_name = ?, status = ? WHERE id = ?';
+        params = [mailer || 'smtp', host, port, username, password, encryption || 'none', from_address, from_name, status || 'Inactive', id];
+    } else {
+        updateQuery = 'UPDATE email_settings SET mailer = ?, host = ?, port = ?, username = ?, encryption = ?, from_address = ?, from_name = ?, status = ? WHERE id = ?';
+        params = [mailer || 'smtp', host, port, username, encryption || 'none', from_address, from_name, status || 'Inactive', id];
+    }
+
+    await query(updateQuery, params);
+
+    const updatedConfig = await query('SELECT id, mailer, host, port, username, encryption, from_address, from_name, status, created_at FROM email_settings WHERE id = ?', [id]);
+    res.json(updatedConfig[0]);
+  } catch (err) {
+    console.error('Error updating email setting:', err);
+    res.status(500).json({ error: 'Failed to update email setting' });
+  }
+});
+
+app.patch('/api/settings/email/:id/activate', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await query('UPDATE email_settings SET status = "Inactive"');
+    await query('UPDATE email_settings SET status = "Active" WHERE id = ?', [id]);
+
+    res.json({ message: 'Configuration activated successfully' });
+  } catch (err) {
+    console.error('Error activating email setting:', err);
+    res.status(500).json({ error: 'Failed to activate email setting' });
+  }
+});
+
+app.delete('/api/settings/email/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await query('DELETE FROM email_settings WHERE id = ?', [id]);
+    res.json({ message: 'Configuration deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting email setting:', err);
+    res.status(500).json({ error: 'Failed to delete email setting' });
+  }
+});
+
+// --- INQUIRY REPLY (EMAIL) ---
+
+app.post('/api/inquiries/:id/reply', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { subject, message } = req.body;
+
+    if (!subject || !message) {
+      return res.status(400).json({ error: 'Subject and message are required' });
+    }
+
+    // 1. Fetch inquiry
+    const inquiries = await query('SELECT * FROM inquiries WHERE id = ?', [id]);
+    if (!inquiries || inquiries.length === 0) {
+      return res.status(404).json({ error: 'Inquiry not found' });
+    }
+    const inquiry = inquiries[0];
+
+    // 2. Fetch active email config
+    const emailConfigs = await query('SELECT * FROM email_settings WHERE status = "Active" LIMIT 1');
+    if (!emailConfigs || emailConfigs.length === 0) {
+      return res.status(400).json({ error: 'No active email configuration found. Please configure Email Settings first.' });
+    }
+    const config = emailConfigs[0];
+
+    // 3. Setup Nodemailer transporter
+    let secure = false;
+    if (config.encryption === 'ssl' || config.encryption === 'tls') {
+       // Typically port 465 is secure=true, 587 is secure=false (uses STARTTLS)
+       secure = config.port === 465;
+    }
+
+    const transporter = nodemailer.createTransport({
+      host: config.host,
+      port: config.port,
+      secure: secure,
+      auth: {
+        user: config.username,
+        pass: config.password
+      },
+      tls: {
+          rejectUnauthorized: false // Often needed for custom/local setups
+      }
+    });
+
+    // 4. Send email
+    const mailOptions = {
+      from: `"${config.from_name}" <${config.from_address}>`,
+      to: inquiry.email,
+      subject: subject,
+      text: message, // Can also add html: message
+      html: message.replace(/\n/g, '<br>')
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    // 5. Update inquiry status
+    const now = new Date().toISOString().slice(0, 19).replace('T', ' '); // format for SQLite/MySQL
+    await query(
+      'UPDATE inquiries SET status = ?, reply_subject = ?, reply_message = ?, replied_at = ? WHERE id = ?',
+      ['Replied', subject, message, now, id]
+    );
+
+    const updatedInquiry = await query('SELECT * FROM inquiries WHERE id = ?', [id]);
+
+    res.json({ message: 'Reply sent successfully', inquiry: updatedInquiry[0] });
+
+  } catch (error) {
+    console.error('Failed to send reply:', error);
+    res.status(500).json({ error: 'Failed to send reply: ' + error.message });
+  }
+});
