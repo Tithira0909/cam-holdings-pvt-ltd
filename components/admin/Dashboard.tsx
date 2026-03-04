@@ -6,7 +6,12 @@ import {
   Users,
   Settings,
   LogOut,
-  MapPin
+  MapPin,
+  Shield,
+  BarChart,
+  Globe,
+  Mail,
+  ChevronDown
 } from 'lucide-react';
 import { PROPERTIES, PROJECTS } from '../../constants';
 import PropertiesList from './PropertiesList';
@@ -16,18 +21,22 @@ import InquiriesList from './InquiriesList';
 import InquiryDetail from './InquiryDetail';
 import ServicesList from './ServicesList';
 import ServiceForm from './ServiceForm';
-import SettingsView from './Settings';
 import ProjectsList from './ProjectsList';
 import ProjectForm from './ProjectForm';
+import SettingsPermissions from './settings/SettingsPermissions';
+import SettingsAnalytics from './settings/SettingsAnalytics';
+import SettingsSite from './settings/SettingsSite';
+import SettingsEmail from './settings/SettingsEmail';
 
 interface DashboardProps {
   onLogout: () => void;
 }
 
-type ViewState = 'dashboard' | 'properties' | 'add-property' | 'edit-property' | 'inquiries' | 'inquiry-detail' | 'services' | 'add-service' | 'edit-service' | 'settings' | 'projects' | 'add-project' | 'edit-project';
+type ViewState = 'dashboard' | 'properties' | 'add-property' | 'edit-property' | 'inquiries' | 'inquiry-detail' | 'services' | 'add-service' | 'edit-service' | 'projects' | 'add-project' | 'edit-project' | 'settings-permissions' | 'settings-analytics' | 'settings-site' | 'settings-email';
 
 const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [activeView, setActiveView] = useState<ViewState>('dashboard');
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [editingPropertyId, setEditingPropertyId] = useState<string | null>(null);
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
   const [viewingInquiryId, setViewingInquiryId] = useState<string | null>(null);
@@ -43,6 +52,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       })
       .catch(err => console.error('Error fetching projects count:', err));
   }, [activeView]); // Re-fetch when view changes so we get updated count after editing
+
+  const handleSettingsClick = () => {
+    setIsSettingsOpen(!isSettingsOpen);
+    if (!isSettingsOpen && !activeView.startsWith('settings-')) {
+      setActiveView('settings-site');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#f4f4f4] flex">
@@ -111,17 +127,42 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             <Users size={18} />
             Inquiries
           </button>
-          <button
-            onClick={() => setActiveView('settings')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
-              activeView === 'settings'
-                ? 'bg-white/10 text-luxury-gold'
-                : 'text-white/60 hover:bg-white/5 hover:text-white'
-            }`}
-          >
-            <Settings size={18} />
-            Settings
-          </button>
+          <div>
+            <button
+              onClick={handleSettingsClick}
+              className={`w-full flex items-center justify-between px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
+                activeView.startsWith('settings-')
+                  ? 'bg-white/10 text-luxury-gold'
+                  : 'text-white/60 hover:bg-white/5 hover:text-white'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Settings size={18} />
+                Settings
+              </div>
+              <ChevronDown size={16} className={`transform transition-transform ${isSettingsOpen || activeView.startsWith('settings-') ? 'rotate-180' : ''}`} />
+            </button>
+            {(isSettingsOpen || activeView.startsWith('settings-')) && (
+              <div className="pl-4 mt-2 space-y-1">
+                <button onClick={() => setActiveView('settings-permissions')} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-permissions' ? 'text-luxury-gold bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
+                  <Shield size={14} />
+                  Permission Settings
+                </button>
+                <button onClick={() => setActiveView('settings-analytics')} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-analytics' ? 'text-luxury-gold bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
+                  <BarChart size={14} />
+                  Analytics Settings
+                </button>
+                <button onClick={() => setActiveView('settings-site')} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-site' ? 'text-luxury-gold bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
+                  <Globe size={14} />
+                  Site Settings
+                </button>
+                <button onClick={() => setActiveView('settings-email')} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-email' ? 'text-luxury-gold bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
+                  <Mail size={14} />
+                  Email Settings
+                </button>
+              </div>
+            )}
+          </div>
         </nav>
 
         <div className="p-4 border-t border-white/10">
@@ -352,8 +393,20 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           />
         )}
 
-        {activeView === 'settings' && (
-          <SettingsView />
+        {activeView === 'settings-permissions' && (
+          <SettingsPermissions />
+        )}
+
+        {activeView === 'settings-analytics' && (
+          <SettingsAnalytics />
+        )}
+
+        {activeView === 'settings-site' && (
+          <SettingsSite />
+        )}
+
+        {activeView === 'settings-email' && (
+          <SettingsEmail />
         )}
       </main>
     </div>
