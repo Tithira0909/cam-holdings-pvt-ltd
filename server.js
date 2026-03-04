@@ -239,7 +239,20 @@ app.delete('/api/admin/services/:id', async (req, res) => {
 // GET all properties
 app.get('/api/properties', async (req, res) => {
   try {
-    const properties = await query('SELECT * FROM properties ORDER BY created_at DESC');
+    const { type } = req.query;
+    let sql = 'SELECT * FROM properties';
+    let params = [];
+
+    if (type) {
+      const types = type.split(',').map(t => t.trim());
+      const placeholders = types.map(() => '?').join(',');
+      sql += ` WHERE type IN (${placeholders})`;
+      params = types;
+    }
+
+    sql += ' ORDER BY created_at DESC';
+
+    const properties = await query(sql, params);
     res.json(properties);
   } catch (err) {
     console.error('Error fetching properties:', err);
