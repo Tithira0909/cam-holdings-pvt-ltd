@@ -40,7 +40,7 @@ const InquiryDetail: React.FC<InquiryDetailProps> = ({ inquiryId, onBack }) => {
 
   const fetchDetail = async () => {
     try {
-      const res = await fetch(`/api/inquiries/${inquiryId}`);
+      const res = await fetch(`/api/admin/inquiries/${inquiryId}`);
       if (res.ok) {
         const data = await res.json();
         setInquiry(data);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Plus, Edit, Trash2, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
+import { Mail, Plus, Edit, Trash2, CheckCircle2, XCircle, Loader2, Send } from 'lucide-react';
 
 interface EmailConfig {
   id: number;
@@ -18,6 +18,9 @@ export default function SettingsEmail() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingConfig, setEditingConfig] = useState<EmailConfig | null>(null);
+  const [isTestModalOpen, setIsTestModalOpen] = useState(false);
+  const [testEmail, setTestEmail] = useState('');
+  const [testing, setTesting] = useState(false);
 
   const [formData, setFormData] = useState({
     mailer: 'smtp',
@@ -142,6 +145,32 @@ export default function SettingsEmail() {
     }
   };
 
+  const handleTestEmail = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!testEmail) return;
+
+    setTesting(true);
+    try {
+      const res = await fetch('/api/settings/email/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ test_email: testEmail })
+      });
+      if (res.ok) {
+        showMessage('success', 'Test email sent successfully');
+        setIsTestModalOpen(false);
+        setTestEmail('');
+      } else {
+        const err = await res.json();
+        showMessage('error', err.error || 'Failed to send test email');
+      }
+    } catch (err) {
+      showMessage('error', 'An error occurred while sending test email');
+    } finally {
+      setTesting(false);
+    }
+  };
+
   if (loading) {
     return <div className="flex items-center justify-center h-64"><Loader2 className="animate-spin text-luxury-gold" size={32} /></div>;
   }
@@ -163,9 +192,14 @@ export default function SettingsEmail() {
             </h2>
             <p className="text-sm text-luxury-gray mt-1">Manage SMTP settings used for sending inquiry replies.</p>
           </div>
-          <button onClick={handleOpenAdd} className="bg-luxury-gold text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-luxury-golddark transition-all flex items-center gap-2 shadow-sm">
-            <Plus size={16} /> Add Configuration
-          </button>
+          <div className="flex gap-4">
+            <button onClick={() => setIsTestModalOpen(true)} className="bg-white text-luxury-black border border-luxury-border px-4 py-2 rounded-lg font-bold text-sm hover:bg-gray-50 transition-all flex items-center gap-2 shadow-sm">
+              <Send size={16} className="text-luxury-gold" /> Test Email
+            </button>
+            <button onClick={handleOpenAdd} className="bg-luxury-gold text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-luxury-golddark transition-all flex items-center gap-2 shadow-sm">
+              <Plus size={16} /> Add Configuration
+            </button>
+          </div>
         </div>
 
         <div className="overflow-x-auto">
@@ -282,6 +316,47 @@ export default function SettingsEmail() {
               </button>
               <button form="emailForm" type="submit" className="px-6 py-2 bg-luxury-gold text-white font-bold rounded-lg hover:bg-luxury-golddark transition-colors shadow-sm">
                 Save Configuration
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Test Email Modal */}
+      {isTestModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md flex flex-col animate-in fade-in zoom-in-95 duration-200">
+            <div className="p-6 border-b border-luxury-border flex justify-between items-center">
+              <h2 className="text-xl font-serif font-bold text-luxury-black">Send Test Email</h2>
+              <button onClick={() => setIsTestModalOpen(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                <XCircle size={24} />
+              </button>
+            </div>
+
+            <div className="p-6">
+              <form id="testEmailForm" onSubmit={handleTestEmail} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-bold text-luxury-black mb-1">Recipient Email Address</label>
+                  <input
+                    type="email"
+                    required
+                    value={testEmail}
+                    onChange={e => setTestEmail(e.target.value)}
+                    className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none"
+                    placeholder="you@example.com"
+                  />
+                  <p className="text-xs text-gray-500 mt-2">This will send a test email using the currently <strong>Active</strong> configuration.</p>
+                </div>
+              </form>
+            </div>
+
+            <div className="p-6 border-t border-luxury-border flex justify-end gap-3 bg-gray-50 rounded-b-xl">
+              <button onClick={() => setIsTestModalOpen(false)} className="px-4 py-2 text-gray-600 font-bold hover:bg-gray-200 rounded-lg transition-colors">
+                Cancel
+              </button>
+              <button form="testEmailForm" type="submit" disabled={testing} className="px-6 py-2 bg-luxury-gold text-white font-bold rounded-lg hover:bg-luxury-golddark transition-colors shadow-sm flex items-center gap-2 disabled:opacity-50">
+                {testing ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
+                {testing ? 'Sending...' : 'Send Test'}
               </button>
             </div>
           </div>

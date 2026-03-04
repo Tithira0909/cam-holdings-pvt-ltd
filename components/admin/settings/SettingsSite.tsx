@@ -1,178 +1,220 @@
-import React, { useState, useEffect } from 'react';
-import { Building, Image as ImageIcon, Monitor, Check, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Globe, Upload, Image as ImageIcon, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 
 export default function SettingsSite() {
-  const [companyName, setCompanyName] = useState('CAM Holdings');
-  const [supportEmail, setSupportEmail] = useState('support@camholdings.lk');
-  const [primaryColor, setPrimaryColor] = useState('#D4AF37');
-  const [darkMode, setDarkMode] = useState(false);
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
 
-  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [formData, setFormData] = useState({
+    site_name: '',
+    contact_email: '',
+    contact_phone: '',
+    address: ''
+  });
+
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    fetch('/api/settings')
-      .then(res => res.json())
-      .then(data => {
-        setCompanyName(data.companyName || 'CAM Holdings');
-        setSupportEmail(data.supportEmail || 'support@camholdings.lk');
-        setPrimaryColor(data.primaryColor || '#D4AF37');
-        setDarkMode(data.darkMode || false);
-        setLogoPreview(data.siteLogo || null);
-      })
-      .catch(err => console.error('Error fetching settings:', err));
+    fetchSiteSettings();
   }, []);
 
-  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setLogoPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+  const fetchSiteSettings = async () => {
+    try {
+      const res = await fetch('/api/settings/site');
+      if (res.ok) {
+        const data = await res.json();
+        setFormData({
+          site_name: data.site_name || '',
+          contact_email: data.contact_email || '',
+          contact_phone: data.contact_phone || '',
+          address: data.address || ''
+        });
+        if (data.site_logo_url) {
+          setLogoPreview(data.site_logo_url);
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleSiteSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setMessage(null);
+  const showMessage = (type: 'success' | 'error', text: string) => {
+    setMessage({ type, text });
+    setTimeout(() => setMessage(null), 3000);
+  };
 
-    if (!companyName || !supportEmail) {
-       setMessage({ type: 'error', text: 'Company name and support email are required.' });
-       return;
-    }
+  const handleLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append('logo', file);
 
     try {
-        const res = await fetch('/api/settings', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ companyName, supportEmail, primaryColor, darkMode, siteLogo: logoPreview })
-        });
+      const res = await fetch('/api/settings/site/logo', {
+        method: 'POST',
+        body: formData
+      });
 
-        if (res.ok) {
-             setMessage({ type: 'success', text: 'Site settings updated successfully!' });
-        } else {
-             setMessage({ type: 'error', text: 'Failed to update site settings.' });
-        }
-    } catch(err) {
-         setMessage({ type: 'error', text: 'An error occurred.' });
+      if (res.ok) {
+        const data = await res.json();
+        setLogoPreview(data.logo_url);
+        showMessage('success', 'Logo uploaded successfully');
+      } else {
+        showMessage('error', 'Failed to upload logo');
+      }
+    } catch (err) {
+      showMessage('error', 'An error occurred while uploading logo');
     }
   };
 
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      const res = await fetch('/api/settings/site', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      if (res.ok) {
+        showMessage('success', 'Site settings saved successfully');
+      } else {
+        showMessage('error', 'Failed to save site settings');
+      }
+    } catch (err) {
+      showMessage('error', 'An error occurred while saving site settings');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-64"><Loader2 className="animate-spin text-luxury-gold" size={32} /></div>;
+  }
+
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl space-y-6">
       <header className="mb-8">
         <h1 className="text-3xl font-serif font-bold text-luxury-black">Site Settings</h1>
-        <p className="text-luxury-gray mt-2">Manage your website's basic parameters, logo, and theme.</p>
+        <p className="text-luxury-gray mt-2">Manage general parameters and branding for your website.</p>
       </header>
 
       {message && (
-        <div className={`p-4 rounded-lg flex items-center gap-3 ${message.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
-           {message.type === 'success' ? <Check size={20} /> : <AlertCircle size={20} />}
-           <p className="font-medium">{message.text}</p>
+        <div className={`p-4 rounded-lg flex items-center gap-3 ${message.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
+          {message.type === 'success' ? <CheckCircle2 size={20} /> : <XCircle size={20} />}
+          <span className="font-medium">{message.text}</span>
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-luxury-border">
-        <div className="p-6 border-b border-luxury-border">
-          <h2 className="text-xl font-serif font-bold text-luxury-black flex items-center gap-2">
-            <Building className="text-luxury-gold" size={24} /> General Information
-          </h2>
+      <div className="bg-white rounded-xl shadow-sm border border-luxury-border overflow-hidden">
+        <div className="p-6 border-b border-luxury-border flex items-center gap-3">
+          <Globe className="text-luxury-gold" size={24} />
+          <h2 className="text-xl font-bold text-luxury-black">General Information</h2>
         </div>
-        <div className="p-6">
-          <form onSubmit={handleSiteSubmit} className="space-y-6">
+
+        <div className="p-6 md:p-8">
+          <form id="siteForm" onSubmit={handleSave} className="space-y-8">
+
+            {/* Logo Upload Section */}
+            <div className="flex flex-col md:flex-row gap-8 items-start pb-8 border-b border-gray-100">
+              <div className="flex-1 space-y-2">
+                <label className="block font-bold text-luxury-black">Site Logo</label>
+                <p className="text-sm text-gray-500">Upload your brand logo. Recommended size: 200x50px (PNG or SVG with transparent background).</p>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleLogoChange}
+                  accept="image/*"
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="mt-4 px-4 py-2 border border-luxury-border rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-gray-50 transition-colors"
+                >
+                  <Upload size={16} /> Upload New Logo
+                </button>
+              </div>
+
+              <div className="w-full md:w-64 h-32 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center overflow-hidden">
+                {logoPreview ? (
+                  <img src={logoPreview} alt="Site Logo" className="max-w-full max-h-full object-contain p-4" />
+                ) : (
+                  <div className="text-center text-gray-400">
+                    <ImageIcon size={32} className="mx-auto mb-2 opacity-50" />
+                    <span className="text-xs font-medium">No logo uploaded</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Basic Parameters */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-bold text-luxury-black mb-1">Site/Company Name</label>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-bold text-luxury-black mb-2">Site Name</label>
                 <input
                   type="text"
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
-                  className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold focus:border-luxury-gold outline-none transition-all"
+                  required
+                  value={formData.site_name}
+                  onChange={e => setFormData({...formData, site_name: e.target.value})}
+                  className="w-full px-4 py-3 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none"
+                  placeholder="e.g. CAM Holdings"
                 />
               </div>
+
               <div>
-                <label className="block text-sm font-bold text-luxury-black mb-1">Support Email</label>
+                <label className="block text-sm font-bold text-luxury-black mb-2">Contact Email</label>
                 <input
                   type="email"
-                  value={supportEmail}
-                  onChange={(e) => setSupportEmail(e.target.value)}
-                  className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold focus:border-luxury-gold outline-none transition-all"
+                  value={formData.contact_email}
+                  onChange={e => setFormData({...formData, contact_email: e.target.value})}
+                  className="w-full px-4 py-3 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none"
+                  placeholder="e.g. support@example.com"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-luxury-black mb-2">Contact Phone</label>
+                <input
+                  type="text"
+                  value={formData.contact_phone}
+                  onChange={e => setFormData({...formData, contact_phone: e.target.value})}
+                  className="w-full px-4 py-3 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none"
+                  placeholder="e.g. +94 11 234 5678"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-bold text-luxury-black mb-2">Primary Address</label>
+                <textarea
+                  rows={3}
+                  value={formData.address}
+                  onChange={e => setFormData({...formData, address: e.target.value})}
+                  className="w-full px-4 py-3 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none resize-none"
+                  placeholder="Enter physical address..."
                 />
               </div>
             </div>
 
-            <div className="space-y-4 py-6 border-t border-luxury-border">
-              <h3 className="font-bold text-luxury-black flex items-center gap-2">
-                <ImageIcon className="text-luxury-gold" size={18} /> Logo Upload
-              </h3>
-              <div className="flex items-center gap-6">
-                <div className="w-32 h-32 border-2 border-dashed border-luxury-border rounded-xl flex items-center justify-center bg-gray-50 overflow-hidden">
-                  {logoPreview ? (
-                    <img src={logoPreview} alt="Logo Preview" className="w-full h-full object-contain p-2" />
-                  ) : (
-                    <ImageIcon className="text-gray-300" size={48} />
-                  )}
-                </div>
-                <div>
-                  <input
-                    type="file"
-                    id="logo-upload"
-                    accept="image/*"
-                    onChange={handleLogoUpload}
-                    className="hidden"
-                  />
-                  <label
-                    htmlFor="logo-upload"
-                    className="cursor-pointer bg-white text-luxury-black border border-luxury-border px-4 py-2 rounded-lg font-bold hover:bg-gray-50 transition-all text-sm inline-block mb-2"
-                  >
-                    Choose Image
-                  </label>
-                  <p className="text-xs text-luxury-gray">Recommended size: 250x100px. Max size: 2MB.</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-6 py-6 border-t border-luxury-border">
-               <h3 className="font-bold text-luxury-black flex items-center gap-2">
-                <Monitor className="text-luxury-gold" size={18} /> Appearance & Theme
-               </h3>
-              <div>
-                <label className="block text-sm font-bold text-luxury-black mb-1">Primary Color (Brand Accent)</label>
-                <div className="flex items-center gap-3">
-                  <input
-                    type="color"
-                    value={primaryColor}
-                    onChange={(e) => setPrimaryColor(e.target.value)}
-                    className="w-10 h-10 p-1 border border-luxury-border rounded cursor-pointer"
-                  />
-                  <input
-                    type="text"
-                    value={primaryColor}
-                    onChange={(e) => setPrimaryColor(e.target.value)}
-                    className="flex-1 max-w-[200px] px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold focus:border-luxury-gold outline-none transition-all uppercase font-mono text-sm"
-                  />
-                </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-bold text-luxury-black">Dark Mode Preview</h3>
-                  <p className="text-sm text-luxury-gray">Enable dark mode theme across the admin dashboard</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" className="sr-only peer" checked={darkMode} onChange={() => setDarkMode(!darkMode)} />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-luxury-gold"></div>
-                </label>
-              </div>
-            </div>
-
-            <div className="pt-6 border-t border-luxury-border text-right">
-              <button type="submit" className="bg-luxury-gold text-white px-8 py-3 rounded-lg font-bold uppercase tracking-wider hover:bg-luxury-golddark transition-all">
-                Save Changes
-              </button>
-            </div>
           </form>
+        </div>
+
+        <div className="p-6 border-t border-luxury-border bg-gray-50 flex justify-end">
+          <button
+            type="submit"
+            form="siteForm"
+            disabled={saving}
+            className="bg-luxury-gold text-white px-8 py-3 rounded-lg font-bold hover:bg-luxury-golddark transition-all shadow-sm flex items-center gap-2 disabled:opacity-50"
+          >
+            {saving ? <Loader2 className="animate-spin" size={18} /> : null}
+            {saving ? 'Saving...' : 'Save Changes'}
+          </button>
         </div>
       </div>
     </div>
