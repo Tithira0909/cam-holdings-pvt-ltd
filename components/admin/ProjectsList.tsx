@@ -109,6 +109,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({ onAddProject, onEditProject
         </div>
       ) : (
         <div className="overflow-x-auto">
+          <div className="admin-table-container">
           <table className="w-full">
             <thead className="bg-luxury-offwhite text-left">
               <tr>
@@ -183,6 +184,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({ onAddProject, onEditProject
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>

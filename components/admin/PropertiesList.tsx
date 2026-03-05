@@ -108,6 +108,7 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditPr
         </div>
       ) : (
         <div className="overflow-x-auto">
+          <div className="admin-table-container">
           <table className="w-full">
             <thead className="bg-luxury-offwhite text-left">
               <tr>
@@ -182,6 +183,7 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditPr
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>

@@ -45,7 +45,8 @@ const InquiriesList: React.FC<InquiriesListProps> = ({ onViewInquiry }) => {
         <h2 className="text-xl font-serif font-bold text-luxury-black">Inquiries</h2>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <div className="admin-table-container">
+          <table className="w-full">
           <thead className="bg-luxury-offwhite text-left">
             <tr>
               <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Name</th>
@@ -84,6 +85,7 @@ const InquiriesList: React.FC<InquiriesListProps> = ({ onViewInquiry }) => {
             ))}
           </tbody>
         </table>
+          </div>
         {inquiries.length === 0 && (
           <div className="p-12 text-center text-gray-400">No inquiries found.</div>
         )}

@@ -63,7 +63,8 @@ const ServicesList: React.FC<ServicesListProps> = ({ onAddService, onEditService
         </button>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <div className="admin-table-container">
+          <table className="w-full">
           <thead className="bg-luxury-offwhite text-left">
             <tr>
               <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Service</th>
@@ -102,6 +103,7 @@ const ServicesList: React.FC<ServicesListProps> = ({ onAddService, onEditService
             ))}
           </tbody>
         </table>
+          </div>
       </div>
     </div>
   );
