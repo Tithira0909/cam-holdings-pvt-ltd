@@ -89,6 +89,225 @@ app.put('/api/settings', (req, res) => {
   }
 });
 
+
+// --- ANALYTICS SETTINGS ---
+
+app.get('/api/settings/analytics', (req, res) => {
+  const settingsPath = path.join(__dirname, 'database/settings.json');
+  try {
+    if (fs.existsSync(settingsPath)) {
+      const data = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+      res.json({
+        google_analytics_tag: data.google_analytics_tag || '',
+        facebook_pixel_tag: data.facebook_pixel_tag || ''
+      });
+    } else {
+      res.json({});
+    }
+  } catch (error) {
+    console.error('Error reading analytics settings:', error);
+    res.status(500).json({ error: 'Failed to fetch analytics settings' });
+  }
+});
+
+app.put('/api/settings/analytics', (req, res) => {
+  const settingsPath = path.join(__dirname, 'database/settings.json');
+  try {
+    let currentSettings = {};
+    if (fs.existsSync(settingsPath)) {
+      currentSettings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+    }
+    const updatedSettings = {
+        ...currentSettings,
+        google_analytics_tag: req.body.google_analytics_tag,
+        facebook_pixel_tag: req.body.facebook_pixel_tag
+    };
+    fs.writeFileSync(settingsPath, JSON.stringify(updatedSettings, null, 2), 'utf8');
+    res.json({
+        google_analytics_tag: updatedSettings.google_analytics_tag,
+        facebook_pixel_tag: updatedSettings.facebook_pixel_tag
+    });
+  } catch (error) {
+    console.error('Error updating analytics settings:', error);
+    res.status(500).json({ error: 'Failed to update analytics settings' });
+  }
+});
+
+// --- SITE SETTINGS ---
+
+app.get('/api/settings/site', (req, res) => {
+  const settingsPath = path.join(__dirname, 'database/settings.json');
+  try {
+    if (fs.existsSync(settingsPath)) {
+      const data = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+      res.json({
+        site_name: data.site_name || '',
+        contact_email: data.contact_email || '',
+        contact_phone: data.contact_phone || '',
+        address: data.address || '',
+        site_logo_url: data.site_logo_url || null
+      });
+    } else {
+      res.json({});
+    }
+  } catch (error) {
+    console.error('Error reading site settings:', error);
+    res.status(500).json({ error: 'Failed to fetch site settings' });
+  }
+});
+
+app.put('/api/settings/site', (req, res) => {
+  const settingsPath = path.join(__dirname, 'database/settings.json');
+  try {
+    let currentSettings = {};
+    if (fs.existsSync(settingsPath)) {
+      currentSettings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+    }
+    const updatedSettings = {
+        ...currentSettings,
+        site_name: req.body.site_name,
+        contact_email: req.body.contact_email,
+        contact_phone: req.body.contact_phone,
+        address: req.body.address
+    };
+    fs.writeFileSync(settingsPath, JSON.stringify(updatedSettings, null, 2), 'utf8');
+    res.json({
+        site_name: updatedSettings.site_name,
+        contact_email: updatedSettings.contact_email,
+        contact_phone: updatedSettings.contact_phone,
+        address: updatedSettings.address,
+        site_logo_url: updatedSettings.site_logo_url || null
+    });
+  } catch (error) {
+    console.error('Error updating site settings:', error);
+    res.status(500).json({ error: 'Failed to update site settings' });
+  }
+});
+
+app.post('/api/settings/site/logo', upload.single('logo'), (req, res) => {
+  const settingsPath = path.join(__dirname, 'database/settings.json');
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No logo file provided' });
+    }
+
+    const logoUrl = `/uploads/${req.file.filename}`;
+
+    let currentSettings = {};
+    if (fs.existsSync(settingsPath)) {
+      currentSettings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+    }
+
+    const updatedSettings = {
+        ...currentSettings,
+        site_logo_url: logoUrl
+    };
+
+    fs.writeFileSync(settingsPath, JSON.stringify(updatedSettings, null, 2), 'utf8');
+
+    res.json({
+        message: 'Logo uploaded successfully',
+        logo_url: logoUrl
+    });
+  } catch (error) {
+    console.error('Error uploading site logo:', error);
+    res.status(500).json({ error: 'Failed to upload site logo' });
+  }
+});
+
+// --- ROLES SETTINGS ---
+
+app.get('/api/settings/roles', async (req, res) => {
+  try {
+    const roles = await query('SELECT * FROM roles ORDER BY created_at DESC');
+
+    // Parse custom_modules which is stored as string/JSON
+    const formattedRoles = roles.map(role => {
+      let customModules = [];
+      try {
+        if (role.custom_modules) {
+          customModules = JSON.parse(role.custom_modules);
+        }
+      } catch (e) {
+        console.error('Failed to parse custom modules for role', role.id);
+      }
+      return {
+        ...role,
+        custom_modules: customModules,
+        access_level: role.access_level === 'Custom' ? customModules : role.access_level
+      };
+    });
+
+    res.json(formattedRoles);
+  } catch (err) {
+    console.error('Error fetching roles:', err);
+    res.status(500).json({ error: 'Failed to fetch roles' });
+  }
+});
+
+app.post('/api/settings/roles', async (req, res) => {
+  try {
+    const { role_name, access_type, custom_modules, status } = req.body;
+
+    if (!role_name || !access_type) {
+      return res.status(400).json({ error: 'Role name and access type are required' });
+    }
+
+    const customModulesStr = Array.isArray(custom_modules) ? JSON.stringify(custom_modules) : '[]';
+
+    const result = await query(
+      'INSERT INTO roles (role_name, access_level, custom_modules, status, users_count) VALUES (?, ?, ?, ?, ?)',
+      [role_name, access_type, customModulesStr, status || 'Active', 0]
+    );
+
+    const newRole = await query('SELECT * FROM roles WHERE id = ?', [result.insertId]);
+    res.status(201).json(newRole[0]);
+  } catch (err) {
+    console.error('Error creating role:', err);
+    res.status(500).json({ error: 'Failed to create role: ' + err.message });
+  }
+});
+
+app.put('/api/settings/roles/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { role_name, access_type, custom_modules, status } = req.body;
+
+    if (!role_name || !access_type) {
+      return res.status(400).json({ error: 'Role name and access type are required' });
+    }
+
+    const customModulesStr = Array.isArray(custom_modules) ? JSON.stringify(custom_modules) : '[]';
+
+    await query(
+      'UPDATE roles SET role_name = ?, access_level = ?, custom_modules = ?, status = ? WHERE id = ?',
+      [role_name, access_type, customModulesStr, status, id]
+    );
+
+    const updatedRole = await query('SELECT * FROM roles WHERE id = ?', [id]);
+    res.json(updatedRole[0]);
+  } catch (err) {
+    console.error('Error updating role:', err);
+    res.status(500).json({ error: 'Failed to update role' });
+  }
+});
+
+app.delete('/api/settings/roles/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await query('DELETE FROM roles WHERE id = ?', [id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Role not found' });
+    }
+
+    res.json({ message: 'Role deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting role:', err);
+    res.status(500).json({ error: 'Failed to delete role' });
+  }
+});
+
 app.put('/api/admin/change-password', (req, res) => {
   // Mocking password change for now as auth is hardcoded in frontend
   const { currentPassword, newPassword } = req.body;

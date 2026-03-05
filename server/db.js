@@ -30,7 +30,7 @@ async function getSqliteDb() {
     sqliteDb = await open({
       filename:
         process.env.DB_FILE ||
-        path.join(__dirname, "../../database/database.sqlite"),
+        path.join(__dirname, "../database/database.sqlite"),
       driver: sqlite3.Database,
     });
   }

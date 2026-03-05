@@ -74,3 +74,14 @@ CREATE TABLE IF NOT EXISTS inquiry_replies (
   message_id TEXT,
   FOREIGN KEY (inquiry_id) REFERENCES inquiries(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS roles (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  role_name TEXT NOT NULL UNIQUE,
+  access_level TEXT NOT NULL,
+  custom_modules TEXT,
+  status TEXT DEFAULT 'Active',
+  users_count INTEGER DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
