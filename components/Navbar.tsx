@@ -3,7 +3,7 @@ import { Menu, X, Facebook, Youtube, Instagram, Globe, ChevronDown } from 'lucid
 
 interface NavbarProps {
   onOpenConsultation: () => void;
-  onNavigate: (page: 'home' | 'projects' | 'houses' | 'detail' | 'services' | 'about' | 'contact' | 'portfolio' | 'virtual-tour' | 'news' | 'publications' | 'blogs') => void;
+  onNavigate: (page: 'home' | 'properties' | 'lands' | 'houses' | 'detail' | 'services' | 'about' | 'contact' | 'portfolio' | 'virtual-tour' | 'news' | 'publications' | 'blogs') => void;
   activePage: string;
 }
 
@@ -35,7 +35,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
     { label: 'Home', page: 'home' },
     { label: 'Services', page: 'services' },
     { label: 'Portfolio', page: 'portfolio' },
-    { label: 'Properties', page: 'dropdown', dropdownItems: [{label: 'Lands', page: 'projects'}, {label: 'Houses', page: 'houses'}] },
+    { label: 'Properties', page: 'dropdown', dropdownItems: [{label: 'Properties', page: 'projects'}, {label: 'Houses', page: 'houses'}] },
     { label: 'About Us', page: 'about' },
     { label: 'Contact Us', page: 'contact' },
   ];
@@ -76,41 +76,36 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
           {/* Menu */}
           <div className="hidden lg:flex items-center gap-6 ml-auto">
             {navLinks.map((link, idx) => (
-              <div
-                key={idx}
-                className="relative group/dropdown"
-                ref={link.page === 'dropdown' ? dropdownRef : null}
-                onMouseEnter={() => link.page === 'dropdown' && setIsPropertiesDropdownOpen(true)}
-                onMouseLeave={() => link.page === 'dropdown' && setIsPropertiesDropdownOpen(false)}
-              >
+              <div key={idx} className="relative" ref={link.page === 'dropdown' ? dropdownRef : null}>
                 {link.page === 'dropdown' ? (
-                  <div
-                    className={`text-[14px] uppercase tracking-luxury font-bold transition-all relative flex items-center gap-1 cursor-pointer group hover:text-luxury-gold py-4 ${
+                  <button
+                    onClick={() => setIsPropertiesDropdownOpen(!isPropertiesDropdownOpen)}
+                    className={`text-[14px] uppercase tracking-luxury font-bold transition-all relative flex items-center gap-1 group hover:text-luxury-gold ${
                       activePage === 'projects' || activePage === 'houses'
                         ? 'text-luxury-gold'
                         : textColorClass
                     }`}
                   >
                     {link.label}
-                    <ChevronDown size={14} className={`transition-transform duration-300 group-hover/dropdown:rotate-180`} />
-                  </div>
+                    <ChevronDown size={14} className={`transition-transform duration-300 ${isPropertiesDropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
                 ) : (
                   <button
                     onClick={() => onNavigate(link.page as any)}
-                    className={`text-[14px] uppercase tracking-luxury font-bold transition-all relative group hover:text-luxury-gold py-4 ${
+                    className={`text-[14px] uppercase tracking-luxury font-bold transition-all relative group hover:text-luxury-gold ${
                       activePage === link.page
                         ? 'text-luxury-gold'
                         : textColorClass
                     }`}
                   >
                     {link.label}
-                    <span className={`absolute bottom-3 left-0 w-0 h-0.5 bg-luxury-gold transition-all group-hover:w-full ${activePage === link.page ? 'w-full' : ''}`}></span>
+                    <span className={`absolute -bottom-1 left-0 w-0 h-0.5 bg-luxury-gold transition-all group-hover:w-full ${activePage === link.page ? 'w-full' : ''}`}></span>
                   </button>
                 )}
 
                 {/* Dropdown Menu */}
-                {link.page === 'dropdown' && (
-                  <div className="absolute top-full left-0 w-48 bg-white shadow-xl rounded-lg py-2 border border-luxury-border z-[110] opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all duration-200 translate-y-2 group-hover/dropdown:translate-y-0">
+                {link.page === 'dropdown' && isPropertiesDropdownOpen && (
+                  <div className="absolute top-full left-0 mt-4 w-48 bg-white shadow-xl rounded-lg py-2 border border-luxury-border animate-in fade-in slide-in-from-top-2 duration-200 z-[110]">
                     {link.dropdownItems?.map((item, itemIdx) => (
                       <button
                         key={itemIdx}
@@ -166,12 +161,20 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
           <div className="flex-grow overflow-y-auto py-12 text-center">
             <ul className="space-y-8 px-10">
               {navLinks.map((link, idx) => (
-                <li key={idx} className="flex flex-col items-center">
-                  {link.page === 'dropdown' ? (
+                <li key={idx} className="flex flex-col items-center w-full">
+                  {link.hasDropdown ? (
                      <>
-                        <button onClick={() => setIsPropertiesDropdownOpen(!isPropertiesDropdownOpen)} className="text-2xl font-bold uppercase tracking-brand text-luxury-black hover:text-luxury-gold transition-colors flex items-center gap-2">
-                           {link.label} <ChevronDown size={24} className={`transition-transform duration-300 ${isPropertiesDropdownOpen ? 'rotate-180' : ''}`} />
-                        </button>
+                        <div className="flex items-center justify-center gap-2 w-full">
+                            <button
+                              onClick={() => { setIsDrawerOpen(false); onNavigate(link.page as any); setIsPropertiesDropdownOpen(false); }}
+                              className="text-2xl font-bold uppercase tracking-brand text-luxury-black hover:text-luxury-gold transition-colors"
+                            >
+                               {link.label}
+                            </button>
+                            <button onClick={() => setIsPropertiesDropdownOpen(!isPropertiesDropdownOpen)} className="p-2 text-luxury-black hover:text-luxury-gold">
+                                <ChevronDown size={28} className={`transition-transform duration-300 ${isPropertiesDropdownOpen ? 'rotate-180' : ''}`} />
+                            </button>
+                        </div>
                         {isPropertiesDropdownOpen && (
                           <ul className="mt-4 space-y-4">
                              {link.dropdownItems?.map((item, itemIdx) => (

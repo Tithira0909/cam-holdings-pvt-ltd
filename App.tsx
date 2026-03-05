@@ -36,7 +36,7 @@ import {
   Loader2
 } from 'lucide-react';
 
-type Page = 'home' | 'projects' | 'lands' | 'houses' | 'detail' | 'portfolio-detail' | 'services' | 'service-detail' | 'about' | 'contact' | 'portfolio' | 'testimonials' | 'kyc' | 'privacy' | 'terms' | 'virtual-tour' | 'news' | 'publications' | 'blogs' | 'admin';
+type Page = 'home' | 'projects' | 'lands' | 'houses' | 'detail' | 'services' | 'service-detail' | 'about' | 'contact' | 'portfolio' | 'testimonials' | 'kyc' | 'privacy' | 'terms' | 'virtual-tour' | 'news' | 'publications' | 'blogs' | 'admin';
 
 interface Service {
   id: string;
@@ -55,12 +55,10 @@ const App: React.FC = () => {
     if (path.startsWith('/properties/lands')) return 'lands';
     if (path.startsWith('/properties/houses')) return 'houses';
     if (path.startsWith('/properties')) return 'properties';
-    if (path.startsWith('/houses')) return 'houses';
     return 'home';
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
-  const [selectedPortfolioId, setSelectedPortfolioId] = useState<string | null>(null);
   const [selectedServiceSlug, setSelectedServiceSlug] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => localStorage.getItem('isAdmin') === 'true');
 
@@ -69,29 +67,22 @@ const App: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [currentService, setCurrentService] = useState<Service | null>(null);
-  const [currentPortfolio, setCurrentPortfolio] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [activePage, selectedProjectId, selectedPortfolioId, selectedServiceSlug]);
+  }, [activePage, selectedProjectId, selectedServiceSlug]);
 
   // Handle browser back/forward buttons for popstate
   useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname;
-      if (path.startsWith('/properties')) {
-        setActivePage('properties');
-      } else if (path.startsWith('/houses')) {
+      if (path.startsWith('/properties/lands')) {
+        setActivePage('lands');
+      } else if (path.startsWith('/properties/houses')) {
         setActivePage('houses');
-      } else if (path.startsWith('/portfolio/')) {
-        const id = path.split('/portfolio/')[1];
-        if (id) {
-          setSelectedPortfolioId(id);
-          setActivePage('portfolio-detail');
-        } else {
-          setActivePage('portfolio');
-        }
+      } else if (path.startsWith('/properties')) {
+        setActivePage('properties');
       } else {
         setActivePage('home');
       }
@@ -106,7 +97,7 @@ const App: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const queryParam = '';
+      const queryParam = activePage === 'projects' ? '?type=Land' : activePage === 'houses' ? '?type=House,Apartment' : '';
       const [propsRes, projsRes, svcsRes] = await Promise.all([
         fetch(`/api/properties${queryParam}`),
         fetch('/api/projects'),
@@ -149,39 +140,19 @@ const App: React.FC = () => {
       };
       fetchServiceDetail();
     }
-
-    if (activePage === 'portfolio-detail' && selectedPortfolioId) {
-      const fetchPortfolioDetail = async () => {
-        try {
-          const res = await fetch(`/api/projects/${selectedPortfolioId}`);
-          if (res.ok) {
-            const data = await res.json();
-            setCurrentPortfolio(data);
-          }
-        } catch (err) {
-          console.error(err);
-        }
-      };
-      fetchPortfolioDetail();
-    }
-  }, [activePage, selectedServiceSlug, selectedPortfolioId]);
+  }, [activePage, selectedServiceSlug]);
 
   const navigate = (page: Page, id?: string) => {
     setActivePage(page);
     if (page === 'detail' && id) setSelectedProjectId(id);
-    if (page === 'portfolio-detail' && id) {
-      setSelectedPortfolioId(id);
-      setCurrentPortfolio(null); // Reset while loading
-    }
     if (page === 'service-detail' && id) {
       setSelectedServiceSlug(id);
       setCurrentService(null); // Reset while loading
     }
-    if (page === 'properties' || page === 'lands' || page === 'houses' || page === 'projects') {
-      const displayPage = page === 'projects' ? 'properties' : page;
-      window.history.pushState({}, '', displayPage === 'properties' ? '/properties' : `/properties/${displayPage}`);
-    } else if (page === 'portfolio-detail' && id) {
-      window.history.pushState({}, '', `/portfolio/${id}`);
+    if (page === 'projects') {
+      window.history.pushState({}, '', '/properties');
+    } else if (page === 'houses') {
+      window.history.pushState({}, '', '/houses');
     } else if (page === 'home') {
       window.history.pushState({}, '', '/');
     }
@@ -249,6 +220,35 @@ const App: React.FC = () => {
           </div>
         )}
 
+        {/* Lands Page */}
+        {activePage === 'lands' && (
+          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
+            <div className="max-w-7xl mx-auto text-center mb-16">
+              <h2 className="text-[36px] font-serif font-bold text-luxury-black mb-5 uppercase tracking-tight">Lands</h2>
+              <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto">Explore our exclusive land projects in prime locations that offer immense potential for investment and development.</p>
+            </div>
+            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[30px]">
+              {properties.filter(p => p.type === PropertyType.LAND).map(prop => (
+                <PropertyCard key={prop.id} property={prop} onClick={() => navigate('detail', prop.id)} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Houses Page */}
+        {activePage === 'houses' && (
+          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
+            <div className="max-w-7xl mx-auto text-center mb-16">
+              <h2 className="text-[36px] font-serif font-bold text-luxury-black mb-5 uppercase tracking-tight">Houses</h2>
+              <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto">Discover luxurious homes that combine comfort and design, ideal for families seeking premium living.</p>
+            </div>
+            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[30px]">
+              {properties.filter(p => p.type === PropertyType.HOUSE).map(prop => (
+                <PropertyCard key={prop.id} property={prop} onClick={() => navigate('detail', prop.id)} />
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* 1. About Us Page */}
         {activePage === 'about' && (
@@ -388,51 +388,6 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* 3a. Portfolio Detail Page */}
-        {activePage === 'portfolio-detail' && (
-          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
-             {currentPortfolio ? (
-               <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
-                 <div className="relative aspect-video">
-                   <img src={currentPortfolio.image} alt={currentPortfolio.title} className="w-full h-full object-cover" />
-                   {currentPortfolio.category && (
-                     <div className="absolute top-4 left-4 bg-luxury-black/60 backdrop-blur-md text-white text-[10px] uppercase tracking-widest px-4 py-2 font-bold rounded-lg">
-                       {currentPortfolio.category}
-                     </div>
-                   )}
-                 </div>
-                 <div className="p-8 md:p-12">
-                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 border-b border-luxury-border pb-8">
-                     <div>
-                       <h1 className="text-3xl md:text-4xl font-serif font-bold text-luxury-black mb-4">{currentPortfolio.title}</h1>
-                       <div className="flex flex-wrap items-center gap-4 text-luxury-gray text-sm md:text-base font-bold">
-                         <div className="flex items-center gap-1.5"><MapPin size={18} className="text-luxury-gold" /> {currentPortfolio.location}</div>
-                         <div className="flex items-center gap-1.5"><Calendar size={18} className="text-luxury-gold" /> {currentPortfolio.year}</div>
-                       </div>
-                     </div>
-                     <button
-                       onClick={() => navigate('portfolio')}
-                       className="bg-luxury-gold text-white px-6 py-3 text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-luxury-golddark whitespace-nowrap"
-                     >
-                       Back to Portfolio
-                     </button>
-                   </div>
-
-                   <div className="prose prose-lg max-w-none text-luxury-gray">
-                     <p className="whitespace-pre-line leading-relaxed text-[16px] md:text-[18px]">
-                       {currentPortfolio.description || 'No description available for this project.'}
-                     </p>
-                   </div>
-                 </div>
-               </div>
-             ) : (
-               <div className="h-[60vh] flex items-center justify-center text-luxury-gold">
-                   <Loader2 size={48} className="animate-spin" />
-               </div>
-             )}
-          </div>
-        )}
-
         {/* 3. Portfolio Page */}
         {activePage === 'portfolio' && (
           <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
@@ -443,40 +398,16 @@ const App: React.FC = () => {
 
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px]">
               {projects.map(proj => (
-                <div
-                  key={proj.id}
-                  className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col cursor-pointer transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0px_8px_20px_rgba(212,175,55,0.2)]"
-                  onClick={() => navigate('portfolio-detail', proj.id)}
-                >
+                <div key={proj.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <img src={proj.image} alt={proj.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
-                    {proj.category && (
-                      <div className="absolute top-4 left-4 bg-luxury-black/60 backdrop-blur-md text-white text-[8px] uppercase tracking-widest px-3 py-1.5 font-bold rounded-lg">
-                        {proj.category}
-                      </div>
-                    )}
                   </div>
                   <div className="p-[20px] text-left flex flex-col flex-grow">
-                    <h3 className={`text-[22px] font-serif font-bold text-[#333] ${proj.description ? 'mb-2' : 'mb-2'}`}>{proj.title}</h3>
-
-                    {proj.description && (
-                      <p className="text-sm text-luxury-gray line-clamp-3 md:line-clamp-2 mb-4">
-                        {proj.description}
-                      </p>
-                    )}
-
+                    <h3 className="text-[22px] font-serif font-bold text-[#333] mb-2">{proj.title}</h3>
                     <p className="text-[16px] text-[#777] mb-1">Location: {proj.location}</p>
                     <p className="text-[16px] text-[#777] mb-6">Year: {proj.year}</p>
                     <div className="mt-auto">
-                      <button
-                        className="bg-luxury-gold text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-luxury-golddark"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate('portfolio-detail', proj.id);
-                        }}
-                      >
-                        View Project
-                      </button>
+                      <button className="bg-luxury-gold text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-luxury-golddark">View Project</button>
                     </div>
                   </div>
                 </div>
@@ -485,8 +416,8 @@ const App: React.FC = () => {
           </div>
         )}
 
-                {/* 4. Properties Page */}
-        {(activePage === 'properties' || activePage === 'lands' || activePage === 'houses' || activePage === 'projects') && (
+        {/* 4. Properties Page */}
+        {(activePage === 'properties' || activePage === 'lands' || activePage === 'houses') && (
           <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
             <div className="max-w-7xl mx-auto text-center mb-16">
               <h2 className="text-[36px] font-serif font-bold text-luxury-black mb-5 uppercase tracking-tight">
@@ -502,11 +433,47 @@ const App: React.FC = () => {
             </div>
 
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px] animate-in fade-in slide-in-from-bottom-4 duration-500">
-              {properties.filter(p => {
-                if (activePage === 'lands') return p.type === PropertyType.LAND || p.type.toLowerCase() === 'land';
-                if (activePage === 'houses') return p.type === PropertyType.HOUSE || p.type === PropertyType.APARTMENT || p.type.toLowerCase() === 'house';
-                return true; // 'properties' shows all
-              }).map(prop => (
+              {(() => {
+                const filtered = properties.filter(p => {
+                  const normalized = (p.type || "").trim().toLowerCase();
+                  const landMatch = normalized === "land" || normalized === "lands";
+                  const houseMatch = normalized === "house" || normalized === "houses";
+
+                  if (activePage === 'lands') return landMatch;
+                  if (activePage === 'houses') return houseMatch;
+                  return true; // 'properties' shows all
+                });
+                console.log("Route filter:", activePage, "Total:", properties.length, "Filtered:", filtered.length);
+                return filtered.map(prop => (
+                  <div key={prop.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
+                    <div className="relative aspect-[16/10] overflow-hidden">
+                      <img src={prop.image} alt={prop.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
+                    </div>
+                    <div className="p-[20px] text-left flex flex-col flex-grow">
+                      <h3 className="text-[22px] font-serif font-bold text-[#333] mb-2">{prop.title}</h3>
+                      <p className="text-[16px] text-[#777] mb-1">Location: {prop.location.split(',')[0]}</p>
+                      <p className="text-[16px] text-[#777] mb-6 font-bold">Price: {prop.price}</p>
+                      <div className="mt-auto">
+                        <button onClick={() => navigate('detail', prop.id)} className="bg-luxury-gold text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-luxury-golddark">View Details</button>
+                      </div>
+                    </div>
+                  </div>
+                ));
+              })()}
+            </div>
+          </div>
+        )}
+
+        {/* Houses Page */}
+        {activePage === 'houses' && (
+          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
+            <div className="max-w-7xl mx-auto text-center mb-16">
+              <h2 className="text-[36px] font-serif font-bold text-luxury-black mb-5 uppercase tracking-tight">OUR HOUSES</h2>
+              <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto mb-8">Discover luxurious homes and apartments that combine comfort and design, ideal for families seeking premium living.</p>
+            </div>
+
+            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px] animate-in fade-in slide-in-from-bottom-4 duration-500">
+              {properties.map(prop => (
                 <div key={prop.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <img src={prop.image} alt={prop.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
@@ -524,7 +491,8 @@ const App: React.FC = () => {
             </div>
           </div>
         )}
-{/* 5. Contact Page */}
+
+        {/* 5. Contact Page */}
         {activePage === 'contact' && (
           <div className="animate-in fade-in duration-500">
             <section className="relative h-[50vh] w-full flex items-center justify-center overflow-hidden bg-luxury-black">
@@ -639,19 +607,6 @@ const App: React.FC = () => {
                   <h1 className="text-4xl md:text-6xl font-serif text-white leading-tight mb-4 uppercase">{selectedProperty?.title || 'Property Detail'}</h1>
                 </div>
               </div>
-            </div>
-
-            <div className="max-w-7xl mx-auto px-mobile py-16">
-              {selectedProperty?.description && (
-                <div className="mb-12">
-                  <h2 className="text-2xl font-serif font-bold text-luxury-black mb-6 uppercase tracking-tight border-b border-luxury-border pb-4">
-                    Description
-                  </h2>
-                  <div className="prose prose-lg max-w-none text-[#555] font-light leading-relaxed whitespace-pre-line">
-                    {selectedProperty.description}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         )}
