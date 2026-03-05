@@ -710,32 +710,6 @@ const App: React.FC = () => {
                 </div>
 
                 <div className="max-w-7xl mx-auto px-mobile py-16">
-                  {/* Gallery Section */}
-                  <div className="mb-16">
-                    <h2 className="text-2xl font-serif font-bold text-luxury-black mb-8 uppercase tracking-tight flex items-center gap-3 border-b border-luxury-border pb-4">
-                      Gallery
-                    </h2>
-                    {currentProperty.images && currentProperty.images.length > 0 ? (
-                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {currentProperty.images.map((img) => (
-                          <div
-                            key={img.id}
-                            className="aspect-[4/3] rounded-lg overflow-hidden cursor-pointer group shadow-sm hover:shadow-md transition-shadow"
-                            onClick={() => setSelectedImage(img.image_url)}
-                          >
-                            <img
-                              src={img.image_url}
-                              alt={`Gallery image ${img.id}`}
-                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-luxury-gray italic">No additional images available for this property.</p>
-                    )}
-                  </div>
-
                   {/* Description Section */}
                   {currentProperty.description && (
                     <div className="mb-12">

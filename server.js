@@ -437,6 +437,64 @@ app.put('/api/admin/services/:id', upload.single('cover_image'), async (req, res
   }
 });
 
+// --- Admin Property Gallery Images Management ---
+
+// GET images for a property
+app.get('/api/admin/properties/:id/images', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const images = await query('SELECT * FROM property_images WHERE property_id = ? ORDER BY id ASC', [id]);
+    res.json(images);
+  } catch (err) {
+    console.error('Error fetching property images:', err);
+    res.status(500).json({ error: 'Failed to fetch property images' });
+  }
+});
+
+// POST multiple images for a property
+app.post('/api/admin/properties/:id/images', upload.array('images', 10), async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ error: 'No files uploaded' });
+    }
+
+    const insertedImages = [];
+    for (const file of req.files) {
+      const imageUrl = `/uploads/${file.filename}`;
+      const result = await query(
+        'INSERT INTO property_images (property_id, image_url) VALUES (?, ?)',
+        [id, imageUrl]
+      );
+      insertedImages.push({ id: result.insertId, property_id: id, image_url: imageUrl });
+    }
+
+    res.status(201).json(insertedImages);
+  } catch (err) {
+    console.error('Error uploading property images:', err);
+    res.status(500).json({ error: 'Failed to upload property images' });
+  }
+});
+
+// DELETE a specific image
+app.delete('/api/admin/properties/images/:imageId', async (req, res) => {
+  try {
+    const { imageId } = req.params;
+    const result = await query('DELETE FROM property_images WHERE id = ?', [imageId]);
+
+    // Note: To be fully complete, you might want to also delete the physical file from the /uploads folder using fs.unlinkSync.
+    // For now we just remove the DB record.
+
+    if (result.affectedRows === 0 && result.changes === 0) { // changes for sqlite, affectedRows for mysql
+      return res.status(404).json({ error: 'Image not found' });
+    }
+    res.json({ message: 'Image deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting property image:', err);
+    res.status(500).json({ error: 'Failed to delete property image' });
+  }
+});
+
 // DELETE service
 app.delete('/api/admin/services/:id', async (req, res) => {
   try {
