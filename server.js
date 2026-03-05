@@ -589,10 +589,17 @@ app.get('/api/properties', async (req, res) => {
 });
 
 // GET property by ID
-app.get('/api/properties/:id', async (req, res) => {
+app.get('/api/properties/:identifier', async (req, res) => {
   try {
-    const { id } = req.params;
-    const properties = await query('SELECT * FROM properties WHERE id = ?', [id]);
+    const { identifier } = req.params;
+    let properties;
+
+    // Check if identifier is a number (id) or a string (slug)
+    if (!isNaN(identifier)) {
+        properties = await query('SELECT * FROM properties WHERE id = ?', [identifier]);
+    } else {
+        properties = await query('SELECT * FROM properties WHERE slug = ?', [identifier]);
+    }
 
     if (!properties || properties.length === 0) {
       return res.status(404).json({ error: 'Property not found' });
@@ -601,7 +608,7 @@ app.get('/api/properties/:id', async (req, res) => {
     const property = properties[0];
 
     // Fetch gallery images
-    const images = await query('SELECT * FROM property_images WHERE property_id = ? ORDER BY id ASC', [id]);
+    const images = await query('SELECT * FROM property_images WHERE property_id = ? ORDER BY id ASC', [property.id]);
     property.images = images.map(img => ({ id: img.id, image_url: img.image_url }));
 
     res.json(property);

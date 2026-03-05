@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { MapPin, Plus, Loader2, AlertCircle, Trash2, Edit } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { MapPin, Plus, Loader2, AlertCircle, Trash2, Edit, Search, Filter } from 'lucide-react';
 import { Property, PropertyType } from '../../types';
 
 interface PropertiesListProps {
@@ -16,6 +16,32 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditPr
   const [properties, setProperties] = useState<AdminProperty[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Search & Filter State
+  const [searchQuery, setSearchQuery] = useState('');
+  const [typeFilter, setTypeFilter] = useState('All');
+
+  const filteredProperties = useMemo(() => {
+    return properties
+      .filter(p => {
+        const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                              p.location.toLowerCase().includes(searchQuery.toLowerCase());
+        const t = (p.type || '').trim().toLowerCase();
+
+        let matchesType = true;
+        if (typeFilter === 'Lands') {
+            matchesType = t === 'land' || t === 'lands';
+        } else if (typeFilter === 'Houses') {
+            matchesType = t === 'house' || t === 'houses' || t === 'apartment';
+        }
+
+        return matchesSearch && matchesType;
+      })
+      .sort((a, b) => {
+         // Sort by ID descending (newest first) since we don't have created_at mapped easily in frontend type
+         return parseInt(b.id) - parseInt(a.id);
+      });
+  }, [properties, searchQuery, typeFilter]);
 
   useEffect(() => {
     fetchProperties();
@@ -121,7 +147,7 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditPr
               </tr>
             </thead>
             <tbody className="divide-y divide-luxury-border">
-              {properties.map((prop) => (
+              {filteredProperties.map((prop) => (
                 <tr key={prop.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-4">
