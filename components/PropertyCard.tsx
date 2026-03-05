@@ -33,9 +33,15 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onClick }) => {
           <span className="text-[9px] uppercase tracking-widest font-bold">{property.location}</span>
         </div>
         
-        <h4 className="text-xl font-serif font-bold text-luxury-black mb-6 leading-snug group-hover:text-luxury-gold transition-colors duration-300">
+        <h4 className={`text-xl font-serif font-bold text-luxury-black leading-snug group-hover:text-luxury-gold transition-colors duration-300 ${property.description ? 'mb-2' : 'mb-6'}`}>
           {property.title}
         </h4>
+
+        {property.description && (
+          <p className="text-sm text-luxury-gray line-clamp-3 md:line-clamp-2 mb-6">
+            {property.description}
+          </p>
+        )}
         
         <div className="flex justify-between items-center pt-5 border-t border-luxury-border">
           <span className="text-sm font-bold text-luxury-black tracking-widest">

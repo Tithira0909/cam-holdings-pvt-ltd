@@ -369,9 +369,21 @@ const App: React.FC = () => {
                 <div key={proj.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <img src={proj.image} alt={proj.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
+                    {proj.category && (
+                      <div className="absolute top-4 left-4 bg-luxury-black/60 backdrop-blur-md text-white text-[8px] uppercase tracking-widest px-3 py-1.5 font-bold rounded-lg">
+                        {proj.category}
+                      </div>
+                    )}
                   </div>
                   <div className="p-[20px] text-left flex flex-col flex-grow">
-                    <h3 className="text-[22px] font-serif font-bold text-[#333] mb-2">{proj.title}</h3>
+                    <h3 className={`text-[22px] font-serif font-bold text-[#333] ${proj.description ? 'mb-2' : 'mb-2'}`}>{proj.title}</h3>
+
+                    {proj.description && (
+                      <p className="text-sm text-luxury-gray line-clamp-3 md:line-clamp-2 mb-4">
+                        {proj.description}
+                      </p>
+                    )}
+
                     <p className="text-[16px] text-[#777] mb-1">Location: {proj.location}</p>
                     <p className="text-[16px] text-[#777] mb-6">Year: {proj.year}</p>
                     <div className="mt-auto">
@@ -555,6 +567,19 @@ const App: React.FC = () => {
                   <h1 className="text-4xl md:text-6xl font-serif text-white leading-tight mb-4 uppercase">{selectedProperty?.title || 'Property Detail'}</h1>
                 </div>
               </div>
+            </div>
+
+            <div className="max-w-7xl mx-auto px-mobile py-16">
+              {selectedProperty?.description && (
+                <div className="mb-12">
+                  <h2 className="text-2xl font-serif font-bold text-luxury-black mb-6 uppercase tracking-tight border-b border-luxury-border pb-4">
+                    Description
+                  </h2>
+                  <div className="prose prose-lg max-w-none text-[#555] font-light leading-relaxed whitespace-pre-line">
+                    {selectedProperty.description}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
