@@ -3,7 +3,7 @@ import { Menu, X, Facebook, Youtube, Instagram, Globe, ChevronDown } from 'lucid
 
 interface NavbarProps {
   onOpenConsultation: () => void;
-  onNavigate: (page: 'home' | 'projects' | 'houses' | 'detail' | 'services' | 'about' | 'contact' | 'portfolio' | 'virtual-tour' | 'news' | 'publications' | 'blogs') => void;
+  onNavigate: (page: 'home' | 'properties' | 'lands' | 'houses' | 'detail' | 'services' | 'about' | 'contact' | 'portfolio' | 'virtual-tour' | 'news' | 'publications' | 'blogs') => void;
   activePage: string;
 }
 
@@ -161,12 +161,20 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
           <div className="flex-grow overflow-y-auto py-12 text-center">
             <ul className="space-y-8 px-10">
               {navLinks.map((link, idx) => (
-                <li key={idx} className="flex flex-col items-center">
-                  {link.page === 'dropdown' ? (
+                <li key={idx} className="flex flex-col items-center w-full">
+                  {link.hasDropdown ? (
                      <>
-                        <button onClick={() => setIsPropertiesDropdownOpen(!isPropertiesDropdownOpen)} className="text-2xl font-bold uppercase tracking-brand text-luxury-black hover:text-luxury-gold transition-colors flex items-center gap-2">
-                           {link.label} <ChevronDown size={24} className={`transition-transform duration-300 ${isPropertiesDropdownOpen ? 'rotate-180' : ''}`} />
-                        </button>
+                        <div className="flex items-center justify-center gap-2 w-full">
+                            <button
+                              onClick={() => { setIsDrawerOpen(false); onNavigate(link.page as any); setIsPropertiesDropdownOpen(false); }}
+                              className="text-2xl font-bold uppercase tracking-brand text-luxury-black hover:text-luxury-gold transition-colors"
+                            >
+                               {link.label}
+                            </button>
+                            <button onClick={() => setIsPropertiesDropdownOpen(!isPropertiesDropdownOpen)} className="p-2 text-luxury-black hover:text-luxury-gold">
+                                <ChevronDown size={28} className={`transition-transform duration-300 ${isPropertiesDropdownOpen ? 'rotate-180' : ''}`} />
+                            </button>
+                        </div>
                         {isPropertiesDropdownOpen && (
                           <ul className="mt-4 space-y-4">
                              {link.dropdownItems?.map((item, itemIdx) => (
