@@ -52,6 +52,7 @@ interface Service {
 const App: React.FC = () => {
   const [activePage, setActivePage] = useState<Page>(() => {
     const path = window.location.pathname;
+    if (path.startsWith('/admin')) return 'admin';
     if (path.startsWith('/properties/lands')) return 'lands';
     if (path.startsWith('/properties/houses')) return 'houses';
     if (path.startsWith('/properties')) return 'properties';
