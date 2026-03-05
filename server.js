@@ -168,7 +168,8 @@ app.put('/api/settings/site', (req, res) => {
         site_name: req.body.site_name,
         contact_email: req.body.contact_email,
         contact_phone: req.body.contact_phone,
-        address: req.body.address
+        address: req.body.address,
+        hero_image_url: req.body.hero_image_url !== undefined ? req.body.hero_image_url : currentSettings.hero_image_url
     };
     fs.writeFileSync(settingsPath, JSON.stringify(updatedSettings, null, 2), 'utf8');
     res.json({
@@ -176,7 +177,7 @@ app.put('/api/settings/site', (req, res) => {
         contact_email: updatedSettings.contact_email,
         contact_phone: updatedSettings.contact_phone,
         address: updatedSettings.address,
-        site_logo_url: updatedSettings.site_logo_url || null
+        hero_image_url: updatedSettings.hero_image_url || null
     });
   } catch (error) {
     console.error('Error updating site settings:', error);
@@ -184,14 +185,14 @@ app.put('/api/settings/site', (req, res) => {
   }
 });
 
-app.post('/api/settings/site/logo', upload.single('logo'), (req, res) => {
+app.post('/api/settings/site/hero', upload.single('hero_image'), (req, res) => {
   const settingsPath = path.join(__dirname, 'database/settings.json');
   try {
     if (!req.file) {
-      return res.status(400).json({ error: 'No logo file provided' });
+      return res.status(400).json({ error: 'No hero image file provided' });
     }
 
-    const logoUrl = `/uploads/${req.file.filename}`;
+    const heroUrl = `/uploads/${req.file.filename}`;
 
     let currentSettings = {};
     if (fs.existsSync(settingsPath)) {
@@ -200,18 +201,18 @@ app.post('/api/settings/site/logo', upload.single('logo'), (req, res) => {
 
     const updatedSettings = {
         ...currentSettings,
-        site_logo_url: logoUrl
+        hero_image_url: heroUrl
     };
 
     fs.writeFileSync(settingsPath, JSON.stringify(updatedSettings, null, 2), 'utf8');
 
     res.json({
-        message: 'Logo uploaded successfully',
-        logo_url: logoUrl
+        message: 'Hero image uploaded successfully',
+        hero_image_url: heroUrl
     });
   } catch (error) {
-    console.error('Error uploading site logo:', error);
-    res.status(500).json({ error: 'Failed to upload site logo' });
+    console.error('Error uploading hero image:', error);
+    res.status(500).json({ error: 'Failed to upload hero image' });
   }
 });
 
