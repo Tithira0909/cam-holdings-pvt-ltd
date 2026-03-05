@@ -538,8 +538,9 @@ const App: React.FC = () => {
 
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px] animate-in fade-in slide-in-from-bottom-4 duration-500">
               {properties.filter(p => {
-                if (activePage === 'lands') return p.type === PropertyType.LAND || p.type.toLowerCase() === 'land';
-                if (activePage === 'houses') return p.type === PropertyType.HOUSE || p.type === PropertyType.APARTMENT || p.type.toLowerCase() === 'house';
+                const t = (p.type || "").trim().toLowerCase();
+                if (activePage === 'lands') return t === 'land' || t === 'lands';
+                if (activePage === 'houses') return t === 'house' || t === 'houses' || t === 'apartment';
                 return true; // 'properties' shows all
               }).map(prop => (
                 <div key={prop.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">

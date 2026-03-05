@@ -35,7 +35,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
     { label: 'Home', page: 'home' },
     { label: 'Services', page: 'services' },
     { label: 'Projects', page: 'portfolio' },
-    { label: 'Properties', page: 'dropdown', dropdownItems: [{label: 'Lands', page: 'projects'}, {label: 'Houses', page: 'houses'}] },
+    { label: 'Properties', page: 'dropdown', dropdownItems: [{label: 'Lands', page: 'lands'}, {label: 'Houses', page: 'houses'}] },
     { label: 'About Us', page: 'about' },
     { label: 'Contact Us', page: 'contact' },
   ];
@@ -86,10 +86,11 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
                 {link.page === 'dropdown' ? (
                   <div
                     className={`text-[14px] uppercase tracking-luxury font-bold transition-all relative flex items-center gap-1 cursor-pointer group hover:text-luxury-gold py-4 ${
-                      activePage === 'projects' || activePage === 'houses'
+                      activePage === 'properties' || activePage === 'lands' || activePage === 'houses'
                         ? 'text-luxury-gold'
                         : textColorClass
                     }`}
+                    onClick={() => onNavigate('properties' as any)}
                   >
                     {link.label}
                     <ChevronDown size={14} className={`transition-transform duration-300 group-hover/dropdown:rotate-180`} />
