@@ -36,7 +36,7 @@ import {
   Loader2
 } from 'lucide-react';
 
-type Page = 'home' | 'projects' | 'lands' | 'houses' | 'detail' | 'services' | 'service-detail' | 'about' | 'contact' | 'portfolio' | 'testimonials' | 'kyc' | 'privacy' | 'terms' | 'virtual-tour' | 'news' | 'publications' | 'blogs' | 'admin';
+type Page = 'home' | 'projects' | 'lands' | 'houses' | 'detail' | 'portfolio-detail' | 'services' | 'service-detail' | 'about' | 'contact' | 'portfolio' | 'testimonials' | 'kyc' | 'privacy' | 'terms' | 'virtual-tour' | 'news' | 'publications' | 'blogs' | 'admin';
 
 interface Service {
   id: string;
@@ -52,12 +52,15 @@ interface Service {
 const App: React.FC = () => {
   const [activePage, setActivePage] = useState<Page>(() => {
     const path = window.location.pathname;
-    if (path.startsWith('/properties')) return 'projects';
+    if (path.startsWith('/properties/lands')) return 'lands';
+    if (path.startsWith('/properties/houses')) return 'houses';
+    if (path.startsWith('/properties')) return 'properties';
     if (path.startsWith('/houses')) return 'houses';
     return 'home';
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const [selectedPortfolioId, setSelectedPortfolioId] = useState<string | null>(null);
   const [selectedServiceSlug, setSelectedServiceSlug] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => localStorage.getItem('isAdmin') === 'true');
 
@@ -66,20 +69,29 @@ const App: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [currentService, setCurrentService] = useState<Service | null>(null);
+  const [currentPortfolio, setCurrentPortfolio] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [activePage, selectedProjectId, selectedServiceSlug]);
+  }, [activePage, selectedProjectId, selectedPortfolioId, selectedServiceSlug]);
 
   // Handle browser back/forward buttons for popstate
   useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname;
       if (path.startsWith('/properties')) {
-        setActivePage('projects');
+        setActivePage('properties');
       } else if (path.startsWith('/houses')) {
         setActivePage('houses');
+      } else if (path.startsWith('/portfolio/')) {
+        const id = path.split('/portfolio/')[1];
+        if (id) {
+          setSelectedPortfolioId(id);
+          setActivePage('portfolio-detail');
+        } else {
+          setActivePage('portfolio');
+        }
       } else {
         setActivePage('home');
       }
@@ -94,7 +106,7 @@ const App: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const queryParam = activePage === 'projects' ? '?type=Land' : activePage === 'houses' ? '?type=House,Apartment' : '';
+      const queryParam = '';
       const [propsRes, projsRes, svcsRes] = await Promise.all([
         fetch(`/api/properties${queryParam}`),
         fetch('/api/projects'),
@@ -137,19 +149,39 @@ const App: React.FC = () => {
       };
       fetchServiceDetail();
     }
-  }, [activePage, selectedServiceSlug]);
+
+    if (activePage === 'portfolio-detail' && selectedPortfolioId) {
+      const fetchPortfolioDetail = async () => {
+        try {
+          const res = await fetch(`/api/projects/${selectedPortfolioId}`);
+          if (res.ok) {
+            const data = await res.json();
+            setCurrentPortfolio(data);
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      fetchPortfolioDetail();
+    }
+  }, [activePage, selectedServiceSlug, selectedPortfolioId]);
 
   const navigate = (page: Page, id?: string) => {
     setActivePage(page);
     if (page === 'detail' && id) setSelectedProjectId(id);
+    if (page === 'portfolio-detail' && id) {
+      setSelectedPortfolioId(id);
+      setCurrentPortfolio(null); // Reset while loading
+    }
     if (page === 'service-detail' && id) {
       setSelectedServiceSlug(id);
       setCurrentService(null); // Reset while loading
     }
-    if (page === 'projects') {
-      window.history.pushState({}, '', '/properties');
-    } else if (page === 'houses') {
-      window.history.pushState({}, '', '/houses');
+    if (page === 'properties' || page === 'lands' || page === 'houses' || page === 'projects') {
+      const displayPage = page === 'projects' ? 'properties' : page;
+      window.history.pushState({}, '', displayPage === 'properties' ? '/properties' : `/properties/${displayPage}`);
+    } else if (page === 'portfolio-detail' && id) {
+      window.history.pushState({}, '', `/portfolio/${id}`);
     } else if (page === 'home') {
       window.history.pushState({}, '', '/');
     }
@@ -356,6 +388,51 @@ const App: React.FC = () => {
           </div>
         )}
 
+        {/* 3a. Portfolio Detail Page */}
+        {activePage === 'portfolio-detail' && (
+          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
+             {currentPortfolio ? (
+               <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+                 <div className="relative aspect-video">
+                   <img src={currentPortfolio.image} alt={currentPortfolio.title} className="w-full h-full object-cover" />
+                   {currentPortfolio.category && (
+                     <div className="absolute top-4 left-4 bg-luxury-black/60 backdrop-blur-md text-white text-[10px] uppercase tracking-widest px-4 py-2 font-bold rounded-lg">
+                       {currentPortfolio.category}
+                     </div>
+                   )}
+                 </div>
+                 <div className="p-8 md:p-12">
+                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 border-b border-luxury-border pb-8">
+                     <div>
+                       <h1 className="text-3xl md:text-4xl font-serif font-bold text-luxury-black mb-4">{currentPortfolio.title}</h1>
+                       <div className="flex flex-wrap items-center gap-4 text-luxury-gray text-sm md:text-base font-bold">
+                         <div className="flex items-center gap-1.5"><MapPin size={18} className="text-luxury-gold" /> {currentPortfolio.location}</div>
+                         <div className="flex items-center gap-1.5"><Calendar size={18} className="text-luxury-gold" /> {currentPortfolio.year}</div>
+                       </div>
+                     </div>
+                     <button
+                       onClick={() => navigate('portfolio')}
+                       className="bg-luxury-gold text-white px-6 py-3 text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-luxury-golddark whitespace-nowrap"
+                     >
+                       Back to Portfolio
+                     </button>
+                   </div>
+
+                   <div className="prose prose-lg max-w-none text-luxury-gray">
+                     <p className="whitespace-pre-line leading-relaxed text-[16px] md:text-[18px]">
+                       {currentPortfolio.description || 'No description available for this project.'}
+                     </p>
+                   </div>
+                 </div>
+               </div>
+             ) : (
+               <div className="h-[60vh] flex items-center justify-center text-luxury-gold">
+                   <Loader2 size={48} className="animate-spin" />
+               </div>
+             )}
+          </div>
+        )}
+
         {/* 3. Portfolio Page */}
         {activePage === 'portfolio' && (
           <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
@@ -366,7 +443,11 @@ const App: React.FC = () => {
 
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px]">
               {projects.map(proj => (
-                <div key={proj.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
+                <div
+                  key={proj.id}
+                  className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col cursor-pointer transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0px_8px_20px_rgba(212,175,55,0.2)]"
+                  onClick={() => navigate('portfolio-detail', proj.id)}
+                >
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <img src={proj.image} alt={proj.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
                     {proj.category && (
@@ -387,7 +468,15 @@ const App: React.FC = () => {
                     <p className="text-[16px] text-[#777] mb-1">Location: {proj.location}</p>
                     <p className="text-[16px] text-[#777] mb-6">Year: {proj.year}</p>
                     <div className="mt-auto">
-                      <button className="bg-luxury-gold text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-luxury-golddark">View Project</button>
+                      <button
+                        className="bg-luxury-gold text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-luxury-golddark"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate('portfolio-detail', proj.id);
+                        }}
+                      >
+                        View Project
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -396,16 +485,28 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* 4. Lands Page */}
-        {activePage === 'projects' && (
+                {/* 4. Properties Page */}
+        {(activePage === 'properties' || activePage === 'lands' || activePage === 'houses' || activePage === 'projects') && (
           <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
             <div className="max-w-7xl mx-auto text-center mb-16">
-              <h2 className="text-[36px] font-serif font-bold text-luxury-black mb-5 uppercase tracking-tight">OUR LANDS</h2>
-              <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto mb-8">Explore our exclusive land projects in prime locations that offer immense potential for investment and development.</p>
+              <h2 className="text-[36px] font-serif font-bold text-luxury-black mb-5 uppercase tracking-tight">
+                {activePage === 'lands' ? 'Lands' : activePage === 'houses' ? 'Houses' : 'All Properties'}
+              </h2>
+              <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto mb-8">
+                {activePage === 'lands'
+                  ? 'Explore our exclusive land projects in prime locations that offer immense potential for investment and development.'
+                  : activePage === 'houses'
+                    ? 'Discover luxurious homes and apartments that combine comfort and design, ideal for families seeking premium living.'
+                    : 'Explore our complete portfolio of premium properties, including exclusive lands and luxurious homes.'}
+              </p>
             </div>
 
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px] animate-in fade-in slide-in-from-bottom-4 duration-500">
-              {properties.filter(p => p.type === PropertyType.LAND).map(prop => (
+              {properties.filter(p => {
+                if (activePage === 'lands') return p.type === PropertyType.LAND || p.type.toLowerCase() === 'land';
+                if (activePage === 'houses') return p.type === PropertyType.HOUSE || p.type === PropertyType.APARTMENT || p.type.toLowerCase() === 'house';
+                return true; // 'properties' shows all
+              }).map(prop => (
                 <div key={prop.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <img src={prop.image} alt={prop.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
@@ -423,36 +524,7 @@ const App: React.FC = () => {
             </div>
           </div>
         )}
-
-        {/* 4b. Houses Page */}
-        {activePage === 'houses' && (
-          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
-            <div className="max-w-7xl mx-auto text-center mb-16">
-              <h2 className="text-[36px] font-serif font-bold text-luxury-black mb-5 uppercase tracking-tight">OUR HOUSES</h2>
-              <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto mb-8">Discover luxurious homes and apartments that combine comfort and design, ideal for families seeking premium living.</p>
-            </div>
-
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px] animate-in fade-in slide-in-from-bottom-4 duration-500">
-              {properties.filter(p => p.type === PropertyType.HOUSE || p.type === PropertyType.APARTMENT).map(prop => (
-                <div key={prop.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
-                  <div className="relative aspect-[16/10] overflow-hidden">
-                    <img src={prop.image} alt={prop.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
-                  </div>
-                  <div className="p-[20px] text-left flex flex-col flex-grow">
-                    <h3 className="text-[22px] font-serif font-bold text-[#333] mb-2">{prop.title}</h3>
-                    <p className="text-[16px] text-[#777] mb-1">Location: {prop.location.split(',')[0]}</p>
-                    <p className="text-[16px] text-[#777] mb-6 font-bold">Price: {prop.price}</p>
-                    <div className="mt-auto">
-                      <button onClick={() => navigate('detail', prop.id)} className="bg-luxury-gold text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-luxury-golddark">View Details</button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* 5. Contact Page */}
+{/* 5. Contact Page */}
         {activePage === 'contact' && (
           <div className="animate-in fade-in duration-500">
             <section className="relative h-[50vh] w-full flex items-center justify-center overflow-hidden bg-luxury-black">
