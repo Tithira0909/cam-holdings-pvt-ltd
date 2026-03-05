@@ -49,6 +49,17 @@ interface Service {
   sort_order: number;
 }
 
+
+// Helper to format price nicely if it's purely numerical, otherwise return as is
+const formatPrice = (price?: string) => {
+  if (!price) return '';
+  const num = Number(price);
+  if (!isNaN(num)) {
+    return new Intl.NumberFormat('en-LK', { style: 'currency', currency: 'LKR', minimumFractionDigits: 0 }).format(num);
+  }
+  return price;
+};
+
 const App: React.FC = () => {
   const [activePage, setActivePage] = useState<Page>(() => {
     const path = window.location.pathname;
@@ -71,6 +82,9 @@ const App: React.FC = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [currentService, setCurrentService] = useState<Service | null>(null);
   const [currentPortfolio, setCurrentPortfolio] = useState<Project | null>(null);
+  const [currentProperty, setCurrentProperty] = useState<Property | null>(null);
+  const [propertyError, setPropertyError] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -165,11 +179,33 @@ const App: React.FC = () => {
       };
       fetchPortfolioDetail();
     }
-  }, [activePage, selectedServiceSlug, selectedPortfolioId]);
+
+    if (activePage === 'detail' && selectedProjectId) {
+      const fetchPropertyDetail = async () => {
+        try {
+          const res = await fetch(`/api/properties/${selectedProjectId}`);
+          if (res.ok) {
+            const data = await res.json();
+            setCurrentProperty(data);
+          } else {
+            setPropertyError('Failed to load property details.');
+          }
+        } catch (err) {
+          console.error(err);
+          setPropertyError('An error occurred while fetching property details.');
+        }
+      };
+      fetchPropertyDetail();
+    }
+  }, [activePage, selectedServiceSlug, selectedPortfolioId, selectedProjectId]);
 
   const navigate = (page: Page, id?: string) => {
     setActivePage(page);
-    if (page === 'detail' && id) setSelectedProjectId(id);
+    if (page === 'detail' && id) {
+      setSelectedProjectId(id);
+      setCurrentProperty(null); // Reset while loading
+      setPropertyError(null);
+    }
     if (page === 'portfolio-detail' && id) {
       setSelectedPortfolioId(id);
       setCurrentPortfolio(null); // Reset while loading
@@ -221,8 +257,6 @@ const App: React.FC = () => {
        </div>
      );
   }
-
-  const selectedProperty = properties.find(p => p.id === selectedProjectId);
 
   return (
     <div className={`min-h-screen bg-white selection:bg-luxury-gold selection:text-white font-sans page-${activePage}`}>
@@ -628,38 +662,122 @@ const App: React.FC = () => {
         {/* 8. Detail Page View */}
         {activePage === 'detail' && (
           <div className="animate-in fade-in duration-500 bg-white pb-32">
-            <div className="relative h-[60vh] w-full overflow-hidden">
-              <img src={selectedProperty?.image || properties[0]?.image} className="w-full h-full object-cover" alt="Detail" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-              <div className="absolute bottom-12 px-mobile w-full flex justify-center">
-                <div className="max-w-7xl w-full">
-                  <div className="flex items-center gap-3 text-luxury-gold mb-4">
-                    <MapPin size={20} />
-                    <span className="text-sm uppercase font-bold tracking-brand">{selectedProperty?.location || 'Location'}</span>
-                  </div>
-                  <h1 className="text-4xl md:text-6xl font-serif text-white leading-tight mb-4 uppercase">{selectedProperty?.title || 'Property Detail'}</h1>
-                </div>
+            {propertyError ? (
+              <div className="h-[60vh] flex flex-col items-center justify-center text-center">
+                <p className="text-xl text-red-500 font-serif mb-4">{propertyError}</p>
+                <button onClick={() => navigate('properties')} className="px-6 py-2 bg-luxury-gold text-white rounded hover:bg-opacity-90 transition">Back to Properties</button>
               </div>
-            </div>
+            ) : !currentProperty ? (
+              <div className="h-[60vh] flex items-center justify-center text-luxury-gold">
+                <Loader2 size={48} className="animate-spin" />
+              </div>
+            ) : (
+              <>
+                <div className="relative h-[60vh] w-full overflow-hidden">
+                  <img src={currentProperty.image} className="w-full h-full object-cover" alt={currentProperty.title} />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  <div className="absolute bottom-12 px-mobile w-full flex justify-center">
+                    <div className="max-w-7xl w-full">
+                      <div className="flex items-center gap-3 text-luxury-gold mb-4">
+                        <MapPin size={20} />
+                        <span className="text-sm uppercase font-bold tracking-brand">{currentProperty.location}</span>
+                      </div>
+                      <h1 className="text-4xl md:text-6xl font-serif text-white leading-tight mb-4 uppercase">{currentProperty.title}</h1>
 
-            <div className="max-w-7xl mx-auto px-mobile py-16">
-              {selectedProperty?.description && (
-                <div className="mb-12">
-                  <h2 className="text-2xl font-serif font-bold text-luxury-black mb-6 uppercase tracking-tight border-b border-luxury-border pb-4">
-                    Description
-                  </h2>
-                  <div className="prose prose-lg max-w-none text-[#555] font-light leading-relaxed whitespace-pre-line">
-                    {selectedProperty.description}
+                      {/* Key Info Row */}
+                      <div className="flex flex-wrap items-center gap-6 mt-6">
+                        {currentProperty.price && (
+                           <div className="bg-luxury-gold/20 backdrop-blur-md border border-luxury-gold/30 rounded-lg px-6 py-3">
+                             <p className="text-luxury-gold text-sm uppercase tracking-widest font-bold mb-1">Price</p>
+                             <p className="text-white font-serif text-xl md:text-2xl">{formatPrice(currentProperty.price)}</p>
+                           </div>
+                        )}
+                        {currentProperty.type && (
+                          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-lg px-6 py-3">
+                            <p className="text-gray-300 text-sm uppercase tracking-widest font-bold mb-1">Type</p>
+                            <p className="text-white font-serif text-lg">{currentProperty.type}</p>
+                          </div>
+                        )}
+                        {currentProperty.status && (
+                          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-lg px-6 py-3">
+                            <p className="text-gray-300 text-sm uppercase tracking-widest font-bold mb-1">Status</p>
+                            <p className="text-white font-serif text-lg">{currentProperty.status}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              )}
-            </div>
+
+                <div className="max-w-7xl mx-auto px-mobile py-16">
+                  {/* Gallery Section */}
+                  <div className="mb-16">
+                    <h2 className="text-2xl font-serif font-bold text-luxury-black mb-8 uppercase tracking-tight flex items-center gap-3 border-b border-luxury-border pb-4">
+                      Gallery
+                    </h2>
+                    {currentProperty.images && currentProperty.images.length > 0 ? (
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {currentProperty.images.map((img) => (
+                          <div
+                            key={img.id}
+                            className="aspect-[4/3] rounded-lg overflow-hidden cursor-pointer group shadow-sm hover:shadow-md transition-shadow"
+                            onClick={() => setSelectedImage(img.image_url)}
+                          >
+                            <img
+                              src={img.image_url}
+                              alt={`Gallery image ${img.id}`}
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-luxury-gray italic">No additional images available for this property.</p>
+                    )}
+                  </div>
+
+                  {/* Description Section */}
+                  {currentProperty.description && (
+                    <div className="mb-12">
+                      <h2 className="text-2xl font-serif font-bold text-luxury-black mb-6 uppercase tracking-tight border-b border-luxury-border pb-4">
+                        Description
+                      </h2>
+                      <div className="prose prose-lg max-w-none text-[#555] font-light leading-relaxed whitespace-pre-line">
+                        {currentProperty.description}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         )}
       </main>
 
       <Footer onNavigate={navigate} />
       <ConsultationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
+      {/* Lightbox Modal */}
+      {selectedImage && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 md:p-10 animate-in fade-in duration-300"
+          onClick={() => setSelectedImage(null)}
+        >
+          <button
+            className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors"
+            onClick={() => setSelectedImage(null)}
+          >
+            <span className="sr-only">Close</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+          <img
+            src={selectedImage}
+            alt="Full size preview"
+            className="max-w-full max-h-[90vh] object-contain rounded-md shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </div>
   );
 };

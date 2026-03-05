@@ -492,8 +492,8 @@ app.get('/api/properties/:id', async (req, res) => {
     const property = properties[0];
 
     // Fetch gallery images
-    const images = await query('SELECT * FROM property_images WHERE property_id = ?', [id]);
-    property.gallery = images.map(img => img.image_url);
+    const images = await query('SELECT * FROM property_images WHERE property_id = ? ORDER BY id ASC', [id]);
+    property.images = images.map(img => ({ id: img.id, image_url: img.image_url }));
 
     res.json(property);
   } catch (err) {
