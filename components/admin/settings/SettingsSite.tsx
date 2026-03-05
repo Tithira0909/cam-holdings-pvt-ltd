@@ -62,13 +62,30 @@ export default function SettingsSite() {
 
       if (res.ok) {
         const data = await res.json();
-        setHeroPreview(data.hero_image_url);
-        showMessage('success', 'Hero image uploaded successfully');
+        setHeroPreview(data.hero_image || data.hero_image_url);
+        showMessage('success', 'Hero image updated');
       } else {
-        showMessage('error', 'Failed to upload hero image');
+        const errorData = await res.json().catch(() => ({}));
+        showMessage('error', errorData.error || 'Failed to upload hero image');
       }
     } catch (err) {
       showMessage('error', 'An error occurred while uploading hero image');
+    }
+  };
+
+  const handleRemoveHero = async () => {
+    try {
+      const res = await fetch('/api/settings/site/hero', {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        setHeroPreview(null);
+        showMessage('success', 'Hero image removed');
+      } else {
+        showMessage('error', 'Failed to remove hero image');
+      }
+    } catch (err) {
+      showMessage('error', 'An error occurred while removing hero image');
     }
   };
 
@@ -144,7 +161,7 @@ export default function SettingsSite() {
                   {heroPreview && (
                     <button
                       type="button"
-                      onClick={() => setHeroPreview(null)}
+                      onClick={handleRemoveHero}
                       className="mt-4 px-4 py-2 text-red-600 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-red-50 transition-colors"
                     >
                       Remove

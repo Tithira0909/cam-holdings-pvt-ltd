@@ -14,8 +14,8 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         const res = await fetch('/api/settings/site');
         if (res.ok) {
           const data = await res.json();
-          if (data.hero_image_url) {
-            setHeroImage(data.hero_image_url);
+          if (data.hero_image || data.hero_image_url) {
+            setHeroImage(data.hero_image || data.hero_image_url);
           }
         }
       } catch (err) {

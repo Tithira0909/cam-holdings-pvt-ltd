@@ -136,21 +136,35 @@ app.put('/api/settings/analytics', (req, res) => {
 
 // --- SITE SETTINGS ---
 
-app.get('/api/settings/site', (req, res) => {
+app.get('/api/settings/site', async (req, res) => {
   const settingsPath = path.join(__dirname, 'database/settings.json');
   try {
+    let data = {};
     if (fs.existsSync(settingsPath)) {
-      const data = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
-      res.json({
-        site_name: data.site_name || '',
-        contact_email: data.contact_email || '',
-        contact_phone: data.contact_phone || '',
-        address: data.address || '',
-        site_logo_url: data.site_logo_url || null
-      });
-    } else {
-      res.json({});
+      data = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
     }
+
+    // Attempt to merge from DB
+    try {
+        await query('CREATE TABLE IF NOT EXISTS settings (setting_key VARCHAR(255) PRIMARY KEY, setting_value TEXT)');
+        const dbSettings = await query('SELECT * FROM settings');
+        if (dbSettings && Array.isArray(dbSettings)) {
+            dbSettings.forEach(s => {
+                if (s.setting_key === 'hero_image') {
+                    data.hero_image_url = s.setting_value;
+                }
+            });
+        }
+    } catch(dbErr) { }
+
+    res.json({
+      site_name: data.site_name || '',
+      contact_email: data.contact_email || '',
+      contact_phone: data.contact_phone || '',
+      address: data.address || '',
+      hero_image_url: data.hero_image_url || null,
+      hero_image: data.hero_image_url || null // Map alias for frontend
+    });
   } catch (error) {
     console.error('Error reading site settings:', error);
     res.status(500).json({ error: 'Failed to fetch site settings' });
@@ -186,36 +200,71 @@ app.put('/api/settings/site', (req, res) => {
   }
 });
 
-app.post('/api/settings/site/hero', upload.single('hero_image'), (req, res) => {
+app.post('/api/settings/site/hero', upload.single('hero_image'), async (req, res) => {
   const settingsPath = path.join(__dirname, 'database/settings.json');
   try {
     if (!req.file) {
-      return res.status(400).json({ error: 'No hero image file provided' });
+      return res.status(400).json({ error: 'No hero image file provided', success: false });
     }
 
     const heroUrl = `/uploads/${req.file.filename}`;
 
+    // Update settings.json as fallback
     let currentSettings = {};
     if (fs.existsSync(settingsPath)) {
       currentSettings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
     }
-
     const updatedSettings = {
         ...currentSettings,
         hero_image_url: heroUrl
     };
-
     fs.writeFileSync(settingsPath, JSON.stringify(updatedSettings, null, 2), 'utf8');
 
+    // Also persist in DB as per requirement
+    try {
+        // We use an upsert strategy depending on if it's sqlite or mysql.
+        // For simplicity, let's just delete the key and insert.
+        await query('CREATE TABLE IF NOT EXISTS settings (setting_key VARCHAR(255) PRIMARY KEY, setting_value TEXT)');
+        await query('DELETE FROM settings WHERE setting_key = "hero_image"');
+        await query('INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)', ['hero_image', heroUrl]);
+    } catch(dbErr) {
+        console.error('Failed to save to DB settings table, continuing with JSON:', dbErr);
+    }
+
     res.json({
-        message: 'Hero image uploaded successfully',
-        hero_image_url: heroUrl
+        success: true,
+        hero_image: heroUrl
     });
   } catch (error) {
     console.error('Error uploading hero image:', error);
-    res.status(500).json({ error: 'Failed to upload hero image' });
+    res.status(500).json({ error: 'Failed to upload hero image', success: false });
   }
 });
+
+// DELETE endpoint to remove hero image
+app.delete('/api/settings/site/hero', async (req, res) => {
+  const settingsPath = path.join(__dirname, 'database/settings.json');
+  try {
+    let currentSettings = {};
+    if (fs.existsSync(settingsPath)) {
+      currentSettings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+    }
+    const updatedSettings = {
+        ...currentSettings,
+        hero_image_url: null
+    };
+    fs.writeFileSync(settingsPath, JSON.stringify(updatedSettings, null, 2), 'utf8');
+
+    try {
+        await query('DELETE FROM settings WHERE setting_key = "hero_image"');
+    } catch(dbErr) { }
+
+    res.json({ success: true, message: 'Hero image removed' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to remove hero image', success: false });
+  }
+});
+
 
 // --- ROLES SETTINGS ---
 
