@@ -103,7 +103,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   onClick={() => onNavigate("portfolio")}
                   className="hover:text-luxury-gold transition-colors text-left"
                 >
-                  Portfolio Properties
+                  Projects Properties
                 </button>
               </li>
               <li>

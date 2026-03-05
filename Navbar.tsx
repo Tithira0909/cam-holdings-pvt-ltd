@@ -23,7 +23,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
     { label: 'Home', page: 'home' },
     { label: 'Services', page: 'services' },
     { label: 'Virtual Tour', page: 'virtual-tour' },
-    { label: 'Portfolio', page: 'portfolio' },
+    { label: 'Projects', page: 'portfolio' },
     {
       label: 'Properties',
       page: 'properties',
