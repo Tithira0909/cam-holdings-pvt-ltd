@@ -217,35 +217,6 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* Lands Page */}
-        {activePage === 'lands' && (
-          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
-            <div className="max-w-7xl mx-auto text-center mb-16">
-              <h2 className="text-[36px] font-serif font-bold text-luxury-black mb-5 uppercase tracking-tight">Lands</h2>
-              <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto">Explore our exclusive land projects in prime locations that offer immense potential for investment and development.</p>
-            </div>
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[30px]">
-              {properties.filter(p => p.type === PropertyType.LAND).map(prop => (
-                <PropertyCard key={prop.id} property={prop} onClick={() => navigate('detail', prop.id)} />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Houses Page */}
-        {activePage === 'houses' && (
-          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
-            <div className="max-w-7xl mx-auto text-center mb-16">
-              <h2 className="text-[36px] font-serif font-bold text-luxury-black mb-5 uppercase tracking-tight">Houses</h2>
-              <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto">Discover luxurious homes that combine comfort and design, ideal for families seeking premium living.</p>
-            </div>
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[30px]">
-              {properties.filter(p => p.type === PropertyType.HOUSE).map(prop => (
-                <PropertyCard key={prop.id} property={prop} onClick={() => navigate('detail', prop.id)} />
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* 1. About Us Page */}
         {activePage === 'about' && (
@@ -413,16 +384,16 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* 4. Properties Page */}
+        {/* 4. Lands Page */}
         {activePage === 'projects' && (
           <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
             <div className="max-w-7xl mx-auto text-center mb-16">
-              <h2 className="text-[36px] font-serif font-bold text-luxury-black mb-5 uppercase tracking-tight">OUR PROPERTIES</h2>
+              <h2 className="text-[36px] font-serif font-bold text-luxury-black mb-5 uppercase tracking-tight">OUR LANDS</h2>
               <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto mb-8">Explore our exclusive land projects in prime locations that offer immense potential for investment and development.</p>
             </div>
 
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px] animate-in fade-in slide-in-from-bottom-4 duration-500">
-              {properties.map(prop => (
+              {properties.filter(p => p.type === PropertyType.LAND).map(prop => (
                 <div key={prop.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <img src={prop.image} alt={prop.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
@@ -441,7 +412,7 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* Houses Page */}
+        {/* 4b. Houses Page */}
         {activePage === 'houses' && (
           <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
             <div className="max-w-7xl mx-auto text-center mb-16">
@@ -450,7 +421,7 @@ const App: React.FC = () => {
             </div>
 
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px] animate-in fade-in slide-in-from-bottom-4 duration-500">
-              {properties.map(prop => (
+              {properties.filter(p => p.type === PropertyType.HOUSE || p.type === PropertyType.APARTMENT).map(prop => (
                 <div key={prop.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <img src={prop.image} alt={prop.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
