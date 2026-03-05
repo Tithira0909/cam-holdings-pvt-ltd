@@ -64,11 +64,19 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     <div className="min-h-screen bg-[#f4f4f4] flex">
       {/* Sidebar */}
       <aside className="w-64 bg-luxury-black text-white fixed h-full flex flex-col z-50">
-        <div className="p-8 border-b border-white/10">
-          <div className="font-serif text-2xl font-bold tracking-brand">
-            <span className="text-luxury-gold">C</span>AM
-          </div>
-          <p className="text-[10px] text-white/40 tracking-widest mt-1 uppercase">Admin Panel</p>
+        <div
+          className="p-8 border-b border-white/10 cursor-pointer flex flex-col items-start"
+          onClick={() => setActiveView('dashboard')}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => { if (e.key === 'Enter') setActiveView('dashboard'); }}
+        >
+          <img
+            src="/assets/cam_logo.png"
+            alt="CAM Admin Panel"
+            className="w-40 object-contain h-auto"
+          />
+          <p className="text-[10px] text-white/40 tracking-widest mt-3 uppercase">Admin Panel</p>
         </div>
 
         <nav className="flex-1 py-8 px-4 space-y-2">
