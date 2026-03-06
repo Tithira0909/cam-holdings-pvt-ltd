@@ -423,43 +423,126 @@ const App: React.FC = () => {
           </div>
         )}
 
+
         {/* 3a. Portfolio Detail Page */}
         {activePage === 'portfolio-detail' && (
-          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
+          <div className="animate-in fade-in duration-500 bg-[#f4f4f4] pb-32">
              {currentPortfolio ? (
-               <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
-                 <div className="relative aspect-video">
-                   <img src={currentPortfolio.image} alt={currentPortfolio.title} className="w-full h-full object-cover" />
-                   {currentPortfolio.category && (
-                     <div className="absolute top-4 left-4 bg-luxury-black/60 backdrop-blur-md text-white text-[10px] uppercase tracking-widest px-4 py-2 font-bold rounded-lg">
-                       {currentPortfolio.category}
-                     </div>
-                   )}
-                 </div>
-                 <div className="p-8 md:p-12">
-                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 border-b border-luxury-border pb-8">
-                     <div>
-                       <h1 className="text-3xl md:text-4xl font-serif font-bold text-luxury-black mb-4">{currentPortfolio.title}</h1>
-                       <div className="flex flex-wrap items-center gap-4 text-luxury-gray text-sm md:text-base font-bold">
-                         <div className="flex items-center gap-1.5"><MapPin size={18} className="text-luxury-gold" /> {currentPortfolio.location}</div>
-                         <div className="flex items-center gap-1.5"><Calendar size={18} className="text-luxury-gold" /> {currentPortfolio.year}</div>
-                       </div>
-                     </div>
-                     <button
-                       onClick={() => navigate('portfolio')}
-                       className="bg-luxury-gold text-white px-6 py-3 text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-luxury-golddark whitespace-nowrap"
-                     >
-                       Back to Portfolio
-                     </button>
-                   </div>
+               <>
+                {/* Image Gallery Hero */}
+                <div className="w-full bg-luxury-black">
+                  <div className="max-w-[1920px] mx-auto relative h-[50vh] md:h-[70vh] overflow-hidden group">
+                    <img
+                      src={currentPortfolio.image}
+                      className="w-full h-full object-cover"
+                      alt={currentPortfolio.title}
+                      onClick={() => setSelectedImage(currentPortfolio.image)}
+                    />
+                    <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+                  </div>
 
-                   <div className="prose prose-lg max-w-none text-luxury-gray">
-                     <p className="whitespace-pre-line leading-relaxed text-[16px] md:text-[18px]">
-                       {currentPortfolio.description || 'No description available for this project.'}
-                     </p>
-                   </div>
-                 </div>
-               </div>
+                  {/* Thumbnails Strip */}
+                  {currentPortfolio.images && currentPortfolio.images.length > 0 && (
+                    <div className="max-w-7xl mx-auto px-mobile py-4 flex gap-4 overflow-x-auto container-overflow-fix snap-x">
+                      <div
+                        className="flex-shrink-0 w-24 h-16 md:w-32 md:h-24 rounded-md overflow-hidden cursor-pointer border-2 border-luxury-gold shadow-md snap-start"
+                        onClick={() => setSelectedImage(currentPortfolio.image)}
+                      >
+                         <img src={currentPortfolio.image} className="w-full h-full object-cover" alt="Cover" />
+                      </div>
+                      {currentPortfolio.images.map((img: any) => (
+                        <div
+                          key={img.id}
+                          className="flex-shrink-0 w-24 h-16 md:w-32 md:h-24 rounded-md overflow-hidden cursor-pointer border-2 border-transparent hover:border-luxury-gold/50 transition-colors shadow-md snap-start"
+                          onClick={() => setSelectedImage(img.image_url)}
+                        >
+                          <img src={img.image_url} className="w-full h-full object-cover" alt="Gallery" />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="max-w-7xl mx-auto px-mobile pt-12">
+                  <div className="flex flex-col lg:flex-row gap-12 items-start">
+
+                    {/* Main Content Column */}
+                    <div className="flex-1 w-full">
+                      {/* Title & Badge Row */}
+                      <div className="flex flex-wrap items-center gap-4 mb-4">
+                        <h1 className="text-3xl md:text-5xl font-serif text-luxury-black font-bold uppercase tracking-tight">{currentPortfolio.title}</h1>
+                        {currentPortfolio.category && (
+                          <span className="px-4 py-1.5 bg-luxury-gold text-white text-xs font-bold uppercase tracking-widest rounded-full">
+                            {currentPortfolio.category}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2 text-luxury-gray mb-10">
+                        <MapPin size={20} className="text-luxury-gold" />
+                        <span className="text-lg uppercase tracking-wider">{currentPortfolio.location || 'Location Not Specified'}</span>
+                      </div>
+
+                      {/* Key Info Blocks */}
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                        {currentPortfolio.category && (
+                          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
+                            <span className="text-luxury-gray text-xs uppercase tracking-wider font-bold mb-2">Project Category</span>
+                            <span className="text-luxury-black font-serif text-lg md:text-xl font-bold">{currentPortfolio.category}</span>
+                          </div>
+                        )}
+                        {currentPortfolio.year && (
+                          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
+                            <span className="text-luxury-gray text-xs uppercase tracking-wider font-bold mb-2">Completion Year</span>
+                            <span className="text-luxury-black font-serif text-lg md:text-xl font-bold">{currentPortfolio.year}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* About the Project Section */}
+                      <div className="bg-white p-8 md:p-10 rounded-xl shadow-sm border border-gray-100 mb-12">
+                        <h2 className="text-2xl font-serif font-bold text-luxury-black mb-6 uppercase tracking-tight border-b border-luxury-border pb-4">
+                          About the Project
+                        </h2>
+                        <div className="prose prose-lg max-w-none text-luxury-gray font-light leading-relaxed whitespace-pre-line">
+                          {currentPortfolio.description || 'No description available for this project.'}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right Sidebar Inquiry Form (Desktop Sticky) */}
+                    <div className="w-full lg:w-[400px] lg:sticky lg:top-32">
+                      <div className="bg-luxury-black text-white p-8 rounded-xl shadow-xl shadow-black/10">
+                        <h3 className="text-2xl font-serif font-bold mb-2">Interested?</h3>
+                        <p className="text-white/70 text-sm mb-6">Contact our team to learn more about this project or similar opportunities.</p>
+
+                        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert("Inquiry sent successfully!"); }}>
+                          <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Your Name</label>
+                            <input type="text" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors" placeholder="John Doe" />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Email Address</label>
+                            <input type="email" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors" placeholder="john@example.com" />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Phone Number</label>
+                            <input type="tel" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors" placeholder="+94 77 XXX XXXX" />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Message</label>
+                            <textarea rows={3} className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors resize-none" placeholder={`I'm interested in ${currentPortfolio.title}...`}></textarea>
+                          </div>
+                          <button type="submit" className="w-full bg-luxury-gold text-white font-bold uppercase tracking-widest py-4 rounded-lg hover:bg-white hover:text-luxury-black transition-colors mt-4">
+                            Send Inquiry
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+               </>
              ) : (
                <div className="h-[60vh] flex items-center justify-center text-luxury-gold">
                    <Loader2 size={48} className="animate-spin" />

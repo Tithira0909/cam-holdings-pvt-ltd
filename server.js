@@ -797,16 +797,24 @@ app.delete('/api/projects/:id', async (req, res) => {
 });
 
 // GET project by ID
-app.get('/api/projects/:id', async (req, res) => {
+app.get('/api/projects/:identifier', async (req, res) => {
   try {
-    const { id } = req.params;
-    const projects = await query('SELECT * FROM projects WHERE id = ?', [id]);
+    const { identifier } = req.params;
+    let projects;
+    if (!isNaN(identifier)) {
+        projects = await query('SELECT * FROM projects WHERE id = ?', [identifier]);
+    } else {
+        projects = await query('SELECT * FROM projects WHERE id = ?', [identifier]); // No slug in projects table yet, fallback to id
+    }
 
     if (!projects || projects.length === 0) {
       return res.status(404).json({ error: 'Project not found' });
     }
 
-    res.json(projects[0]);
+    const project = projects[0];
+    project.images = []; // Mock images array for now since there's no project_images table
+
+    res.json(project);
   } catch (err) {
     console.error('Error fetching project:', err);
     res.status(500).json({ error: 'Failed to fetch project' });
