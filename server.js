@@ -564,6 +564,17 @@ app.delete('/api/admin/services/:id', async (req, res) => {
 
 // --- PROPERTIES ---
 
+// Helper to parse JSON strings from DB safely
+const safeParseJSON = (data, fallback = []) => {
+  if (!data) return fallback;
+  if (typeof data === 'object') return data;
+  try {
+    return JSON.parse(data);
+  } catch (e) {
+    return fallback;
+  }
+};
+
 // GET all properties
 app.get('/api/properties', async (req, res) => {
   try {
@@ -578,10 +589,22 @@ app.get('/api/properties', async (req, res) => {
       params = types;
     }
 
-    sql += ' ORDER BY created_at DESC';
+    sql += ' ORDER BY sortOrder ASC, created_at DESC';
 
     const properties = await query(sql, params);
-    res.json(properties);
+
+    // Parse JSON fields
+    const parsedProperties = properties.map(p => ({
+      ...p,
+      amenities: safeParseJSON(p.amenities),
+      locationHighlights: safeParseJSON(p.locationHighlights),
+      floorPlans: safeParseJSON(p.floorPlans),
+      brochureFiles: safeParseJSON(p.brochureFiles),
+      isFeatured: !!p.isFeatured,
+      isSoldOut: !!p.isSoldOut,
+    }));
+
+    res.json(parsedProperties);
   } catch (err) {
     console.error('Error fetching properties:', err);
     res.status(500).json({ error: 'Failed to fetch properties' });
@@ -611,6 +634,14 @@ app.get('/api/properties/:identifier', async (req, res) => {
     const images = await query('SELECT * FROM property_images WHERE property_id = ? ORDER BY id ASC', [property.id]);
     property.images = images.map(img => ({ id: img.id, image_url: img.image_url }));
 
+    // Parse JSON fields
+    property.amenities = safeParseJSON(property.amenities);
+    property.locationHighlights = safeParseJSON(property.locationHighlights);
+    property.floorPlans = safeParseJSON(property.floorPlans);
+    property.brochureFiles = safeParseJSON(property.brochureFiles);
+    property.isFeatured = !!property.isFeatured;
+    property.isSoldOut = !!property.isSoldOut;
+
     res.json(property);
   } catch (err) {
     console.error('Error fetching property:', err);
@@ -618,10 +649,27 @@ app.get('/api/properties/:identifier', async (req, res) => {
   }
 });
 
+// Helper to stringify JSON
+const safeStringifyJSON = (data) => {
+  if (!data) return null;
+  if (typeof data === 'string') return data;
+  try {
+    return JSON.stringify(data);
+  } catch (e) {
+    return null;
+  }
+};
+
 // POST new property
 app.post('/api/properties', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'gallery', maxCount: 10 }]), async (req, res) => {
   try {
-    const { title, slug, location, price, type, status, description } = req.body;
+    const {
+      title, slug, location, price, type, status, description,
+      category, district, city, locationLabel, priceLabel, bedrooms, bathrooms,
+      isFeatured, isSoldOut, videoUrl, hotlineNumber, sortOrder,
+      shortDescription, fullDescription,
+      amenities, locationHighlights, floorPlans, brochureFiles
+    } = req.body;
 
     // Handle main image
     let mainImageUrl = null;
@@ -629,10 +677,27 @@ app.post('/api/properties', upload.fields([{ name: 'image', maxCount: 1 }, { nam
       mainImageUrl = `/uploads/${req.files['image'][0].filename}`;
     }
 
+    const amenitiesStr = typeof amenities === 'string' ? amenities : safeStringifyJSON(amenities);
+    const locationHighlightsStr = typeof locationHighlights === 'string' ? locationHighlights : safeStringifyJSON(locationHighlights);
+    const floorPlansStr = typeof floorPlans === 'string' ? floorPlans : safeStringifyJSON(floorPlans);
+    const brochureFilesStr = typeof brochureFiles === 'string' ? brochureFiles : safeStringifyJSON(brochureFiles);
+
     // Insert property
     const result = await query(
-      'INSERT INTO properties (title, slug, location, price, type, status, description, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [title, slug, location, price, type, status || 'Active', description, mainImageUrl]
+      `INSERT INTO properties (
+        title, slug, location, price, type, status, description, image,
+        category, district, city, locationLabel, priceLabel, bedrooms, bathrooms,
+        isFeatured, isSoldOut, videoUrl, hotlineNumber, sortOrder,
+        shortDescription, fullDescription, amenities, locationHighlights, floorPlans, brochureFiles
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        title, slug, location, price, type, status || 'Active', description, mainImageUrl,
+        category, district, city, locationLabel, priceLabel, bedrooms || null, bathrooms || null,
+        isFeatured === 'true' || isFeatured === true ? 1 : 0,
+        isSoldOut === 'true' || isSoldOut === true ? 1 : 0,
+        videoUrl, hotlineNumber, sortOrder || 0,
+        shortDescription, fullDescription, amenitiesStr, locationHighlightsStr, floorPlansStr, brochureFilesStr
+      ]
     );
 
     const propertyId = result.insertId;
@@ -661,7 +726,13 @@ app.post('/api/properties', upload.fields([{ name: 'image', maxCount: 1 }, { nam
 app.put('/api/properties/:id', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'gallery', maxCount: 10 }]), async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, slug, location, price, type, status, description } = req.body;
+    const {
+      title, slug, location, price, type, status, description,
+      category, district, city, locationLabel, priceLabel, bedrooms, bathrooms,
+      isFeatured, isSoldOut, videoUrl, hotlineNumber, sortOrder,
+      shortDescription, fullDescription,
+      amenities, locationHighlights, floorPlans, brochureFiles
+    } = req.body;
 
     const existing = await query('SELECT * FROM properties WHERE id = ?', [id]);
     if (!existing || existing.length === 0) {
@@ -673,9 +744,27 @@ app.put('/api/properties/:id', upload.fields([{ name: 'image', maxCount: 1 }, { 
       mainImageUrl = `/uploads/${req.files['image'][0].filename}`;
     }
 
+    const amenitiesStr = typeof amenities === 'string' ? amenities : safeStringifyJSON(amenities);
+    const locationHighlightsStr = typeof locationHighlights === 'string' ? locationHighlights : safeStringifyJSON(locationHighlights);
+    const floorPlansStr = typeof floorPlans === 'string' ? floorPlans : safeStringifyJSON(floorPlans);
+    const brochureFilesStr = typeof brochureFiles === 'string' ? brochureFiles : safeStringifyJSON(brochureFiles);
+
     await query(
-      'UPDATE properties SET title = ?, slug = ?, location = ?, price = ?, type = ?, status = ?, description = ?, image = ? WHERE id = ?',
-      [title, slug, location, price, type, status, description, mainImageUrl, id]
+      `UPDATE properties SET
+        title = ?, slug = ?, location = ?, price = ?, type = ?, status = ?, description = ?, image = ?,
+        category = ?, district = ?, city = ?, locationLabel = ?, priceLabel = ?, bedrooms = ?, bathrooms = ?,
+        isFeatured = ?, isSoldOut = ?, videoUrl = ?, hotlineNumber = ?, sortOrder = ?,
+        shortDescription = ?, fullDescription = ?, amenities = ?, locationHighlights = ?, floorPlans = ?, brochureFiles = ?
+      WHERE id = ?`,
+      [
+        title, slug, location, price, type, status, description, mainImageUrl,
+        category, district, city, locationLabel, priceLabel, bedrooms || null, bathrooms || null,
+        isFeatured === 'true' || isFeatured === true ? 1 : 0,
+        isSoldOut === 'true' || isSoldOut === true ? 1 : 0,
+        videoUrl, hotlineNumber, sortOrder || 0,
+        shortDescription, fullDescription, amenitiesStr, locationHighlightsStr, floorPlansStr, brochureFilesStr,
+        id
+      ]
     );
 
     if (req.files['gallery']) {
