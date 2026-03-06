@@ -5,23 +5,49 @@ export enum PropertyType {
 }
 
 export interface FloorPlan {
-  label: string;
+  id?: string;
+  title?: string;
+  type?: string;
+  label?: string;
   image: string;
+  description?: string;
 }
 
 export interface Property {
   id: string;
   title: string;
+  slug?: string;
   location: string;
   price: string;
-  type: PropertyType;
+  type: PropertyType | string;
   image: string;
   description?: string;
+
+  // New premium fields
+  category?: string;
+  district?: string;
+  city?: string;
+  locationLabel?: string;
+  priceLabel?: string;
+  bedrooms?: number;
+  bathrooms?: number;
+  isFeatured?: boolean;
+  isSoldOut?: boolean;
+  amenities?: { id: string, icon: string, label: string }[];
+  locationHighlights?: { id: string, label: string }[];
+  floorPlans?: FloorPlan[];
+  brochureFiles?: { id: string, name: string, fileUrl: string }[];
+  videoUrl?: string;
+  hotlineNumber?: string;
+  sortOrder?: number;
+  shortDescription?: string;
+  fullDescription?: string;
+
+  // Legacy fields
   beds?: number;
   baths?: number;
   sqft?: number;
   featured?: boolean;
-  floorPlans?: FloorPlan[];
   status?: string;
   images?: { id: number; image_url: string }[];
 }
