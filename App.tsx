@@ -71,6 +71,7 @@ const App: React.FC = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [currentService, setCurrentService] = useState<Service | null>(null);
   const [currentPortfolio, setCurrentPortfolio] = useState<Project | null>(null);
+  const [siteSettings, setSiteSettings] = useState<any>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -108,10 +109,11 @@ const App: React.FC = () => {
   const fetchData = async () => {
     try {
       const queryParam = '';
-      const [propsRes, projsRes, svcsRes] = await Promise.all([
+      const [propsRes, projsRes, svcsRes, settingsRes] = await Promise.all([
         fetch(`/api/properties${queryParam}`),
         fetch('/api/projects'),
-        fetch('/api/services')
+        fetch('/api/services'),
+        fetch('/api/settings/site')
       ]);
 
       if (propsRes.ok) {
@@ -127,6 +129,11 @@ const App: React.FC = () => {
       if (svcsRes.ok) {
         const svcsData = await svcsRes.json();
         setServices(svcsData.map((s: any) => ({ ...s, id: String(s.id) })));
+      }
+
+      if (settingsRes.ok) {
+        const settingsData = await settingsRes.json();
+        setSiteSettings(settingsData);
       }
     } catch (error) {
       console.error('Failed to fetch data:', error);
@@ -244,7 +251,7 @@ const App: React.FC = () => {
       <main className="flex-grow pt-0">
         {activePage === 'home' && (
           <div className="animate-in fade-in duration-500">
-            <Hero onNavigate={navigate} />
+            <Hero onNavigate={navigate} siteSettings={siteSettings} />
             <Stats onNavigate={navigate} />
             <Newsletter />
           </div>
@@ -750,9 +757,9 @@ const App: React.FC = () => {
 
                     <div className="mt-8 text-center border-t border-luxury-border pt-6">
                       <div className="text-[13px] text-[#777] uppercase tracking-widest mb-2 font-bold">Hotline Numbers</div>
-                      <a href="tel:0712030838" className="text-xl font-bold text-luxury-black flex items-center justify-center gap-2 hover:text-luxury-gold transition-colors">
+                      <a href={`tel:${siteSettings?.contact_phone?.replace(/\s+/g, '') || '0712030838'}`} className="text-xl font-bold text-luxury-black flex items-center justify-center gap-2 hover:text-luxury-gold transition-colors">
                         <Phone size={20} />
-                        071 20 30 838
+                        {siteSettings?.contact_phone || '071 20 30 838'}
                       </a>
                     </div>
                   </div>
@@ -764,7 +771,7 @@ const App: React.FC = () => {
         )}
       </main>
 
-      <Footer onNavigate={navigate} />
+      <Footer onNavigate={navigate} siteSettings={siteSettings} />
       <ConsultationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );

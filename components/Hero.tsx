@@ -3,16 +3,17 @@ import { MapPin, Home } from 'lucide-react';
 
 interface HeroProps {
   onNavigate: (page: any) => void;
+  siteSettings?: any;
 }
 
-const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
+const Hero: React.FC<HeroProps> = ({ onNavigate, siteSettings }) => {
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-transparent">
       {/* Cinematic Background Image Layer - Full Screen */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{ 
-          backgroundImage: `url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1600')`,
+          backgroundImage: `url('${siteSettings?.hero_image_url || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1600'}')`,
           animation: 'cinematicMotion 25s linear infinite'
         }}
       />

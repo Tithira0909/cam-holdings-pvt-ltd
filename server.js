@@ -145,7 +145,7 @@ app.get('/api/settings/site', (req, res) => {
         contact_email: data.contact_email || '',
         contact_phone: data.contact_phone || '',
         address: data.address || '',
-        site_logo_url: data.site_logo_url || null
+        hero_image_url: data.hero_image_url || null
       });
     } else {
       res.json({});
@@ -176,7 +176,7 @@ app.put('/api/settings/site', (req, res) => {
         contact_email: updatedSettings.contact_email,
         contact_phone: updatedSettings.contact_phone,
         address: updatedSettings.address,
-        site_logo_url: updatedSettings.site_logo_url || null
+        hero_image_url: updatedSettings.hero_image_url || null
     });
   } catch (error) {
     console.error('Error updating site settings:', error);
@@ -184,14 +184,14 @@ app.put('/api/settings/site', (req, res) => {
   }
 });
 
-app.post('/api/settings/site/logo', upload.single('logo'), (req, res) => {
+app.post('/api/settings/site/hero', upload.single('hero'), (req, res) => {
   const settingsPath = path.join(__dirname, 'database/settings.json');
   try {
     if (!req.file) {
-      return res.status(400).json({ error: 'No logo file provided' });
+      return res.status(400).json({ error: 'No hero file provided' });
     }
 
-    const logoUrl = `/uploads/${req.file.filename}`;
+    const heroUrl = `/uploads/${req.file.filename}`;
 
     let currentSettings = {};
     if (fs.existsSync(settingsPath)) {
@@ -200,18 +200,18 @@ app.post('/api/settings/site/logo', upload.single('logo'), (req, res) => {
 
     const updatedSettings = {
         ...currentSettings,
-        site_logo_url: logoUrl
+        hero_image_url: heroUrl
     };
 
     fs.writeFileSync(settingsPath, JSON.stringify(updatedSettings, null, 2), 'utf8');
 
     res.json({
-        message: 'Logo uploaded successfully',
-        logo_url: logoUrl
+        message: 'Hero image uploaded successfully',
+        hero_image_url: heroUrl
     });
   } catch (error) {
-    console.error('Error uploading site logo:', error);
-    res.status(500).json({ error: 'Failed to upload site logo' });
+    console.error('Error uploading hero image:', error);
+    res.status(500).json({ error: 'Failed to upload hero image' });
   }
 });
 

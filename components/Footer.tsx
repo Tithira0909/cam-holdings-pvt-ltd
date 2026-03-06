@@ -3,9 +3,10 @@ import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 
 interface FooterProps {
   onNavigate: (page: any) => void;
+  siteSettings?: any;
 }
 
-const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+const Footer: React.FC<FooterProps> = ({ onNavigate, siteSettings }) => {
   return (
     <footer className="bg-luxury-black text-white pt-20 pb-12 border-t border-white/10">
       <div className="max-w-7xl mx-auto px-mobile">
@@ -168,17 +169,14 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 <span className="block text-white font-medium mb-1">
                   Head Office
                 </span>
-                <p>
-                  No.75, D.S. Senanayake Mawatha,
-                  <br />
-                  Borella, Colombo-08, Sri Lanka,
+                <p className="whitespace-pre-wrap">
+                  {siteSettings?.address || 'No.75, D.S. Senanayake Mawatha,\nBorella, Colombo-08, Sri Lanka'}
                 </p>
               </div>
               <div className="space-y-2">
-                <p className="flex items-center gap-2">+94 112 699 822</p>
-                <p className="flex items-center gap-2">+94 112 030 890</p>
+                <p className="flex items-center gap-2">{siteSettings?.contact_phone || '+94 112 699 822'}</p>
               </div>
-              <p className="text-luxury-gold font-medium">info@camholdings.lk</p>
+              <p className="text-luxury-gold font-medium">{siteSettings?.contact_email || 'info@camholdings.lk'}</p>
             </div>
           </div>
         </div>
