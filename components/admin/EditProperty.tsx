@@ -21,6 +21,8 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
   const [type, setType] = useState<PropertyType>(PropertyType.HOUSE);
   const [status, setStatus] = useState('Active');
   const [description, setDescription] = useState('');
+  const [beds, setBeds] = useState('');
+  const [baths, setBaths] = useState('');
 
   // File State
   const [mainImage, setMainImage] = useState<File | null>(null);
@@ -49,6 +51,8 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
       setType(data.type);
       setStatus(data.status);
       setDescription(data.description);
+      setBeds(data.beds?.toString() || '');
+      setBaths(data.baths?.toString() || '');
       setMainImagePreview(data.image);
       setExistingGallery(data.gallery || []);
 
@@ -100,6 +104,8 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
       formData.append('type', type);
       formData.append('status', status);
       formData.append('description', description);
+      if (beds) formData.append('beds', beds);
+      if (baths) formData.append('baths', baths);
 
       if (mainImage) {
         formData.append('image', mainImage);
@@ -230,6 +236,30 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                   <option value="Pending">Pending</option>
                 </select>
               </div>
+            </div>
+          </div>
+
+          {/* Details */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <label className="block text-sm font-bold text-luxury-gray mb-2 uppercase tracking-wider">Number of Bedrooms</label>
+              <input
+                type="number"
+                value={beds}
+                onChange={(e) => setBeds(e.target.value)}
+                className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-transparent outline-none transition-all"
+                placeholder="e.g. 3"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-luxury-gray mb-2 uppercase tracking-wider">Number of Bathrooms</label>
+              <input
+                type="number"
+                value={baths}
+                onChange={(e) => setBaths(e.target.value)}
+                className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-transparent outline-none transition-all"
+                placeholder="e.g. 2"
+              />
             </div>
           </div>
 

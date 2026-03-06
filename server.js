@@ -473,10 +473,23 @@ app.get('/api/properties', async (req, res) => {
 
     const properties = await query(sql, params);
 
-    // Fetch gallery images for all properties
-    for (const property of properties) {
-      const images = await query('SELECT image_url FROM property_images WHERE property_id = ?', [property.id]);
-      property.gallery = images.map(img => img.image_url);
+    // Fetch gallery images efficiently for all properties
+    if (properties.length > 0) {
+      const propertyIds = properties.map(p => p.id);
+      const placeholders = propertyIds.map(() => '?').join(',');
+      const images = await query(`SELECT property_id, image_url FROM property_images WHERE property_id IN (${placeholders})`, propertyIds);
+
+      const imagesByPropertyId = images.reduce((acc, img) => {
+        if (!acc[img.property_id]) {
+          acc[img.property_id] = [];
+        }
+        acc[img.property_id].push(img.image_url);
+        return acc;
+      }, {});
+
+      for (const property of properties) {
+        property.gallery = imagesByPropertyId[property.id] || [];
+      }
     }
 
     res.json(properties);
@@ -512,7 +525,7 @@ app.get('/api/properties/:id', async (req, res) => {
 // POST new property
 app.post('/api/properties', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'gallery', maxCount: 10 }]), async (req, res) => {
   try {
-    const { title, slug, location, price, type, status, description } = req.body;
+    const { title, slug, location, price, type, status, description, beds, baths } = req.body;
 
     // Handle main image
     let mainImageUrl = null;
@@ -522,8 +535,8 @@ app.post('/api/properties', upload.fields([{ name: 'image', maxCount: 1 }, { nam
 
     // Insert property
     const result = await query(
-      'INSERT INTO properties (title, slug, location, price, type, status, description, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [title, slug, location, price, type, status || 'Active', description, mainImageUrl]
+      'INSERT INTO properties (title, slug, location, price, type, status, description, image, beds, baths) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [title, slug, location, price, type, status || 'Active', description, mainImageUrl, beds || null, baths || null]
     );
 
     const propertyId = result.insertId;
@@ -552,7 +565,7 @@ app.post('/api/properties', upload.fields([{ name: 'image', maxCount: 1 }, { nam
 app.put('/api/properties/:id', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'gallery', maxCount: 10 }]), async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, slug, location, price, type, status, description } = req.body;
+    const { title, slug, location, price, type, status, description, beds, baths } = req.body;
 
     const existing = await query('SELECT * FROM properties WHERE id = ?', [id]);
     if (!existing || existing.length === 0) {
@@ -565,8 +578,8 @@ app.put('/api/properties/:id', upload.fields([{ name: 'image', maxCount: 1 }, { 
     }
 
     await query(
-      'UPDATE properties SET title = ?, slug = ?, location = ?, price = ?, type = ?, status = ?, description = ?, image = ? WHERE id = ?',
-      [title, slug, location, price, type, status, description, mainImageUrl, id]
+      'UPDATE properties SET title = ?, slug = ?, location = ?, price = ?, type = ?, status = ?, description = ?, image = ?, beds = ?, baths = ? WHERE id = ?',
+      [title, slug, location, price, type, status, description, mainImageUrl, beds || null, baths || null, id]
     );
 
     if (req.files['gallery']) {

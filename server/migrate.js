@@ -50,6 +50,22 @@ async function migrate() {
             await db.exec(schemaSql);
             console.log('Schema applied.');
 
+            // Apply beds/baths migration
+            try {
+                const migrationSql = fs.readFileSync(path.join(dbDir, 'migration_beds_baths.sql'), 'utf8');
+                const migrationStatements = migrationSql.split(';').filter(s => s.trim().length > 0);
+                for (const sql of migrationStatements) {
+                    await db.run(sql);
+                }
+                console.log('Beds/baths migration applied successfully.');
+            } catch (err) {
+                if (err.message && err.message.includes('duplicate column name')) {
+                    console.log('Beds/baths columns already exist, skipping migration.');
+                } else {
+                    console.error('Error applying beds/baths migration:', err);
+                }
+            }
+
             // Check count
             const res = await db.get('SELECT count(*) as count FROM properties');
             if (res.count === 0 && fs.existsSync(seedPath)) {
