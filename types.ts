@@ -39,6 +39,18 @@ export interface Property {
   brochureFiles?: { id: string, name: string, fileUrl: string }[];
   videoUrl?: string;
   hotlineNumber?: string;
+  whatsappNumber?: string;
+  logoImage?: string;
+  blockPlanImage?: string;
+  roadMapImage?: string;
+  locationMapImage?: string;
+  projectStatusLabel?: string;
+  travelHighlights?: { id: string, label: string, time: string }[];
+  inquiryEmail?: string;
+  relatedLands?: string[];
+  metaTitle?: string;
+  metaDescription?: string;
+  ogImage?: string;
   sortOrder?: number;
   shortDescription?: string;
   fullDescription?: string;

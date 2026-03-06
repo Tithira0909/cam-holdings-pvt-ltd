@@ -4,6 +4,8 @@ import Hero from './components/Hero';
 import Stats from './components/Stats';
 import Newsletter from './components/Newsletter';
 import PropertyCard from './components/PropertyCard';
+import LandCard from './components/LandCard';
+import LandDetail from './components/LandDetail';
 import ConsultationModal from './components/ConsultationModal';
 import Footer from './components/Footer';
 import Login from './components/admin/Login';
@@ -36,7 +38,7 @@ import {
   Loader2
 } from 'lucide-react';
 
-type Page = 'home' | 'projects' | 'lands' | 'houses' | 'detail' | 'portfolio-detail' | 'services' | 'service-detail' | 'about' | 'contact' | 'portfolio' | 'testimonials' | 'kyc' | 'privacy' | 'terms' | 'virtual-tour' | 'news' | 'publications' | 'blogs' | 'admin';
+type Page = 'home' | 'projects' | 'lands' | 'houses' | 'properties' | 'detail' | 'portfolio-detail' | 'services' | 'service-detail' | 'about' | 'contact' | 'portfolio' | 'testimonials' | 'kyc' | 'privacy' | 'terms' | 'virtual-tour' | 'news' | 'publications' | 'blogs' | 'admin';
 
 interface Service {
   id: string;
@@ -605,41 +607,99 @@ const App: React.FC = () => {
 
                 {/* 4. Properties Page */}
         {(activePage === 'properties' || activePage === 'lands' || activePage === 'houses' || activePage === 'projects') && (
-          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
-            <div className="max-w-7xl mx-auto text-center mb-16">
-              <h2 className="text-[36px] font-serif font-bold text-luxury-black mb-5 uppercase tracking-tight">
-                {activePage === 'lands' ? 'Lands' : activePage === 'houses' ? 'Houses' : 'All Properties'}
-              </h2>
-              <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto mb-8">
-                {activePage === 'lands'
-                  ? 'Explore our exclusive land projects in prime locations that offer immense potential for investment and development.'
-                  : activePage === 'houses'
-                    ? 'Discover luxurious homes and apartments that combine comfort and design, ideal for families seeking premium living.'
-                    : 'Explore our complete portfolio of premium properties, including exclusive lands and luxurious homes.'}
-              </p>
-            </div>
+          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pb-24">
 
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px] animate-in fade-in slide-in-from-bottom-4 duration-500">
-              {properties.filter(p => {
-                const t = (p.type || "").trim().toLowerCase();
-                if (activePage === 'lands') return t === 'land' || t === 'lands';
-                if (activePage === 'houses') return t === 'house' || t === 'houses' || t === 'apartment';
-                return true; // 'properties' shows all
-              }).map(prop => (
-                <div key={prop.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
-                  <div className="relative aspect-[16/10] overflow-hidden">
-                    <img src={prop.image} alt={prop.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
+            {/* Conditional Hero based on active page */}
+            {activePage === 'lands' ? (
+              <div className="relative w-full bg-luxury-black mb-16 h-[40vh] md:h-[50vh] flex items-center justify-center overflow-hidden">
+                 <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=1600" alt="Lands Hero" className="absolute inset-0 w-full h-full object-cover opacity-50" />
+                 <div className="relative z-10 text-center px-mobile pt-20">
+                    <h1 className="text-4xl md:text-6xl font-serif font-bold text-white uppercase tracking-tight mb-4">Premium Lands</h1>
+                    <p className="text-white/80 text-lg max-w-2xl mx-auto font-light">
+                      Explore our exclusive land projects in prime locations offering immense potential for investment and development.
+                    </p>
+                 </div>
+              </div>
+            ) : (
+              <div className="pt-32 mb-16 px-mobile max-w-7xl mx-auto text-center">
+                <h2 className="text-[36px] font-serif font-bold text-luxury-black mb-5 uppercase tracking-tight">
+                  {activePage === 'houses' ? 'Houses' : 'All Properties'}
+                </h2>
+                <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto mb-8">
+                  {activePage === 'houses'
+                      ? 'Discover luxurious homes and apartments that combine comfort and design, ideal for families seeking premium living.'
+                      : 'Explore our complete portfolio of premium properties, including exclusive lands and luxurious homes.'}
+                </p>
+              </div>
+            )}
+
+            <div className="max-w-7xl mx-auto px-mobile">
+
+              {/* Optional: Add Filters UI here if lands */}
+              {activePage === 'lands' && (
+                <div className="bg-white rounded-xl shadow-sm p-6 mb-12 flex flex-wrap gap-4 items-center border border-gray-100">
+                  <div className="flex-1 min-w-[200px]">
+                     <label className="block text-xs font-bold text-luxury-gray uppercase tracking-wider mb-2">Search</label>
+                     <div className="relative">
+                        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-luxury-gray" />
+                        <input type="text" placeholder="Keyword or Location" className="w-full pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none transition-all" />
+                     </div>
                   </div>
-                  <div className="p-[20px] text-left flex flex-col flex-grow">
-                    <h3 className="text-[22px] font-serif font-bold text-[#333] mb-2">{prop.title}</h3>
-                    <p className="text-[16px] text-[#777] mb-1">Location: {prop.location.split(',')[0]}</p>
-                    <p className="text-[16px] text-[#777] mb-6 font-bold">Price: {prop.price}</p>
-                    <div className="mt-auto">
-                      <button onClick={() => navigate('detail', prop.id)} className="bg-luxury-gold text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-luxury-golddark">View Details</button>
-                    </div>
+                  <div className="flex-1 min-w-[200px]">
+                     <label className="block text-xs font-bold text-luxury-gray uppercase tracking-wider mb-2">District</label>
+                     <select className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none transition-all appearance-none text-luxury-black font-medium">
+                        <option value="">All Districts</option>
+                        <option value="Colombo">Colombo</option>
+                        <option value="Gampaha">Gampaha</option>
+                        <option value="Kalutara">Kalutara</option>
+                     </select>
+                  </div>
+                   <div className="flex-1 min-w-[200px]">
+                     <label className="block text-xs font-bold text-luxury-gray uppercase tracking-wider mb-2">Category</label>
+                     <select className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none transition-all appearance-none text-luxury-black font-medium">
+                        <option value="">All Categories</option>
+                        <option value="Residential">Residential</option>
+                        <option value="Commercial">Commercial</option>
+                     </select>
+                  </div>
+                  <div className="w-full md:w-auto flex items-end">
+                     <button className="w-full md:w-auto bg-luxury-gold text-white px-8 py-2.5 rounded-lg font-bold uppercase tracking-wider text-sm hover:bg-luxury-golddark transition-all shadow-md">
+                        Filter Lands
+                     </button>
                   </div>
                 </div>
-              ))}
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                {properties.filter(p => {
+                  const t = (p.type || "").trim().toLowerCase();
+                  if (activePage === 'lands') return t === 'land' || t === 'lands';
+                  if (activePage === 'houses') return t === 'house' || t === 'houses' || t === 'apartment';
+                  return true; // 'properties' shows all
+                }).map(prop => (
+                  activePage === 'lands' ? (
+                    <LandCard
+                      key={prop.id}
+                      property={prop}
+                      onClick={() => navigate('detail', prop.id)}
+                    />
+                  ) : (
+                    <div key={prop.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
+                      <div className="relative aspect-[16/10] overflow-hidden">
+                        <img src={prop.image} alt={prop.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
+                      </div>
+                      <div className="p-[20px] text-left flex flex-col flex-grow">
+                        <h3 className="text-[22px] font-serif font-bold text-[#333] mb-2">{prop.title}</h3>
+                        <p className="text-[16px] text-[#777] mb-1">Location: {prop.location.split(',')[0]}</p>
+                        <p className="text-[16px] text-[#777] mb-6 font-bold">Price: {prop.price}</p>
+                        <div className="mt-auto">
+                          <button onClick={() => navigate('detail', prop.id)} className="bg-luxury-gold text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-luxury-golddark">View Details</button>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -750,148 +810,158 @@ const App: React.FC = () => {
             {propertyError ? (
               <div className="h-[60vh] flex flex-col items-center justify-center text-center">
                 <p className="text-xl text-red-500 font-serif mb-4">{propertyError}</p>
-                <button onClick={() => navigate('properties')} className="px-6 py-2 bg-luxury-gold text-white rounded hover:bg-opacity-90 transition">Back to Properties</button>
+                <button onClick={() => navigate('properties')} className="px-6 py-2 bg-luxury-gold text-white rounded hover:bg-opacity-90 transition shadow-md">Back to Properties</button>
               </div>
             ) : !currentProperty ? (
               <div className="h-[60vh] flex items-center justify-center text-luxury-gold">
                 <Loader2 size={48} className="animate-spin" />
               </div>
             ) : (
-              <>
-                {/* Image Gallery Hero */}
-                <div className="w-full bg-luxury-black">
-                  <div className="max-w-[1920px] mx-auto relative h-[50vh] md:h-[70vh] overflow-hidden group">
-                    <img
-                      src={currentProperty.image}
-                      className="w-full h-full object-cover"
-                      alt={currentProperty.title}
-                      onClick={() => setSelectedImage(currentProperty.image)}
-                    />
-                    <div className="absolute inset-0 bg-black/20 pointer-events-none" />
-                  </div>
-
-                  {/* Thumbnails Strip */}
-                  {currentProperty.images && currentProperty.images.length > 0 && (
-                    <div className="max-w-7xl mx-auto px-mobile py-4 flex gap-4 overflow-x-auto container-overflow-fix snap-x">
-                      <div
-                        className="flex-shrink-0 w-24 h-16 md:w-32 md:h-24 rounded-md overflow-hidden cursor-pointer border-2 border-luxury-gold shadow-md snap-start"
+              (currentProperty.type?.toLowerCase() === 'land' || currentProperty.type?.toLowerCase() === 'lands') ? (
+                 <LandDetail
+                    property={currentProperty}
+                    onNavigate={navigate}
+                    recommendedLands={properties.filter(p => p.id !== currentProperty.id && (p.type?.toLowerCase() === 'land' || p.type?.toLowerCase() === 'lands')).slice(0, 3)}
+                    onOpenConsultation={() => setIsModalOpen(true)}
+                    setSelectedImage={setSelectedImage}
+                 />
+              ) : (
+                <>
+                  {/* Image Gallery Hero */}
+                  <div className="w-full bg-luxury-black">
+                    <div className="max-w-[1920px] mx-auto relative h-[50vh] md:h-[70vh] overflow-hidden group">
+                      <img
+                        src={currentProperty.image}
+                        className="w-full h-full object-cover"
+                        alt={currentProperty.title}
                         onClick={() => setSelectedImage(currentProperty.image)}
-                      >
-                         <img src={currentProperty.image} className="w-full h-full object-cover" alt="Cover" />
-                      </div>
-                      {currentProperty.images.map((img) => (
+                      />
+                      <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+                    </div>
+
+                    {/* Thumbnails Strip */}
+                    {currentProperty.images && currentProperty.images.length > 0 && (
+                      <div className="max-w-7xl mx-auto px-mobile py-4 flex gap-4 overflow-x-auto container-overflow-fix snap-x">
                         <div
-                          key={img.id}
-                          className="flex-shrink-0 w-24 h-16 md:w-32 md:h-24 rounded-md overflow-hidden cursor-pointer border-2 border-transparent hover:border-luxury-gold/50 transition-colors shadow-md snap-start"
-                          onClick={() => setSelectedImage(img.image_url)}
+                          className="flex-shrink-0 w-24 h-16 md:w-32 md:h-24 rounded-md overflow-hidden cursor-pointer border-2 border-luxury-gold shadow-md snap-start"
+                          onClick={() => setSelectedImage(currentProperty.image)}
                         >
-                          <img src={img.image_url} className="w-full h-full object-cover" alt="Gallery" />
+                           <img src={currentProperty.image} className="w-full h-full object-cover" alt="Cover" />
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div className="max-w-7xl mx-auto px-mobile pt-12">
-                  <div className="flex flex-col lg:flex-row gap-12 items-start">
-
-                    {/* Main Content Column */}
-                    <div className="flex-1 w-full">
-                      {/* Title & Badge Row */}
-                      <div className="flex flex-wrap items-center gap-4 mb-4">
-                        <h1 className="text-3xl md:text-5xl font-serif text-luxury-black font-bold uppercase tracking-tight">{currentProperty.title}</h1>
-                        {currentProperty.status && (
-                          <span className="px-4 py-1.5 bg-luxury-gold text-white text-xs font-bold uppercase tracking-widest rounded-full">
-                            {currentProperty.status}
-                          </span>
-                        )}
+                        {currentProperty.images.map((img) => (
+                          <div
+                            key={img.id}
+                            className="flex-shrink-0 w-24 h-16 md:w-32 md:h-24 rounded-md overflow-hidden cursor-pointer border-2 border-transparent hover:border-luxury-gold/50 transition-colors shadow-md snap-start"
+                            onClick={() => setSelectedImage(img.image_url)}
+                          >
+                            <img src={img.image_url} className="w-full h-full object-cover" alt="Gallery" />
+                          </div>
+                        ))}
                       </div>
-
-                      <div className="flex items-center gap-2 text-luxury-gray mb-8">
-                        <MapPin size={20} className="text-luxury-gold" />
-                        <span className="text-lg uppercase tracking-wider">{currentProperty.location}</span>
-                      </div>
-
-                      {/* Prominent Price */}
-                      {currentProperty.price && (
-                        <div className="mb-10 bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-luxury-gold">
-                          <p className="text-sm text-luxury-gray uppercase tracking-widest font-bold mb-2">Asking Price</p>
-                          <p className="text-3xl md:text-4xl font-serif font-bold text-luxury-black">{formatPrice(currentProperty.price)}</p>
-                        </div>
-                      )}
-
-                      {/* Key Info Blocks */}
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-                        {currentProperty.type && (
-                          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-                            <span className="text-luxury-gray text-xs uppercase tracking-wider font-bold mb-2">Property Type</span>
-                            <span className="text-luxury-black font-serif text-lg md:text-xl font-bold">{currentProperty.type}</span>
-                          </div>
-                        )}
-                        <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-                          <span className="text-luxury-gray text-xs uppercase tracking-wider font-bold mb-2">Location</span>
-                          <span className="text-luxury-black font-serif text-lg md:text-xl font-bold line-clamp-1">{currentProperty.location}</span>
-                        </div>
-                        {currentProperty.beds !== undefined && currentProperty.beds !== null && (
-                          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-                            <span className="text-luxury-gray text-xs uppercase tracking-wider font-bold mb-2">Bedrooms</span>
-                            <span className="text-luxury-black font-serif text-lg md:text-xl font-bold">{currentProperty.beds}</span>
-                          </div>
-                        )}
-                        {currentProperty.sqft !== undefined && currentProperty.sqft !== null && (
-                          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-                            <span className="text-luxury-gray text-xs uppercase tracking-wider font-bold mb-2">Area</span>
-                            <span className="text-luxury-black font-serif text-lg md:text-xl font-bold">{currentProperty.sqft} sqft</span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* About the Property Section */}
-                      {currentProperty.description && (
-                        <div className="bg-white p-8 md:p-10 rounded-xl shadow-sm border border-gray-100 mb-12">
-                          <h2 className="text-2xl font-serif font-bold text-luxury-black mb-6 uppercase tracking-tight border-b border-luxury-border pb-4">
-                            About the Property
-                          </h2>
-                          <div className="prose prose-lg max-w-none text-luxury-gray font-light leading-relaxed whitespace-pre-line">
-                            {currentProperty.description}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Right Sidebar Inquiry Form (Desktop Sticky) */}
-                    <div className="w-full lg:w-[400px] lg:sticky lg:top-32">
-                      <div className="bg-luxury-black text-white p-8 rounded-xl shadow-xl shadow-black/10">
-                        <h3 className="text-2xl font-serif font-bold mb-2">Interested?</h3>
-                        <p className="text-white/70 text-sm mb-6">Contact our sales team to schedule a viewing or request more information.</p>
-
-                        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert("Inquiry sent successfully!"); }}>
-                          <div>
-                            <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Your Name</label>
-                            <input type="text" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors" placeholder="John Doe" />
-                          </div>
-                          <div>
-                            <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Email Address</label>
-                            <input type="email" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors" placeholder="john@example.com" />
-                          </div>
-                          <div>
-                            <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Phone Number</label>
-                            <input type="tel" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors" placeholder="+94 77 XXX XXXX" />
-                          </div>
-                          <div>
-                            <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Message</label>
-                            <textarea rows={3} className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors resize-none" placeholder={`I'm interested in ${currentProperty.title}...`}></textarea>
-                          </div>
-                          <button type="submit" className="w-full bg-luxury-gold text-white font-bold uppercase tracking-widest py-4 rounded-lg hover:bg-white hover:text-luxury-black transition-colors mt-4">
-                            Send Inquiry
-                          </button>
-                        </form>
-                      </div>
-                    </div>
-
+                    )}
                   </div>
-                </div>
-              </>
+
+                  <div className="max-w-7xl mx-auto px-mobile pt-12">
+                    <div className="flex flex-col lg:flex-row gap-12 items-start">
+
+                      {/* Main Content Column */}
+                      <div className="flex-1 w-full">
+                        {/* Title & Badge Row */}
+                        <div className="flex flex-wrap items-center gap-4 mb-4">
+                          <h1 className="text-3xl md:text-5xl font-serif text-luxury-black font-bold uppercase tracking-tight">{currentProperty.title}</h1>
+                          {currentProperty.status && (
+                            <span className="px-4 py-1.5 bg-luxury-gold text-white text-xs font-bold uppercase tracking-widest rounded-full shadow-md">
+                              {currentProperty.status}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2 text-luxury-gray mb-8">
+                          <MapPin size={20} className="text-luxury-gold" />
+                          <span className="text-lg uppercase tracking-wider">{currentProperty.location}</span>
+                        </div>
+
+                        {/* Prominent Price */}
+                        {currentProperty.price && (
+                          <div className="mb-10 bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-luxury-gold">
+                            <p className="text-sm text-luxury-gray uppercase tracking-widest font-bold mb-2">Asking Price</p>
+                            <p className="text-3xl md:text-4xl font-serif font-bold text-luxury-black">{formatPrice(currentProperty.price)}</p>
+                          </div>
+                        )}
+
+                        {/* Key Info Blocks */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                          {currentProperty.type && (
+                            <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
+                              <span className="text-luxury-gray text-xs uppercase tracking-wider font-bold mb-2">Property Type</span>
+                              <span className="text-luxury-black font-serif text-lg md:text-xl font-bold">{currentProperty.type}</span>
+                            </div>
+                          )}
+                          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
+                            <span className="text-luxury-gray text-xs uppercase tracking-wider font-bold mb-2">Location</span>
+                            <span className="text-luxury-black font-serif text-lg md:text-xl font-bold line-clamp-1">{currentProperty.location}</span>
+                          </div>
+                          {currentProperty.beds !== undefined && currentProperty.beds !== null && (
+                            <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
+                              <span className="text-luxury-gray text-xs uppercase tracking-wider font-bold mb-2">Bedrooms</span>
+                              <span className="text-luxury-black font-serif text-lg md:text-xl font-bold">{currentProperty.beds}</span>
+                            </div>
+                          )}
+                          {currentProperty.sqft !== undefined && currentProperty.sqft !== null && (
+                            <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
+                              <span className="text-luxury-gray text-xs uppercase tracking-wider font-bold mb-2">Area</span>
+                              <span className="text-luxury-black font-serif text-lg md:text-xl font-bold">{currentProperty.sqft} sqft</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* About the Property Section */}
+                        {currentProperty.description && (
+                          <div className="bg-white p-8 md:p-10 rounded-xl shadow-sm border border-gray-100 mb-12">
+                            <h2 className="text-2xl font-serif font-bold text-luxury-black mb-6 uppercase tracking-tight border-b border-luxury-border pb-4">
+                              About the Property
+                            </h2>
+                            <div className="prose prose-lg max-w-none text-luxury-gray font-light leading-relaxed whitespace-pre-line">
+                              {currentProperty.description}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Right Sidebar Inquiry Form (Desktop Sticky) */}
+                      <div className="w-full lg:w-[400px] lg:sticky lg:top-32">
+                        <div className="bg-luxury-black text-white p-8 rounded-xl shadow-xl shadow-black/10">
+                          <h3 className="text-2xl font-serif font-bold mb-2">Interested?</h3>
+                          <p className="text-white/70 text-sm mb-6">Contact our sales team to schedule a viewing or request more information.</p>
+
+                          <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert("Inquiry sent successfully!"); }}>
+                            <div>
+                              <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Your Name</label>
+                              <input type="text" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors" placeholder="John Doe" />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Email Address</label>
+                              <input type="email" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors" placeholder="john@example.com" />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Phone Number</label>
+                              <input type="tel" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors" placeholder="+94 77 XXX XXXX" />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Message</label>
+                              <textarea rows={3} className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors resize-none" placeholder={`I'm interested in ${currentProperty.title}...`}></textarea>
+                            </div>
+                            <button type="submit" className="w-full bg-luxury-gold text-white font-bold uppercase tracking-widest py-4 rounded-lg hover:bg-white hover:text-luxury-black transition-colors mt-4 shadow-md">
+                              Send Inquiry
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </>
+              )
             )}
           </div>
         )}
