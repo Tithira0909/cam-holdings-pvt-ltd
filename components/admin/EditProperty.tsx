@@ -73,7 +73,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
       const files = Array.from(e.target.files);
       setGalleryImages(prev => [...prev, ...files]);
 
-      const newPreviews = files.map(file => URL.createObjectURL(file));
+      const newPreviews = files.map(file => URL.createObjectURL(file as unknown as Blob));
       setGalleryPreviews(prev => [...prev, ...newPreviews]);
     }
   };

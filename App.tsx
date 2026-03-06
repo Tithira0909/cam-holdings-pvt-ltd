@@ -36,7 +36,7 @@ import {
   Loader2
 } from 'lucide-react';
 
-type Page = 'home' | 'projects' | 'lands' | 'houses' | 'detail' | 'portfolio-detail' | 'services' | 'service-detail' | 'about' | 'contact' | 'portfolio' | 'testimonials' | 'kyc' | 'privacy' | 'terms' | 'virtual-tour' | 'news' | 'publications' | 'blogs' | 'admin';
+type Page = 'home' | 'properties' | 'projects' | 'lands' | 'houses' | 'detail' | 'portfolio-detail' | 'services' | 'service-detail' | 'about' | 'contact' | 'portfolio' | 'testimonials' | 'kyc' | 'privacy' | 'terms' | 'virtual-tour' | 'news' | 'publications' | 'blogs' | 'admin';
 
 interface Service {
   id: string;
@@ -626,33 +626,147 @@ const App: React.FC = () => {
         )}
 
         {/* 8. Detail Page View */}
-        {activePage === 'detail' && (
-          <div className="animate-in fade-in duration-500 bg-white pb-32">
-            <div className="relative h-[60vh] w-full overflow-hidden">
-              <img src={selectedProperty?.image || properties[0]?.image} className="w-full h-full object-cover" alt="Detail" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-              <div className="absolute bottom-12 px-mobile w-full flex justify-center">
-                <div className="max-w-7xl w-full">
-                  <div className="flex items-center gap-3 text-luxury-gold mb-4">
-                    <MapPin size={20} />
-                    <span className="text-sm uppercase font-bold tracking-brand">{selectedProperty?.location || 'Location'}</span>
-                  </div>
-                  <h1 className="text-4xl md:text-6xl font-serif text-white leading-tight mb-4 uppercase">{selectedProperty?.title || 'Property Detail'}</h1>
-                </div>
-              </div>
-            </div>
+        {activePage === 'detail' && selectedProperty && (
+          <div className="animate-in fade-in duration-500 bg-[#f8f9fa] pb-32 pt-24">
+            <div className="max-w-7xl mx-auto px-mobile py-12">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
 
-            <div className="max-w-7xl mx-auto px-mobile py-16">
-              {selectedProperty?.description && (
-                <div className="mb-12">
-                  <h2 className="text-2xl font-serif font-bold text-luxury-black mb-6 uppercase tracking-tight border-b border-luxury-border pb-4">
-                    Description
-                  </h2>
-                  <div className="prose prose-lg max-w-none text-[#555] font-light leading-relaxed whitespace-pre-line">
-                    {selectedProperty.description}
+                {/* Left Content Area */}
+                <div className="lg:col-span-2 space-y-12">
+
+                  {/* Gallery */}
+                  <div className="bg-white rounded-2xl p-6 shadow-sm border border-luxury-border">
+                    <div className="aspect-[16/9] overflow-hidden rounded-xl mb-4 bg-luxury-offwhite">
+                      <img src={selectedProperty.image} className="w-full h-full object-cover" alt={selectedProperty.title} />
+                    </div>
+                    {selectedProperty.gallery && selectedProperty.gallery.length > 0 && (
+                      <div className="grid grid-cols-4 gap-4">
+                        {selectedProperty.gallery.map((img, idx) => (
+                          <div key={idx} className="aspect-[4/3] rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity bg-luxury-offwhite border border-luxury-border">
+                            <img src={img} className="w-full h-full object-cover" alt={`${selectedProperty.title} gallery ${idx + 1}`} />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Details Header */}
+                  <div>
+                     <h1 className="text-3xl md:text-5xl font-serif font-bold text-luxury-black mb-4 uppercase">{selectedProperty.title}</h1>
+                     <div className="flex flex-wrap items-center gap-4 text-[#555] font-medium text-lg">
+                       <span className="flex items-center gap-2"><MapPin size={20} className="text-luxury-black" /> {selectedProperty.location}</span>
+                     </div>
+                  </div>
+
+                  {/* Description */}
+                  {selectedProperty.description && (
+                    <div className="bg-white rounded-2xl p-8 shadow-sm border border-luxury-border">
+                      <h2 className="text-2xl font-serif font-bold text-luxury-black mb-6 border-b border-luxury-border pb-4">About the Project</h2>
+                      <div className="prose prose-lg max-w-none text-[#555] leading-relaxed whitespace-pre-wrap">
+                        {selectedProperty.description}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Features / Details */}
+                  <div className="bg-white rounded-2xl p-8 shadow-sm border border-luxury-border">
+                      <h2 className="text-2xl font-serif font-bold text-luxury-black mb-6 border-b border-luxury-border pb-4">Premium Features</h2>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div className="text-center p-4 bg-luxury-offwhite rounded-xl">
+                          <div className="text-sm text-[#777] uppercase tracking-wider mb-2">Price</div>
+                          <div className="font-bold text-luxury-black text-xl">{selectedProperty.price}</div>
+                        </div>
+                        <div className="text-center p-4 bg-luxury-offwhite rounded-xl">
+                          <div className="text-sm text-[#777] uppercase tracking-wider mb-2">Type</div>
+                          <div className="font-bold text-luxury-black text-xl">{selectedProperty.type}</div>
+                        </div>
+                        {selectedProperty.beds !== undefined && (
+                          <div className="text-center p-4 bg-luxury-offwhite rounded-xl">
+                            <div className="text-sm text-[#777] uppercase tracking-wider mb-2">Beds</div>
+                            <div className="font-bold text-luxury-black text-xl">{selectedProperty.beds}</div>
+                          </div>
+                        )}
+                        {selectedProperty.baths !== undefined && (
+                          <div className="text-center p-4 bg-luxury-offwhite rounded-xl">
+                            <div className="text-sm text-[#777] uppercase tracking-wider mb-2">Baths</div>
+                            <div className="font-bold text-luxury-black text-xl">{selectedProperty.baths}</div>
+                          </div>
+                        )}
+                      </div>
                   </div>
                 </div>
-              )}
+
+                {/* Right Sticky Sidebar (Inquiry Form) */}
+                <div className="lg:col-span-1">
+                  <div className="sticky top-32 bg-white rounded-2xl p-8 shadow-[0px_8px_30px_rgba(0,0,0,0.06)] border border-luxury-border">
+                    <div className="text-center mb-8">
+                       <h3 className="text-xl font-bold text-[#777] uppercase tracking-wider mb-2">Starting Price</h3>
+                       <div className="text-3xl font-bold text-luxury-black">{selectedProperty.price}</div>
+                    </div>
+
+                    <h3 className="text-2xl font-serif font-bold text-luxury-black mb-6 uppercase border-b border-luxury-border pb-4 text-center">Inquire</h3>
+
+                    <form
+                      className="space-y-4"
+                      onSubmit={async (e) => {
+                        e.preventDefault();
+                        const form = e.target as HTMLFormElement;
+                        const formData = new FormData(form);
+                        const data = {
+                          full_name: formData.get('name'),
+                          email: formData.get('email'),
+                          phone: formData.get('phone'),
+                          message: formData.get('message'),
+                          subject: `Inquiry for ${selectedProperty.title}`,
+                          service: 'Property Inquiry'
+                        };
+
+                        try {
+                           const res = await fetch('/api/inquiries', {
+                             method: 'POST',
+                             headers: { 'Content-Type': 'application/json' },
+                             body: JSON.stringify(data)
+                           });
+                           if (res.ok) {
+                             alert('Inquiry sent successfully!');
+                             form.reset();
+                           } else {
+                             alert('Failed to send inquiry.');
+                           }
+                        } catch (err) {
+                          console.error(err);
+                          alert('An error occurred.');
+                        }
+                      }}
+                    >
+                      <div>
+                        <input name="name" type="text" placeholder="Name" required className="w-full p-4 border border-[#ddd] rounded-xl focus:ring-1 focus:ring-luxury-gold focus:border-luxury-gold outline-none transition-all text-[15px] bg-[#fafafa]" />
+                      </div>
+                      <div>
+                        <input name="phone" type="tel" placeholder="Phone Number" required className="w-full p-4 border border-[#ddd] rounded-xl focus:ring-1 focus:ring-luxury-gold focus:border-luxury-gold outline-none transition-all text-[15px] bg-[#fafafa]" />
+                      </div>
+                      <div>
+                        <input name="email" type="email" placeholder="Email Address" required className="w-full p-4 border border-[#ddd] rounded-xl focus:ring-1 focus:ring-luxury-gold focus:border-luxury-gold outline-none transition-all text-[15px] bg-[#fafafa]" />
+                      </div>
+                      <div>
+                        <textarea name="message" placeholder="Message" required rows={4} className="w-full p-4 border border-[#ddd] rounded-xl focus:ring-1 focus:ring-luxury-gold focus:border-luxury-gold outline-none transition-all resize-none text-[15px] bg-[#fafafa]"></textarea>
+                      </div>
+                      <button type="submit" className="w-full bg-[#0A41A8] hover:bg-[#083180] text-white px-6 py-4 rounded-xl font-bold uppercase tracking-wide transition-all mt-4 text-[15px] shadow-md">
+                        Submit Inquiry
+                      </button>
+                    </form>
+
+                    <div className="mt-8 text-center border-t border-luxury-border pt-6">
+                      <div className="text-[13px] text-[#777] uppercase tracking-widest mb-2 font-bold">Hotline Numbers</div>
+                      <a href="tel:0712030838" className="text-xl font-bold text-luxury-black flex items-center justify-center gap-2 hover:text-luxury-gold transition-colors">
+                        <Phone size={20} />
+                        071 20 30 838
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
             </div>
           </div>
         )}

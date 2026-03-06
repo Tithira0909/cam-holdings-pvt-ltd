@@ -22,6 +22,7 @@ export interface Property {
   sqft?: number;
   featured?: boolean;
   floorPlans?: FloorPlan[];
+  gallery?: string[];
 }
 
 export interface Project {

@@ -472,6 +472,13 @@ app.get('/api/properties', async (req, res) => {
     sql += ' ORDER BY created_at DESC';
 
     const properties = await query(sql, params);
+
+    // Fetch gallery images for all properties
+    for (const property of properties) {
+      const images = await query('SELECT image_url FROM property_images WHERE property_id = ?', [property.id]);
+      property.gallery = images.map(img => img.image_url);
+    }
+
     res.json(properties);
   } catch (err) {
     console.error('Error fetching properties:', err);
