@@ -27,7 +27,8 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
   const [mainImagePreview, setMainImagePreview] = useState<string | null>(null);
   const [galleryImages, setGalleryImages] = useState<File[]>([]);
   const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
-  const [existingGallery, setExistingGallery] = useState<string[]>([]);
+  const [existingGallery, setExistingGallery] = useState<any[]>([]);
+  const [uploadingGallery, setUploadingGallery] = useState(false);
 
   const mainImageInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
@@ -35,6 +36,54 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
   useEffect(() => {
     fetchPropertyDetails();
   }, [propertyId]);
+
+
+  const handleDeleteExistingImage = async (imageId: number) => {
+    if (!confirm('Are you sure you want to delete this gallery image?')) return;
+    try {
+      const res = await fetch(`/api/admin/properties/images/${imageId}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        setExistingGallery(prev => prev.filter(img => img.id !== imageId));
+      } else {
+        alert('Failed to delete image');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error deleting image');
+    }
+  };
+
+  const handleUploadNewImages = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+
+    setUploadingGallery(true);
+    const formData = new FormData();
+    Array.from(e.target.files).forEach(file => {
+      formData.append('images', file);
+    });
+
+    try {
+      const res = await fetch(`/api/admin/properties/${propertyId}/images`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (res.ok) {
+        const newImages = await res.json();
+        setExistingGallery(prev => [...prev, ...newImages]);
+      } else {
+        alert('Failed to upload images');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error uploading images');
+    } finally {
+      setUploadingGallery(false);
+      if (galleryInputRef.current) galleryInputRef.current.value = '';
+    }
+  };
 
   const fetchPropertyDetails = async () => {
     try {
@@ -47,10 +96,16 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
       setLocation(data.location);
       setPrice(data.price);
       setType(data.type);
-      setStatus(data.status);
+      setStatus(data.status || 'Active');
       setDescription(data.description);
       setMainImagePreview(data.image);
-      setExistingGallery(data.gallery || []);
+
+      // Fetch gallery images from new endpoint
+      const imgRes = await fetch(`/api/admin/properties/${propertyId}/images`);
+      if (imgRes.ok) {
+         const imgData = await imgRes.json();
+         setExistingGallery(imgData);
+      }
 
     } catch (err) {
       console.error(err);
@@ -163,7 +218,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                 <input
                   type="text"
                   value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  onChange={(e) => { setTitle(e.target.value); if(!slug) setSlug(e.target.value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')); }}
                   required
                   className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-transparent outline-none transition-all"
                   placeholder="e.g. The Grand Manor"
@@ -276,58 +331,60 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
               </div>
             </div>
 
-            {/* Gallery Images */}
-            <div>
-              <label className="block text-sm font-bold text-luxury-gray mb-2 uppercase tracking-wider">Gallery Images (New)</label>
-              <div
-                onClick={() => galleryInputRef.current?.click()}
-                className="border-2 border-dashed border-gray-300 rounded-xl p-4 min-h-[200px] cursor-pointer hover:border-luxury-gold transition-colors"
-              >
-                {/* Existing Gallery Display */}
-                {existingGallery.length > 0 && (
-                   <div className="mb-4">
-                       <p className="text-xs text-gray-400 mb-2">Existing:</p>
-                       <div className="grid grid-cols-4 gap-2">
-                           {existingGallery.map((img, idx) => (
-                               <div key={idx} className="aspect-square relative">
-                                   <img src={img} className="w-full h-full object-cover rounded-lg" alt="Existing" />
-                               </div>
-                           ))}
-                       </div>
-                   </div>
-                )}
 
-                {galleryPreviews.length > 0 ? (
-                  <div className="grid grid-cols-3 gap-2">
-                    {galleryPreviews.map((preview, idx) => (
-                      <div key={idx} className="relative aspect-square group">
-                        <img src={preview} alt={`Gallery ${idx}`} className="w-full h-full object-cover rounded-lg" />
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            removeGalleryImage(idx);
-                          }}
-                          className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <X size={12} />
-                        </button>
-                      </div>
-                    ))}
-                    <div className="aspect-square flex items-center justify-center bg-gray-50 rounded-lg border border-gray-200">
-                      <Plus size={24} className="text-gray-400" />
+          </div>
+          {/* Gallery Section */}
+          <div className="pt-8 border-t border-gray-100">
+            <h3 className="text-xl font-serif font-bold text-luxury-black mb-6">Gallery Images</h3>
+
+            <div className="bg-gray-50 p-6 rounded-lg border border-gray-100">
+
+              {/* Existing Images */}
+              {existingGallery.length > 0 ? (
+                <div className="mb-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {existingGallery.map((img) => (
+                    <div key={img.id} className="relative aspect-[4/3] rounded-lg overflow-hidden group shadow-sm">
+                      <img src={img.image_url} alt="Gallery" className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteExistingImage(img.id)}
+                        className="absolute top-2 right-2 bg-red-500/80 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-md backdrop-blur-sm"
+                        title="Remove image"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 mb-6 bg-white rounded-lg border border-dashed border-gray-200">
+                   <p className="text-luxury-gray italic">No gallery images yet.</p>
+                </div>
+              )}
+
+              {/* Upload New Images */}
+              <div>
+                <label className="block text-sm font-bold text-luxury-black mb-2">Add More Images</label>
+                <div
+                  className={`border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:bg-gray-50 transition-colors cursor-pointer ${uploadingGallery ? 'opacity-50 pointer-events-none' : ''}`}
+                  onClick={() => galleryInputRef.current?.click()}
+                >
+                  <div className="flex flex-col items-center justify-center gap-3">
+                    {uploadingGallery ? (
+                      <Loader2 size={32} className="text-luxury-gold animate-spin" />
+                    ) : (
+                      <Upload size={32} className="text-luxury-gray" />
+                    )}
+                    <div>
+                      <p className="font-medium text-luxury-black">{uploadingGallery ? 'Uploading...' : 'Click to select additional images'}</p>
+                      <p className="text-xs text-luxury-gray mt-1">PNG, JPG up to 5MB each. You can select multiple.</p>
                     </div>
                   </div>
-                ) : (
-                  <div className="h-full flex flex-col items-center justify-center py-8">
-                    <Upload size={48} className="text-gray-300 mb-2" />
-                    <p className="text-gray-500 font-medium">Click to upload new gallery images</p>
-                  </div>
-                )}
+                </div>
                 <input
                   type="file"
                   ref={galleryInputRef}
-                  onChange={handleGalleryChange}
+                  onChange={handleUploadNewImages}
                   accept="image/*"
                   multiple
                   className="hidden"

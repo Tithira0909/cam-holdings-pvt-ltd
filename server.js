@@ -21,6 +21,7 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // Ensure uploads directory exists
 const uploadDir = path.join(__dirname, 'public/uploads');
@@ -135,21 +136,35 @@ app.put('/api/settings/analytics', (req, res) => {
 
 // --- SITE SETTINGS ---
 
-app.get('/api/settings/site', (req, res) => {
+app.get('/api/settings/site', async (req, res) => {
   const settingsPath = path.join(__dirname, 'database/settings.json');
   try {
+    let data = {};
     if (fs.existsSync(settingsPath)) {
-      const data = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
-      res.json({
-        site_name: data.site_name || '',
-        contact_email: data.contact_email || '',
-        contact_phone: data.contact_phone || '',
-        address: data.address || '',
-        site_logo_url: data.site_logo_url || null
-      });
-    } else {
-      res.json({});
+      data = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
     }
+
+    // Attempt to merge from DB
+    try {
+        await query('CREATE TABLE IF NOT EXISTS settings (setting_key VARCHAR(255) PRIMARY KEY, setting_value TEXT)');
+        const dbSettings = await query('SELECT * FROM settings');
+        if (dbSettings && Array.isArray(dbSettings)) {
+            dbSettings.forEach(s => {
+                if (s.setting_key === 'hero_image') {
+                    data.hero_image_url = s.setting_value;
+                }
+            });
+        }
+    } catch(dbErr) { }
+
+    res.json({
+      site_name: data.site_name || '',
+      contact_email: data.contact_email || '',
+      contact_phone: data.contact_phone || '',
+      address: data.address || '',
+      hero_image_url: data.hero_image_url || null,
+      hero_image: data.hero_image_url || null // Map alias for frontend
+    });
   } catch (error) {
     console.error('Error reading site settings:', error);
     res.status(500).json({ error: 'Failed to fetch site settings' });
@@ -168,7 +183,8 @@ app.put('/api/settings/site', (req, res) => {
         site_name: req.body.site_name,
         contact_email: req.body.contact_email,
         contact_phone: req.body.contact_phone,
-        address: req.body.address
+        address: req.body.address,
+        hero_image_url: req.body.hero_image_url !== undefined ? req.body.hero_image_url : currentSettings.hero_image_url
     };
     fs.writeFileSync(settingsPath, JSON.stringify(updatedSettings, null, 2), 'utf8');
     res.json({
@@ -176,7 +192,7 @@ app.put('/api/settings/site', (req, res) => {
         contact_email: updatedSettings.contact_email,
         contact_phone: updatedSettings.contact_phone,
         address: updatedSettings.address,
-        site_logo_url: updatedSettings.site_logo_url || null
+        hero_image_url: updatedSettings.hero_image_url || null
     });
   } catch (error) {
     console.error('Error updating site settings:', error);
@@ -184,36 +200,71 @@ app.put('/api/settings/site', (req, res) => {
   }
 });
 
-app.post('/api/settings/site/logo', upload.single('logo'), (req, res) => {
+app.post('/api/settings/site/hero', upload.single('hero_image'), async (req, res) => {
   const settingsPath = path.join(__dirname, 'database/settings.json');
   try {
     if (!req.file) {
-      return res.status(400).json({ error: 'No logo file provided' });
+      return res.status(400).json({ error: 'No hero image file provided', success: false });
     }
 
-    const logoUrl = `/uploads/${req.file.filename}`;
+    const heroUrl = `/uploads/${req.file.filename}`;
 
+    // Update settings.json as fallback
     let currentSettings = {};
     if (fs.existsSync(settingsPath)) {
       currentSettings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
     }
-
     const updatedSettings = {
         ...currentSettings,
-        site_logo_url: logoUrl
+        hero_image_url: heroUrl
     };
-
     fs.writeFileSync(settingsPath, JSON.stringify(updatedSettings, null, 2), 'utf8');
 
+    // Also persist in DB as per requirement
+    try {
+        // We use an upsert strategy depending on if it's sqlite or mysql.
+        // For simplicity, let's just delete the key and insert.
+        await query('CREATE TABLE IF NOT EXISTS settings (setting_key VARCHAR(255) PRIMARY KEY, setting_value TEXT)');
+        await query('DELETE FROM settings WHERE setting_key = "hero_image"');
+        await query('INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)', ['hero_image', heroUrl]);
+    } catch(dbErr) {
+        console.error('Failed to save to DB settings table, continuing with JSON:', dbErr);
+    }
+
     res.json({
-        message: 'Logo uploaded successfully',
-        logo_url: logoUrl
+        success: true,
+        hero_image: heroUrl
     });
   } catch (error) {
-    console.error('Error uploading site logo:', error);
-    res.status(500).json({ error: 'Failed to upload site logo' });
+    console.error('Error uploading hero image:', error);
+    res.status(500).json({ error: 'Failed to upload hero image', success: false });
   }
 });
+
+// DELETE endpoint to remove hero image
+app.delete('/api/settings/site/hero', async (req, res) => {
+  const settingsPath = path.join(__dirname, 'database/settings.json');
+  try {
+    let currentSettings = {};
+    if (fs.existsSync(settingsPath)) {
+      currentSettings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+    }
+    const updatedSettings = {
+        ...currentSettings,
+        hero_image_url: null
+    };
+    fs.writeFileSync(settingsPath, JSON.stringify(updatedSettings, null, 2), 'utf8');
+
+    try {
+        await query('DELETE FROM settings WHERE setting_key = "hero_image"');
+    } catch(dbErr) { }
+
+    res.json({ success: true, message: 'Hero image removed' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to remove hero image', success: false });
+  }
+});
+
 
 // --- ROLES SETTINGS ---
 
@@ -437,6 +488,64 @@ app.put('/api/admin/services/:id', upload.single('cover_image'), async (req, res
   }
 });
 
+// --- Admin Property Gallery Images Management ---
+
+// GET images for a property
+app.get('/api/admin/properties/:id/images', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const images = await query('SELECT * FROM property_images WHERE property_id = ? ORDER BY id ASC', [id]);
+    res.json(images);
+  } catch (err) {
+    console.error('Error fetching property images:', err);
+    res.status(500).json({ error: 'Failed to fetch property images' });
+  }
+});
+
+// POST multiple images for a property
+app.post('/api/admin/properties/:id/images', upload.array('images', 10), async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ error: 'No files uploaded' });
+    }
+
+    const insertedImages = [];
+    for (const file of req.files) {
+      const imageUrl = `/uploads/${file.filename}`;
+      const result = await query(
+        'INSERT INTO property_images (property_id, image_url) VALUES (?, ?)',
+        [id, imageUrl]
+      );
+      insertedImages.push({ id: result.insertId, property_id: id, image_url: imageUrl });
+    }
+
+    res.status(201).json(insertedImages);
+  } catch (err) {
+    console.error('Error uploading property images:', err);
+    res.status(500).json({ error: 'Failed to upload property images' });
+  }
+});
+
+// DELETE a specific image
+app.delete('/api/admin/properties/images/:imageId', async (req, res) => {
+  try {
+    const { imageId } = req.params;
+    const result = await query('DELETE FROM property_images WHERE id = ?', [imageId]);
+
+    // Note: To be fully complete, you might want to also delete the physical file from the /uploads folder using fs.unlinkSync.
+    // For now we just remove the DB record.
+
+    if (result.affectedRows === 0 && result.changes === 0) { // changes for sqlite, affectedRows for mysql
+      return res.status(404).json({ error: 'Image not found' });
+    }
+    res.json({ message: 'Image deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting property image:', err);
+    res.status(500).json({ error: 'Failed to delete property image' });
+  }
+});
+
 // DELETE service
 app.delete('/api/admin/services/:id', async (req, res) => {
   try {
@@ -480,10 +589,17 @@ app.get('/api/properties', async (req, res) => {
 });
 
 // GET property by ID
-app.get('/api/properties/:id', async (req, res) => {
+app.get('/api/properties/:identifier', async (req, res) => {
   try {
-    const { id } = req.params;
-    const properties = await query('SELECT * FROM properties WHERE id = ?', [id]);
+    const { identifier } = req.params;
+    let properties;
+
+    // Check if identifier is a number (id) or a string (slug)
+    if (!isNaN(identifier)) {
+        properties = await query('SELECT * FROM properties WHERE id = ?', [identifier]);
+    } else {
+        properties = await query('SELECT * FROM properties WHERE slug = ?', [identifier]);
+    }
 
     if (!properties || properties.length === 0) {
       return res.status(404).json({ error: 'Property not found' });
@@ -492,8 +608,8 @@ app.get('/api/properties/:id', async (req, res) => {
     const property = properties[0];
 
     // Fetch gallery images
-    const images = await query('SELECT * FROM property_images WHERE property_id = ?', [id]);
-    property.gallery = images.map(img => img.image_url);
+    const images = await query('SELECT * FROM property_images WHERE property_id = ? ORDER BY id ASC', [property.id]);
+    property.images = images.map(img => ({ id: img.id, image_url: img.image_url }));
 
     res.json(property);
   } catch (err) {
@@ -681,16 +797,24 @@ app.delete('/api/projects/:id', async (req, res) => {
 });
 
 // GET project by ID
-app.get('/api/projects/:id', async (req, res) => {
+app.get('/api/projects/:identifier', async (req, res) => {
   try {
-    const { id } = req.params;
-    const projects = await query('SELECT * FROM projects WHERE id = ?', [id]);
+    const { identifier } = req.params;
+    let projects;
+    if (!isNaN(identifier)) {
+        projects = await query('SELECT * FROM projects WHERE id = ?', [identifier]);
+    } else {
+        projects = await query('SELECT * FROM projects WHERE id = ?', [identifier]); // No slug in projects table yet, fallback to id
+    }
 
     if (!projects || projects.length === 0) {
       return res.status(404).json({ error: 'Project not found' });
     }
 
-    res.json(projects[0]);
+    const project = projects[0];
+    project.images = []; // Mock images array for now since there's no project_images table
+
+    res.json(project);
   } catch (err) {
     console.error('Error fetching project:', err);
     res.status(500).json({ error: 'Failed to fetch project' });

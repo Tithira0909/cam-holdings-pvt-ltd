@@ -10,7 +10,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
     <footer className="bg-luxury-black text-white pt-20 pb-12 border-t border-white/10">
       <div className="max-w-7xl mx-auto px-mobile">
         {/* Main Footer Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 mb-20">
           {/* Column 1: About Us & Contact */}
           <div>
             <h4 className="text-white font-bold text-sm mb-8 tracking-wider">
@@ -103,7 +103,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   onClick={() => onNavigate("portfolio")}
                   className="hover:text-luxury-gold transition-colors text-left"
                 >
-                  Portfolio Properties
+                  Projects Properties
                 </button>
               </li>
               <li>
@@ -125,40 +125,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </ul>
           </div>
 
-          {/* Column 3: News & Publications */}
-          <div>
-            <h4 className="text-white font-bold text-sm mb-8 tracking-wider">
-              News & Publications
-            </h4>
-            <ul className="space-y-4 text-white/60 text-sm font-light">
-              <li>
-                <button
-                  onClick={() => onNavigate("news")}
-                  className="hover:text-luxury-gold transition-colors text-left"
-                >
-                  News
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate("publications")}
-                  className="hover:text-luxury-gold transition-colors text-left"
-                >
-                  Online Publications
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate("blogs")}
-                  className="hover:text-luxury-gold transition-colors text-left"
-                >
-                  Blogs
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          {/* Column 4: Contact Details */}
+          {/* Column 3: Contact Details */}
           <div>
             <h4 className="text-white font-bold text-sm mb-8 tracking-wider">
               Contact Details

@@ -23,7 +23,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
     { label: 'Home', page: 'home' },
     { label: 'Services', page: 'services' },
     { label: 'Virtual Tour', page: 'virtual-tour' },
-    { label: 'Portfolio', page: 'portfolio' },
+    { label: 'Projects', page: 'portfolio' },
     {
       label: 'Properties',
       page: 'properties',
@@ -64,9 +64,9 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
             {navLinks.map((link, idx) => (
               <div key={idx} className="relative group/dropdown">
                 <button
-                  onClick={() => onNavigate(link.page as any)}
+                  onClick={() => onNavigate(link.page === 'dropdown' ? 'properties' : link.page as any)}
                   className={`text-[16px] uppercase tracking-luxury font-bold transition-all relative group hover:text-luxury-gold ${
-                    (activePage === link.page || (link.dropdown && link.dropdown.some(d => d.page === activePage)))
+                    (activePage === link.page || activePage === 'properties' || (link.dropdown && link.dropdown.some(d => d.page === activePage)))
                       ? 'text-luxury-gold'
                       : textColorClass
                   }`}

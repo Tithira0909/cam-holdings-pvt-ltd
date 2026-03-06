@@ -22,6 +22,8 @@ export interface Property {
   sqft?: number;
   featured?: boolean;
   floorPlans?: FloorPlan[];
+  status?: string;
+  images?: { id: number; image_url: string }[];
 }
 
 export interface Project {

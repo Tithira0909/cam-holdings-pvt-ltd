@@ -49,6 +49,17 @@ interface Service {
   sort_order: number;
 }
 
+
+// Helper to format price nicely if it's purely numerical, otherwise return as is
+const formatPrice = (price?: string) => {
+  if (!price) return '';
+  const num = Number(price);
+  if (!isNaN(num)) {
+    return new Intl.NumberFormat('en-LK', { style: 'currency', currency: 'LKR', minimumFractionDigits: 0 }).format(num);
+  }
+  return price;
+};
+
 const App: React.FC = () => {
   const [activePage, setActivePage] = useState<Page>(() => {
     const path = window.location.pathname;
@@ -71,6 +82,9 @@ const App: React.FC = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [currentService, setCurrentService] = useState<Service | null>(null);
   const [currentPortfolio, setCurrentPortfolio] = useState<Project | null>(null);
+  const [currentProperty, setCurrentProperty] = useState<Property | null>(null);
+  const [propertyError, setPropertyError] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -165,11 +179,33 @@ const App: React.FC = () => {
       };
       fetchPortfolioDetail();
     }
-  }, [activePage, selectedServiceSlug, selectedPortfolioId]);
+
+    if (activePage === 'detail' && selectedProjectId) {
+      const fetchPropertyDetail = async () => {
+        try {
+          const res = await fetch(`/api/properties/${selectedProjectId}`);
+          if (res.ok) {
+            const data = await res.json();
+            setCurrentProperty(data);
+          } else {
+            setPropertyError('Failed to load property details.');
+          }
+        } catch (err) {
+          console.error(err);
+          setPropertyError('An error occurred while fetching property details.');
+        }
+      };
+      fetchPropertyDetail();
+    }
+  }, [activePage, selectedServiceSlug, selectedPortfolioId, selectedProjectId]);
 
   const navigate = (page: Page, id?: string) => {
     setActivePage(page);
-    if (page === 'detail' && id) setSelectedProjectId(id);
+    if (page === 'detail' && id) {
+      setSelectedProjectId(id);
+      setCurrentProperty(null); // Reset while loading
+      setPropertyError(null);
+    }
     if (page === 'portfolio-detail' && id) {
       setSelectedPortfolioId(id);
       setCurrentPortfolio(null); // Reset while loading
@@ -221,8 +257,6 @@ const App: React.FC = () => {
        </div>
      );
   }
-
-  const selectedProperty = properties.find(p => p.id === selectedProjectId);
 
   return (
     <div className={`min-h-screen bg-white selection:bg-luxury-gold selection:text-white font-sans page-${activePage}`}>
@@ -389,43 +423,126 @@ const App: React.FC = () => {
           </div>
         )}
 
+
         {/* 3a. Portfolio Detail Page */}
         {activePage === 'portfolio-detail' && (
-          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
+          <div className="animate-in fade-in duration-500 bg-[#f4f4f4] pb-32">
              {currentPortfolio ? (
-               <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
-                 <div className="relative aspect-video">
-                   <img src={currentPortfolio.image} alt={currentPortfolio.title} className="w-full h-full object-cover" />
-                   {currentPortfolio.category && (
-                     <div className="absolute top-4 left-4 bg-luxury-black/60 backdrop-blur-md text-white text-[10px] uppercase tracking-widest px-4 py-2 font-bold rounded-lg">
-                       {currentPortfolio.category}
-                     </div>
-                   )}
-                 </div>
-                 <div className="p-8 md:p-12">
-                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 border-b border-luxury-border pb-8">
-                     <div>
-                       <h1 className="text-3xl md:text-4xl font-serif font-bold text-luxury-black mb-4">{currentPortfolio.title}</h1>
-                       <div className="flex flex-wrap items-center gap-4 text-luxury-gray text-sm md:text-base font-bold">
-                         <div className="flex items-center gap-1.5"><MapPin size={18} className="text-luxury-gold" /> {currentPortfolio.location}</div>
-                         <div className="flex items-center gap-1.5"><Calendar size={18} className="text-luxury-gold" /> {currentPortfolio.year}</div>
-                       </div>
-                     </div>
-                     <button
-                       onClick={() => navigate('portfolio')}
-                       className="bg-luxury-gold text-white px-6 py-3 text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-luxury-golddark whitespace-nowrap"
-                     >
-                       Back to Portfolio
-                     </button>
-                   </div>
+               <>
+                {/* Image Gallery Hero */}
+                <div className="w-full bg-luxury-black">
+                  <div className="max-w-[1920px] mx-auto relative h-[50vh] md:h-[70vh] overflow-hidden group">
+                    <img
+                      src={currentPortfolio.image}
+                      className="w-full h-full object-cover"
+                      alt={currentPortfolio.title}
+                      onClick={() => setSelectedImage(currentPortfolio.image)}
+                    />
+                    <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+                  </div>
 
-                   <div className="prose prose-lg max-w-none text-luxury-gray">
-                     <p className="whitespace-pre-line leading-relaxed text-[16px] md:text-[18px]">
-                       {currentPortfolio.description || 'No description available for this project.'}
-                     </p>
-                   </div>
-                 </div>
-               </div>
+                  {/* Thumbnails Strip */}
+                  {currentPortfolio.images && currentPortfolio.images.length > 0 && (
+                    <div className="max-w-7xl mx-auto px-mobile py-4 flex gap-4 overflow-x-auto container-overflow-fix snap-x">
+                      <div
+                        className="flex-shrink-0 w-24 h-16 md:w-32 md:h-24 rounded-md overflow-hidden cursor-pointer border-2 border-luxury-gold shadow-md snap-start"
+                        onClick={() => setSelectedImage(currentPortfolio.image)}
+                      >
+                         <img src={currentPortfolio.image} className="w-full h-full object-cover" alt="Cover" />
+                      </div>
+                      {currentPortfolio.images.map((img: any) => (
+                        <div
+                          key={img.id}
+                          className="flex-shrink-0 w-24 h-16 md:w-32 md:h-24 rounded-md overflow-hidden cursor-pointer border-2 border-transparent hover:border-luxury-gold/50 transition-colors shadow-md snap-start"
+                          onClick={() => setSelectedImage(img.image_url)}
+                        >
+                          <img src={img.image_url} className="w-full h-full object-cover" alt="Gallery" />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="max-w-7xl mx-auto px-mobile pt-12">
+                  <div className="flex flex-col lg:flex-row gap-12 items-start">
+
+                    {/* Main Content Column */}
+                    <div className="flex-1 w-full">
+                      {/* Title & Badge Row */}
+                      <div className="flex flex-wrap items-center gap-4 mb-4">
+                        <h1 className="text-3xl md:text-5xl font-serif text-luxury-black font-bold uppercase tracking-tight">{currentPortfolio.title}</h1>
+                        {currentPortfolio.category && (
+                          <span className="px-4 py-1.5 bg-luxury-gold text-white text-xs font-bold uppercase tracking-widest rounded-full">
+                            {currentPortfolio.category}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2 text-luxury-gray mb-10">
+                        <MapPin size={20} className="text-luxury-gold" />
+                        <span className="text-lg uppercase tracking-wider">{currentPortfolio.location || 'Location Not Specified'}</span>
+                      </div>
+
+                      {/* Key Info Blocks */}
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                        {currentPortfolio.category && (
+                          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
+                            <span className="text-luxury-gray text-xs uppercase tracking-wider font-bold mb-2">Project Category</span>
+                            <span className="text-luxury-black font-serif text-lg md:text-xl font-bold">{currentPortfolio.category}</span>
+                          </div>
+                        )}
+                        {currentPortfolio.year && (
+                          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
+                            <span className="text-luxury-gray text-xs uppercase tracking-wider font-bold mb-2">Completion Year</span>
+                            <span className="text-luxury-black font-serif text-lg md:text-xl font-bold">{currentPortfolio.year}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* About the Project Section */}
+                      <div className="bg-white p-8 md:p-10 rounded-xl shadow-sm border border-gray-100 mb-12">
+                        <h2 className="text-2xl font-serif font-bold text-luxury-black mb-6 uppercase tracking-tight border-b border-luxury-border pb-4">
+                          About the Project
+                        </h2>
+                        <div className="prose prose-lg max-w-none text-luxury-gray font-light leading-relaxed whitespace-pre-line">
+                          {currentPortfolio.description || 'No description available for this project.'}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right Sidebar Inquiry Form (Desktop Sticky) */}
+                    <div className="w-full lg:w-[400px] lg:sticky lg:top-32">
+                      <div className="bg-luxury-black text-white p-8 rounded-xl shadow-xl shadow-black/10">
+                        <h3 className="text-2xl font-serif font-bold mb-2">Interested?</h3>
+                        <p className="text-white/70 text-sm mb-6">Contact our team to learn more about this project or similar opportunities.</p>
+
+                        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert("Inquiry sent successfully!"); }}>
+                          <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Your Name</label>
+                            <input type="text" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors" placeholder="John Doe" />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Email Address</label>
+                            <input type="email" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors" placeholder="john@example.com" />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Phone Number</label>
+                            <input type="tel" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors" placeholder="+94 77 XXX XXXX" />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Message</label>
+                            <textarea rows={3} className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors resize-none" placeholder={`I'm interested in ${currentPortfolio.title}...`}></textarea>
+                          </div>
+                          <button type="submit" className="w-full bg-luxury-gold text-white font-bold uppercase tracking-widest py-4 rounded-lg hover:bg-white hover:text-luxury-black transition-colors mt-4">
+                            Send Inquiry
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+               </>
              ) : (
                <div className="h-[60vh] flex items-center justify-center text-luxury-gold">
                    <Loader2 size={48} className="animate-spin" />
@@ -504,8 +621,9 @@ const App: React.FC = () => {
 
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px] animate-in fade-in slide-in-from-bottom-4 duration-500">
               {properties.filter(p => {
-                if (activePage === 'lands') return p.type === PropertyType.LAND || p.type.toLowerCase() === 'land';
-                if (activePage === 'houses') return p.type === PropertyType.HOUSE || p.type === PropertyType.APARTMENT || p.type.toLowerCase() === 'house';
+                const t = (p.type || "").trim().toLowerCase();
+                if (activePage === 'lands') return t === 'land' || t === 'lands';
+                if (activePage === 'houses') return t === 'house' || t === 'houses' || t === 'apartment';
                 return true; // 'properties' shows all
               }).map(prop => (
                 <div key={prop.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
@@ -625,41 +743,184 @@ const App: React.FC = () => {
            </div>
         )}
 
+
         {/* 8. Detail Page View */}
         {activePage === 'detail' && (
-          <div className="animate-in fade-in duration-500 bg-white pb-32">
-            <div className="relative h-[60vh] w-full overflow-hidden">
-              <img src={selectedProperty?.image || properties[0]?.image} className="w-full h-full object-cover" alt="Detail" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-              <div className="absolute bottom-12 px-mobile w-full flex justify-center">
-                <div className="max-w-7xl w-full">
-                  <div className="flex items-center gap-3 text-luxury-gold mb-4">
-                    <MapPin size={20} />
-                    <span className="text-sm uppercase font-bold tracking-brand">{selectedProperty?.location || 'Location'}</span>
-                  </div>
-                  <h1 className="text-4xl md:text-6xl font-serif text-white leading-tight mb-4 uppercase">{selectedProperty?.title || 'Property Detail'}</h1>
-                </div>
+          <div className="animate-in fade-in duration-500 bg-[#f4f4f4] pb-32">
+            {propertyError ? (
+              <div className="h-[60vh] flex flex-col items-center justify-center text-center">
+                <p className="text-xl text-red-500 font-serif mb-4">{propertyError}</p>
+                <button onClick={() => navigate('properties')} className="px-6 py-2 bg-luxury-gold text-white rounded hover:bg-opacity-90 transition">Back to Properties</button>
               </div>
-            </div>
+            ) : !currentProperty ? (
+              <div className="h-[60vh] flex items-center justify-center text-luxury-gold">
+                <Loader2 size={48} className="animate-spin" />
+              </div>
+            ) : (
+              <>
+                {/* Image Gallery Hero */}
+                <div className="w-full bg-luxury-black">
+                  <div className="max-w-[1920px] mx-auto relative h-[50vh] md:h-[70vh] overflow-hidden group">
+                    <img
+                      src={currentProperty.image}
+                      className="w-full h-full object-cover"
+                      alt={currentProperty.title}
+                      onClick={() => setSelectedImage(currentProperty.image)}
+                    />
+                    <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+                  </div>
 
-            <div className="max-w-7xl mx-auto px-mobile py-16">
-              {selectedProperty?.description && (
-                <div className="mb-12">
-                  <h2 className="text-2xl font-serif font-bold text-luxury-black mb-6 uppercase tracking-tight border-b border-luxury-border pb-4">
-                    Description
-                  </h2>
-                  <div className="prose prose-lg max-w-none text-[#555] font-light leading-relaxed whitespace-pre-line">
-                    {selectedProperty.description}
+                  {/* Thumbnails Strip */}
+                  {currentProperty.images && currentProperty.images.length > 0 && (
+                    <div className="max-w-7xl mx-auto px-mobile py-4 flex gap-4 overflow-x-auto container-overflow-fix snap-x">
+                      <div
+                        className="flex-shrink-0 w-24 h-16 md:w-32 md:h-24 rounded-md overflow-hidden cursor-pointer border-2 border-luxury-gold shadow-md snap-start"
+                        onClick={() => setSelectedImage(currentProperty.image)}
+                      >
+                         <img src={currentProperty.image} className="w-full h-full object-cover" alt="Cover" />
+                      </div>
+                      {currentProperty.images.map((img) => (
+                        <div
+                          key={img.id}
+                          className="flex-shrink-0 w-24 h-16 md:w-32 md:h-24 rounded-md overflow-hidden cursor-pointer border-2 border-transparent hover:border-luxury-gold/50 transition-colors shadow-md snap-start"
+                          onClick={() => setSelectedImage(img.image_url)}
+                        >
+                          <img src={img.image_url} className="w-full h-full object-cover" alt="Gallery" />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="max-w-7xl mx-auto px-mobile pt-12">
+                  <div className="flex flex-col lg:flex-row gap-12 items-start">
+
+                    {/* Main Content Column */}
+                    <div className="flex-1 w-full">
+                      {/* Title & Badge Row */}
+                      <div className="flex flex-wrap items-center gap-4 mb-4">
+                        <h1 className="text-3xl md:text-5xl font-serif text-luxury-black font-bold uppercase tracking-tight">{currentProperty.title}</h1>
+                        {currentProperty.status && (
+                          <span className="px-4 py-1.5 bg-luxury-gold text-white text-xs font-bold uppercase tracking-widest rounded-full">
+                            {currentProperty.status}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2 text-luxury-gray mb-8">
+                        <MapPin size={20} className="text-luxury-gold" />
+                        <span className="text-lg uppercase tracking-wider">{currentProperty.location}</span>
+                      </div>
+
+                      {/* Prominent Price */}
+                      {currentProperty.price && (
+                        <div className="mb-10 bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-100 border-l-4 border-l-luxury-gold">
+                          <p className="text-sm text-luxury-gray uppercase tracking-widest font-bold mb-2">Asking Price</p>
+                          <p className="text-3xl md:text-4xl font-serif font-bold text-luxury-black">{formatPrice(currentProperty.price)}</p>
+                        </div>
+                      )}
+
+                      {/* Key Info Blocks */}
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                        {currentProperty.type && (
+                          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
+                            <span className="text-luxury-gray text-xs uppercase tracking-wider font-bold mb-2">Property Type</span>
+                            <span className="text-luxury-black font-serif text-lg md:text-xl font-bold">{currentProperty.type}</span>
+                          </div>
+                        )}
+                        <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
+                          <span className="text-luxury-gray text-xs uppercase tracking-wider font-bold mb-2">Location</span>
+                          <span className="text-luxury-black font-serif text-lg md:text-xl font-bold line-clamp-1">{currentProperty.location}</span>
+                        </div>
+                        {currentProperty.beds !== undefined && currentProperty.beds !== null && (
+                          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
+                            <span className="text-luxury-gray text-xs uppercase tracking-wider font-bold mb-2">Bedrooms</span>
+                            <span className="text-luxury-black font-serif text-lg md:text-xl font-bold">{currentProperty.beds}</span>
+                          </div>
+                        )}
+                        {currentProperty.sqft !== undefined && currentProperty.sqft !== null && (
+                          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
+                            <span className="text-luxury-gray text-xs uppercase tracking-wider font-bold mb-2">Area</span>
+                            <span className="text-luxury-black font-serif text-lg md:text-xl font-bold">{currentProperty.sqft} sqft</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* About the Property Section */}
+                      {currentProperty.description && (
+                        <div className="bg-white p-8 md:p-10 rounded-xl shadow-sm border border-gray-100 mb-12">
+                          <h2 className="text-2xl font-serif font-bold text-luxury-black mb-6 uppercase tracking-tight border-b border-luxury-border pb-4">
+                            About the Property
+                          </h2>
+                          <div className="prose prose-lg max-w-none text-luxury-gray font-light leading-relaxed whitespace-pre-line">
+                            {currentProperty.description}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Right Sidebar Inquiry Form (Desktop Sticky) */}
+                    <div className="w-full lg:w-[400px] lg:sticky lg:top-32">
+                      <div className="bg-luxury-black text-white p-8 rounded-xl shadow-xl shadow-black/10">
+                        <h3 className="text-2xl font-serif font-bold mb-2">Interested?</h3>
+                        <p className="text-white/70 text-sm mb-6">Contact our sales team to schedule a viewing or request more information.</p>
+
+                        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert("Inquiry sent successfully!"); }}>
+                          <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Your Name</label>
+                            <input type="text" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors" placeholder="John Doe" />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Email Address</label>
+                            <input type="email" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors" placeholder="john@example.com" />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Phone Number</label>
+                            <input type="tel" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors" placeholder="+94 77 XXX XXXX" />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Message</label>
+                            <textarea rows={3} className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors resize-none" placeholder={`I'm interested in ${currentProperty.title}...`}></textarea>
+                          </div>
+                          <button type="submit" className="w-full bg-luxury-gold text-white font-bold uppercase tracking-widest py-4 rounded-lg hover:bg-white hover:text-luxury-black transition-colors mt-4">
+                            Send Inquiry
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+
                   </div>
                 </div>
-              )}
-            </div>
+              </>
+            )}
           </div>
         )}
       </main>
 
       <Footer onNavigate={navigate} />
       <ConsultationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
+      {/* Lightbox Modal */}
+      {selectedImage && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 md:p-10 animate-in fade-in duration-300"
+          onClick={() => setSelectedImage(null)}
+        >
+          <button
+            className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors"
+            onClick={() => setSelectedImage(null)}
+          >
+            <span className="sr-only">Close</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+          <img
+            src={selectedImage}
+            alt="Full size preview"
+            className="max-w-[100vw] max-h-[90vh] object-contain rounded-md shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </div>
   );
 };

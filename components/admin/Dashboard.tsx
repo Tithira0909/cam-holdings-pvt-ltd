@@ -36,6 +36,7 @@ type ViewState = 'dashboard' | 'properties' | 'add-property' | 'edit-property' |
 
 const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [activeView, setActiveView] = useState<ViewState>('dashboard');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [editingPropertyId, setEditingPropertyId] = useState<string | null>(null);
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
@@ -55,6 +56,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
   const handleSettingsClick = () => {
     setIsSettingsOpen(!isSettingsOpen);
+    if (isSettingsOpen) setMobileMenuOpen(false);
     if (!isSettingsOpen && !activeView.startsWith('settings-')) {
       setActiveView('settings-site');
     }
@@ -63,10 +65,24 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   return (
     <div className="min-h-screen bg-[#f4f4f4] flex">
       {/* Sidebar */}
-      <aside className="w-64 bg-luxury-black text-white fixed h-full flex flex-col z-50">
+      {/* Mobile Header */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-luxury-black text-white z-40 flex items-center justify-between px-4">
+        <img src="/assets/cam_logo.png" alt="CAM Admin" className="h-8 object-contain" />
+        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-white">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={mobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} /></svg>
+        </button>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setMobileMenuOpen(false)} />
+      )}
+
+      {/* Sidebar */}
+      <aside className={`w-64 bg-luxury-black text-white fixed h-full flex flex-col z-50 transition-transform duration-300 ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
         <div
           className="p-8 border-b border-white/10 cursor-pointer flex flex-col items-start"
-          onClick={() => setActiveView('dashboard')}
+          onClick={() => { setActiveView('dashboard'); setMobileMenuOpen(false); }}
           role="button"
           tabIndex={0}
           onKeyDown={(e) => { if (e.key === 'Enter') setActiveView('dashboard'); }}
@@ -81,7 +97,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
         <nav className="flex-1 py-8 px-4 space-y-2">
           <button
-            onClick={() => setActiveView('dashboard')}
+            onClick={() => { setActiveView('dashboard'); setMobileMenuOpen(false); }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
               activeView === 'dashboard'
                 ? 'bg-white/10 text-luxury-gold'
@@ -92,7 +108,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             Dashboard
           </button>
           <button
-            onClick={() => setActiveView('properties')}
+            onClick={() => { setActiveView('properties'); setMobileMenuOpen(false); }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
               activeView === 'properties' || activeView === 'add-property' || activeView === 'edit-property'
                 ? 'bg-white/10 text-luxury-gold'
@@ -103,7 +119,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             Properties
           </button>
           <button
-            onClick={() => setActiveView('projects')}
+            onClick={() => { setActiveView('projects'); setMobileMenuOpen(false); }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
               activeView === 'projects' || activeView === 'add-project' || activeView === 'edit-project'
                 ? 'bg-white/10 text-luxury-gold'
@@ -114,7 +130,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             Projects
           </button>
           <button
-            onClick={() => setActiveView('services')}
+            onClick={() => { setActiveView('services'); setMobileMenuOpen(false); }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
               activeView === 'services' || activeView === 'add-service' || activeView === 'edit-service'
                 ? 'bg-white/10 text-luxury-gold'
@@ -125,7 +141,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             Services
           </button>
           <button
-            onClick={() => setActiveView('inquiries')}
+            onClick={() => { setActiveView('inquiries'); setMobileMenuOpen(false); }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
               activeView === 'inquiries' || activeView === 'inquiry-detail'
                 ? 'bg-white/10 text-luxury-gold'
@@ -152,19 +168,19 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             </button>
             {(isSettingsOpen || activeView.startsWith('settings-')) && (
               <div className="pl-4 mt-2 space-y-1">
-                <button onClick={() => setActiveView('settings-permissions')} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-permissions' ? 'text-luxury-gold bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
+                <button onClick={() => { setActiveView('settings-permissions'); setMobileMenuOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-permissions' ? 'text-luxury-gold bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
                   <Shield size={14} />
                   Permission Settings
                 </button>
-                <button onClick={() => setActiveView('settings-analytics')} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-analytics' ? 'text-luxury-gold bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
+                <button onClick={() => { setActiveView('settings-analytics'); setMobileMenuOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-analytics' ? 'text-luxury-gold bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
                   <BarChart size={14} />
                   Analytics Settings
                 </button>
-                <button onClick={() => setActiveView('settings-site')} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-site' ? 'text-luxury-gold bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
+                <button onClick={() => { setActiveView('settings-site'); setMobileMenuOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-site' ? 'text-luxury-gold bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
                   <Globe size={14} />
                   Site Settings
                 </button>
-                <button onClick={() => setActiveView('settings-email')} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-email' ? 'text-luxury-gold bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
+                <button onClick={() => { setActiveView('settings-email'); setMobileMenuOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-email' ? 'text-luxury-gold bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
                   <Mail size={14} />
                   Email Settings
                 </button>
@@ -185,7 +201,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-64 p-8">
+      <main className="flex-1 lg:ml-64 pt-20 lg:pt-8 p-4 lg:p-8 w-full max-w-[100vw] overflow-x-hidden container-overflow-fix">
         <header className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-serif font-bold text-luxury-black">Dashboard Overview</h1>
           <div className="flex items-center gap-4">
@@ -250,14 +266,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             <div className="p-6 border-b border-luxury-border flex justify-between items-center">
               <h2 className="text-xl font-serif font-bold text-luxury-black">Recent Properties</h2>
               <button
-                onClick={() => setActiveView('properties')}
+                onClick={() => { setActiveView('properties'); setMobileMenuOpen(false); }}
                 className="text-sm text-luxury-gold font-bold uppercase tracking-wider hover:text-luxury-golddark"
               >
                 View All
               </button>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <div className="admin-table-container">
+          <table className="w-full">
                 <thead className="bg-luxury-offwhite text-left">
                   <tr>
                     <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Property</th>
@@ -306,6 +323,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                   ))}
                 </tbody>
               </table>
+          </div>
             </div>
           </div>
         )}
