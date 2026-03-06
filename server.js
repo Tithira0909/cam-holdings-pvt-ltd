@@ -675,6 +675,10 @@ app.post('/api/properties', upload.fields([
     { name: 'brochureFile', maxCount: 1 }
 ]), async (req, res) => {
   try {
+    console.log('--- POST /api/properties ---');
+    console.log('req.body:', req.body);
+    console.log('req.files exists:', !!req.files);
+
     const {
       title, slug, location, price, type, status, description,
       category, district, city, locationLabel, priceLabel, bedrooms, bathrooms,
@@ -683,6 +687,11 @@ app.post('/api/properties', upload.fields([
       amenities, locationHighlights, floorPlans, brochureFiles,
       projectStatusLabel, travelHighlights, inquiryEmail, relatedLands, metaTitle, metaDescription, ogImage, whatsappNumber
     } = req.body;
+
+    // Backend validation for required fields
+    if (!title || !location || !price || !type) {
+      return res.status(400).json({ error: 'Missing required fields: title, location, price, and type are required.' });
+    }
 
     // Handle main image
     let mainImageUrl = null;
@@ -713,6 +722,49 @@ app.post('/api/properties', upload.fields([
     const travelHighlightsStr = typeof travelHighlights === 'string' ? travelHighlights : safeStringifyJSON(travelHighlights);
     const relatedLandsStr = typeof relatedLands === 'string' ? relatedLands : safeStringifyJSON(relatedLands);
 
+    const params = [
+        title ?? null,
+        slug ?? null,
+        location ?? null,
+        price ?? null,
+        type ?? null,
+        status || 'Active',
+        description ?? null,
+        mainImageUrl ?? null,
+        category ?? null,
+        district ?? null,
+        city ?? null,
+        locationLabel ?? null,
+        priceLabel ?? null,
+        bedrooms ?? null,
+        bathrooms ?? null,
+        isFeatured === 'true' || isFeatured === true ? 1 : 0,
+        isSoldOut === 'true' || isSoldOut === true ? 1 : 0,
+        videoUrl ?? null,
+        hotlineNumber ?? null,
+        sortOrder || 0,
+        shortDescription ?? null,
+        fullDescription ?? null,
+        amenitiesStr ?? null,
+        locationHighlightsStr ?? null,
+        floorPlansStr ?? null,
+        brochureFilesStr ?? null,
+        logoImageUrl ?? null,
+        blockPlanImageUrl ?? null,
+        roadMapImageUrl ?? null,
+        locationMapImageUrl ?? null,
+        projectStatusLabel ?? null,
+        travelHighlightsStr ?? null,
+        inquiryEmail ?? null,
+        relatedLandsStr ?? null,
+        metaTitle ?? null,
+        metaDescription ?? null,
+        ogImage ?? null,
+        whatsappNumber ?? null
+    ];
+
+    console.log('SQL Params:', params);
+
     // Insert property
     const result = await query(
       `INSERT INTO properties (
@@ -722,15 +774,7 @@ app.post('/api/properties', upload.fields([
         shortDescription, fullDescription, amenities, locationHighlights, floorPlans, brochureFiles,
         logoImage, blockPlanImage, roadMapImage, locationMapImage, projectStatusLabel, travelHighlights, inquiryEmail, relatedLands, metaTitle, metaDescription, ogImage, whatsappNumber
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        title, slug, location, price, type, status || 'Active', description, mainImageUrl,
-        category, district, city, locationLabel, priceLabel, bedrooms || null, bathrooms || null,
-        isFeatured === 'true' || isFeatured === true ? 1 : 0,
-        isSoldOut === 'true' || isSoldOut === true ? 1 : 0,
-        videoUrl, hotlineNumber, sortOrder || 0,
-        shortDescription, fullDescription, amenitiesStr, locationHighlightsStr, floorPlansStr, brochureFilesStr,
-        logoImageUrl, blockPlanImageUrl, roadMapImageUrl, locationMapImageUrl, projectStatusLabel, travelHighlightsStr, inquiryEmail, relatedLandsStr, metaTitle, metaDescription, ogImage, whatsappNumber
-      ]
+      params
     );
 
     const propertyId = result.insertId;
@@ -767,6 +811,10 @@ app.put('/api/properties/:id', upload.fields([
 ]), async (req, res) => {
   try {
     const { id } = req.params;
+    console.log(`--- PUT /api/properties/${id} ---`);
+    console.log('req.body:', req.body);
+    console.log('req.files exists:', !!req.files);
+
     const {
       title, slug, location, price, type, status, description,
       category, district, city, locationLabel, priceLabel, bedrooms, bathrooms,
@@ -775,6 +823,11 @@ app.put('/api/properties/:id', upload.fields([
       amenities, locationHighlights, floorPlans, brochureFiles,
       projectStatusLabel, travelHighlights, inquiryEmail, relatedLands, metaTitle, metaDescription, ogImage, whatsappNumber
     } = req.body;
+
+    // Backend validation for required fields
+    if (!title || !location || !price || !type) {
+      return res.status(400).json({ error: 'Missing required fields: title, location, price, and type are required.' });
+    }
 
     const existing = await query('SELECT * FROM properties WHERE id = ?', [id]);
     if (!existing || existing.length === 0) {
@@ -809,6 +862,50 @@ app.put('/api/properties/:id', upload.fields([
     const travelHighlightsStr = typeof travelHighlights === 'string' ? travelHighlights : safeStringifyJSON(travelHighlights);
     const relatedLandsStr = typeof relatedLands === 'string' ? relatedLands : safeStringifyJSON(relatedLands);
 
+    const params = [
+        title ?? null,
+        slug ?? null,
+        location ?? null,
+        price ?? null,
+        type ?? null,
+        status || 'Active',
+        description ?? null,
+        mainImageUrl ?? null,
+        category ?? null,
+        district ?? null,
+        city ?? null,
+        locationLabel ?? null,
+        priceLabel ?? null,
+        bedrooms ?? null,
+        bathrooms ?? null,
+        isFeatured === 'true' || isFeatured === true ? 1 : 0,
+        isSoldOut === 'true' || isSoldOut === true ? 1 : 0,
+        videoUrl ?? null,
+        hotlineNumber ?? null,
+        sortOrder || 0,
+        shortDescription ?? null,
+        fullDescription ?? null,
+        amenitiesStr ?? null,
+        locationHighlightsStr ?? null,
+        floorPlansStr ?? null,
+        brochureFilesStr ?? null,
+        logoImageUrl ?? null,
+        blockPlanImageUrl ?? null,
+        roadMapImageUrl ?? null,
+        locationMapImageUrl ?? null,
+        projectStatusLabel ?? null,
+        travelHighlightsStr ?? null,
+        inquiryEmail ?? null,
+        relatedLandsStr ?? null,
+        metaTitle ?? null,
+        metaDescription ?? null,
+        ogImage ?? null,
+        whatsappNumber ?? null,
+        id
+    ];
+
+    console.log('SQL Params:', params);
+
     await query(
       `UPDATE properties SET
         title = ?, slug = ?, location = ?, price = ?, type = ?, status = ?, description = ?, image = ?,
@@ -817,16 +914,7 @@ app.put('/api/properties/:id', upload.fields([
         shortDescription = ?, fullDescription = ?, amenities = ?, locationHighlights = ?, floorPlans = ?, brochureFiles = ?,
         logoImage = ?, blockPlanImage = ?, roadMapImage = ?, locationMapImage = ?, projectStatusLabel = ?, travelHighlights = ?, inquiryEmail = ?, relatedLands = ?, metaTitle = ?, metaDescription = ?, ogImage = ?, whatsappNumber = ?
       WHERE id = ?`,
-      [
-        title, slug, location, price, type, status, description, mainImageUrl,
-        category, district, city, locationLabel, priceLabel, bedrooms || null, bathrooms || null,
-        isFeatured === 'true' || isFeatured === true ? 1 : 0,
-        isSoldOut === 'true' || isSoldOut === true ? 1 : 0,
-        videoUrl, hotlineNumber, sortOrder || 0,
-        shortDescription, fullDescription, amenitiesStr, locationHighlightsStr, floorPlansStr, brochureFilesStr,
-        logoImageUrl, blockPlanImageUrl, roadMapImageUrl, locationMapImageUrl, projectStatusLabel, travelHighlightsStr, inquiryEmail, relatedLandsStr, metaTitle, metaDescription, ogImage, whatsappNumber,
-        id
-      ]
+      params
     );
 
     if (req.files['gallery']) {
