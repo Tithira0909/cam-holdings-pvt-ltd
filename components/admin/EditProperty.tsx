@@ -19,7 +19,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
   const [location, setLocation] = useState('');
   const [price, setPrice] = useState('');
   const [type, setType] = useState<PropertyType>(PropertyType.HOUSE);
-  const [status, setStatus] = useState('Active');
+  const [status, setStatus] = useState('Available');
   const [description, setDescription] = useState('');
   const [beds, setBeds] = useState('');
   const [baths, setBaths] = useState('');
@@ -231,9 +231,9 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                   onChange={(e) => setStatus(e.target.value)}
                   className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-transparent outline-none transition-all"
                 >
-                  <option value="Active">Active</option>
-                  <option value="Sold">Sold</option>
-                  <option value="Pending">Pending</option>
+                  <option value="Available">Available</option>
+                  <option value="Listed">Listed</option>
+                  <option value="Sold Out">Sold Out</option>
                 </select>
               </div>
             </div>

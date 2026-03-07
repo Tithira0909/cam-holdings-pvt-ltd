@@ -8,7 +8,7 @@ interface PropertyCardProps {
 }
 
 const PropertyCard: React.FC<PropertyCardProps> = ({ property, onClick }) => {
-  const images = property.gallery && property.gallery.length > 0 ? property.gallery : [property.image];
+  const images = [property.image, ...(property.gallery || [])].filter(Boolean);
   const [currentImageIdx, setCurrentImageIdx] = useState(0);
 
   const handleNext = (e: React.MouseEvent) => {
@@ -19,6 +19,15 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onClick }) => {
   const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCurrentImageIdx((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  const getStatusColor = (status?: string) => {
+    switch(status) {
+      case 'Available': return 'bg-green-500 text-white';
+      case 'Listed': return 'bg-blue-500 text-white';
+      case 'Sold Out': return 'bg-red-500 text-white';
+      default: return 'bg-gray-500 text-white';
+    }
   };
 
   return (
@@ -61,6 +70,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onClick }) => {
         <div className="absolute top-4 right-4 bg-[#0A41A8] text-white text-[10px] uppercase tracking-widest px-3 py-1.5 font-bold rounded">
           {property.featured ? 'Ongoing' : 'Delivered'}
         </div>
+
+        {property.status && (
+          <div className={`absolute top-4 left-4 text-[10px] uppercase tracking-widest px-3 py-1.5 font-bold rounded ${getStatusColor(property.status)}`}>
+            {property.status}
+          </div>
+        )}
       </div>
       
       <div className="p-6 flex flex-col flex-grow">

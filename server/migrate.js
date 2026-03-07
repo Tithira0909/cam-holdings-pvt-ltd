@@ -17,7 +17,7 @@ async function migrate() {
     const schemaFile = client === 'sqlite' ? 'sqlite_schema.sql' : 'schema.sql';
 
     // Look for schema in root/database or server/database
-    let dbDir = path.join(process.cwd(), 'database');
+    let dbDir = path.join(process.cwd(), 'server', 'database');
     if (!fs.existsSync(dbDir)) {
         dbDir = path.join(__dirname, 'database');
     }
@@ -63,6 +63,22 @@ async function migrate() {
                     console.log('Beds/baths columns already exist, skipping migration.');
                 } else {
                     console.error('Error applying beds/baths migration:', err);
+                }
+            }
+
+            // Apply status migration
+            try {
+                const migrationSql = fs.readFileSync(path.join(dbDir, 'migration_status.sql'), 'utf8');
+                const migrationStatements = migrationSql.split(';').filter(s => s.trim().length > 0);
+                for (const sql of migrationStatements) {
+                    await db.run(sql);
+                }
+                console.log('Status migration applied successfully.');
+            } catch (err) {
+                if (err.message && err.message.includes('duplicate column name')) {
+                    console.log('Status column already exists, skipping migration.');
+                } else {
+                    console.error('Error applying status migration:', err);
                 }
             }
 

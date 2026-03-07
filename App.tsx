@@ -63,6 +63,7 @@ const App: React.FC = () => {
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [selectedPortfolioId, setSelectedPortfolioId] = useState<string | null>(null);
   const [selectedServiceSlug, setSelectedServiceSlug] = useState<string | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => localStorage.getItem('isAdmin') === 'true');
 
   // Data State
@@ -176,7 +177,10 @@ const App: React.FC = () => {
 
   const navigate = (page: Page, id?: string) => {
     setActivePage(page);
-    if (page === 'detail' && id) setSelectedProjectId(id);
+    if (page === 'detail' && id) {
+      setSelectedProjectId(id);
+      setSelectedImageIndex(0);
+    }
     if (page === 'portfolio-detail' && id) {
       setSelectedPortfolioId(id);
       setCurrentPortfolio(null); // Reset while loading
@@ -636,12 +640,26 @@ const App: React.FC = () => {
                   {/* Gallery */}
                   <div className="bg-white rounded-2xl p-6 shadow-sm border border-luxury-border">
                     <div className="aspect-[16/9] overflow-hidden rounded-xl mb-4 bg-luxury-offwhite">
-                      <img src={selectedProperty.image} className="w-full h-full object-cover" alt={selectedProperty.title} />
+                      <img
+                        src={selectedImageIndex === 0 ? selectedProperty.image : selectedProperty.gallery?.[selectedImageIndex - 1]}
+                        className="w-full h-full object-cover"
+                        alt={selectedProperty.title}
+                      />
                     </div>
                     {selectedProperty.gallery && selectedProperty.gallery.length > 0 && (
                       <div className="grid grid-cols-4 gap-4">
+                        <div
+                          onClick={() => setSelectedImageIndex(0)}
+                          className={`aspect-[4/3] rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity bg-luxury-offwhite border ${selectedImageIndex === 0 ? 'border-luxury-gold border-2' : 'border-luxury-border'}`}
+                        >
+                          <img src={selectedProperty.image} className="w-full h-full object-cover" alt={`${selectedProperty.title} main`} />
+                        </div>
                         {selectedProperty.gallery.map((img, idx) => (
-                          <div key={idx} className="aspect-[4/3] rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity bg-luxury-offwhite border border-luxury-border">
+                          <div
+                            key={idx}
+                            onClick={() => setSelectedImageIndex(idx + 1)}
+                            className={`aspect-[4/3] rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity bg-luxury-offwhite border ${selectedImageIndex === idx + 1 ? 'border-luxury-gold border-2' : 'border-luxury-border'}`}
+                          >
                             <img src={img} className="w-full h-full object-cover" alt={`${selectedProperty.title} gallery ${idx + 1}`} />
                           </div>
                         ))}
