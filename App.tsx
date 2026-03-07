@@ -175,11 +175,11 @@ const App: React.FC = () => {
     }
   }, [activePage, selectedServiceSlug, selectedPortfolioId]);
 
-  const navigate = (page: Page, id?: string) => {
+  const navigate = (page: Page, id?: string, imageIdx?: number) => {
     setActivePage(page);
     if (page === 'detail' && id) {
       setSelectedProjectId(id);
-      setSelectedImageIndex(0);
+      setSelectedImageIndex(imageIdx || 0);
     }
     if (page === 'portfolio-detail' && id) {
       setSelectedPortfolioId(id);
@@ -522,7 +522,7 @@ const App: React.FC = () => {
                 <PropertyCard
                   key={prop.id}
                   property={prop}
-                  onClick={() => navigate('detail', prop.id)}
+                  onClick={(imageIdx) => navigate('detail', prop.id, imageIdx)}
                 />
               ))}
             </div>
@@ -697,13 +697,13 @@ const App: React.FC = () => {
                           <div className="text-sm text-[#777] uppercase tracking-wider mb-2">Type</div>
                           <div className="font-bold text-luxury-black text-xl">{selectedProperty.type}</div>
                         </div>
-                        {selectedProperty.beds !== undefined && (
+                        {selectedProperty.beds != null && selectedProperty.type !== 'Land' && (
                           <div className="text-center p-4 bg-luxury-offwhite rounded-xl">
                             <div className="text-sm text-[#777] uppercase tracking-wider mb-2">Beds</div>
                             <div className="font-bold text-luxury-black text-xl">{selectedProperty.beds}</div>
                           </div>
                         )}
-                        {selectedProperty.baths !== undefined && (
+                        {selectedProperty.baths != null && selectedProperty.type !== 'Land' && (
                           <div className="text-center p-4 bg-luxury-offwhite rounded-xl">
                             <div className="text-sm text-[#777] uppercase tracking-wider mb-2">Baths</div>
                             <div className="font-bold text-luxury-black text-xl">{selectedProperty.baths}</div>

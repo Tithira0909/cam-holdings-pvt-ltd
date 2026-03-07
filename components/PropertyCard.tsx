@@ -4,12 +4,18 @@ import { Property } from '../types';
 
 interface PropertyCardProps {
   property: Property;
-  onClick?: () => void;
+  onClick?: (imageIdx: number) => void;
 }
 
 const PropertyCard: React.FC<PropertyCardProps> = ({ property, onClick }) => {
   const images = [property.image, ...(property.gallery || [])].filter(Boolean);
   const [currentImageIdx, setCurrentImageIdx] = useState(0);
+
+  const handleClick = () => {
+    if (onClick) {
+      onClick(currentImageIdx);
+    }
+  };
 
   const handleNext = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -22,17 +28,17 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onClick }) => {
   };
 
   const getStatusColor = (status?: string) => {
-    switch(status) {
-      case 'Available': return 'bg-green-500 text-white';
-      case 'Listed': return 'bg-blue-500 text-white';
-      case 'Sold Out': return 'bg-red-500 text-white';
-      default: return 'bg-gray-500 text-white';
+    switch(status?.toLowerCase()) {
+      case 'available': return 'bg-green-600 text-white';
+      case 'listed': return 'bg-blue-600 text-white';
+      case 'sold out': return 'bg-red-600 text-white';
+      default: return 'bg-gray-600 text-white';
     }
   };
 
   return (
     <div 
-      onClick={onClick}
+      onClick={handleClick}
       className="group bg-white rounded-2xl overflow-hidden shadow-sm border border-luxury-border transition-all active:scale-[0.98] hover:shadow-xl cursor-pointer flex flex-col h-full"
     >
       <div className="relative aspect-[4/5] overflow-hidden">
@@ -67,12 +73,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onClick }) => {
           </>
         )}
 
-        <div className="absolute top-4 right-4 bg-[#0A41A8] text-white text-[10px] uppercase tracking-widest px-3 py-1.5 font-bold rounded">
-          {property.featured ? 'Ongoing' : 'Delivered'}
-        </div>
-
         {property.status && (
-          <div className={`absolute top-4 left-4 text-[10px] uppercase tracking-widest px-3 py-1.5 font-bold rounded ${getStatusColor(property.status)}`}>
+          <div className={`absolute top-4 right-4 text-[10px] uppercase tracking-widest px-3 py-1.5 font-bold rounded ${getStatusColor(property.status)}`}>
             {property.status}
           </div>
         )}
@@ -97,26 +99,28 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onClick }) => {
           )}
         </div>
 
-        <div className="flex items-center gap-8 py-5 border-y border-[#eee] mb-5 mt-auto">
-          {(property.beds !== undefined && property.beds > 0) && (
-            <div className="flex items-center gap-3">
-              <Bed size={24} className="text-[#555]" />
-              <div>
-                <div className="font-bold text-luxury-black text-[16px]">{property.beds}</div>
-                <div className="text-[12px] text-[#777]">Bed Rooms</div>
+        {property.type !== 'Land' && (
+          <div className="flex items-center gap-8 py-5 border-y border-[#eee] mb-5 mt-auto">
+            {(property.beds !== undefined && property.beds > 0) && (
+              <div className="flex items-center gap-3">
+                <Bed size={24} className="text-[#555]" />
+                <div>
+                  <div className="font-bold text-luxury-black text-[16px]">{property.beds}</div>
+                  <div className="text-[12px] text-[#777]">Bed Rooms</div>
+                </div>
               </div>
-            </div>
-          )}
-          {(property.baths !== undefined && property.baths > 0) && (
-            <div className="flex items-center gap-3">
-              <Bath size={24} className="text-[#555]" />
-              <div>
-                <div className="font-bold text-luxury-black text-[16px]">{property.baths}</div>
-                <div className="text-[12px] text-[#777]">Bathrooms</div>
+            )}
+            {(property.baths !== undefined && property.baths > 0) && (
+              <div className="flex items-center gap-3">
+                <Bath size={24} className="text-[#555]" />
+                <div>
+                  <div className="font-bold text-luxury-black text-[16px]">{property.baths}</div>
+                  <div className="text-[12px] text-[#777]">Bathrooms</div>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
 
         <div className="flex items-center gap-2 text-[14px] font-medium text-[#555] hover:text-luxury-black transition-colors mt-2">
           Explore {property.type === 'Apartment' ? 'Apartment' : property.type} <ArrowRight size={16} />
