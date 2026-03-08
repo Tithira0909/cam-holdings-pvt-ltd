@@ -89,6 +89,17 @@ const App: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Land Listing Filters
+  const [landSearchQuery, setLandSearchQuery] = useState('');
+  const [landDistrict, setLandDistrict] = useState('');
+  const [landCategory, setLandCategory] = useState('');
+  const [landCity, setLandCity] = useState('');
+  const [landPriceMin, setLandPriceMin] = useState('');
+  const [landPriceMax, setLandPriceMax] = useState('');
+  const [landSortOrder, setLandSortOrder] = useState('latest');
+  const [landPage, setLandPage] = useState(1);
+  const landsPerPage = 9;
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [activePage, selectedProjectId, selectedPortfolioId, selectedServiceSlug]);
@@ -611,12 +622,20 @@ const App: React.FC = () => {
 
             {/* Conditional Hero based on active page */}
             {activePage === 'lands' ? (
-              <div className="relative w-full bg-luxury-black mb-16 h-[40vh] md:h-[50vh] flex items-center justify-center overflow-hidden">
-                 <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=1600" alt="Lands Hero" className="absolute inset-0 w-full h-full object-cover opacity-50" />
-                 <div className="relative z-10 text-center px-mobile pt-20">
-                    <h1 className="text-4xl md:text-6xl font-serif font-bold text-white uppercase tracking-tight mb-4">Premium Lands</h1>
-                    <p className="text-white/80 text-lg max-w-2xl mx-auto font-light">
-                      Explore our exclusive land projects in prime locations offering immense potential for investment and development.
+              <div className="relative w-full bg-luxury-black mb-16 h-[50vh] md:h-[60vh] flex items-center justify-center overflow-hidden">
+                 <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70 z-10"></div>
+                 <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=1920" alt="Premium Lands Hero" className="absolute inset-0 w-full h-full object-cover scale-105 animate-[pulse_20s_ease-in-out_infinite]" />
+                 <div className="relative z-20 text-center px-mobile pt-20 max-w-4xl mx-auto">
+                    <div className="inline-flex items-center gap-2 mb-6 text-white/80 text-sm font-bold uppercase tracking-widest">
+                       <span className="w-8 h-[1px] bg-luxury-gold"></span>
+                       Discover Your Future
+                       <span className="w-8 h-[1px] bg-luxury-gold"></span>
+                    </div>
+                    <h1 className="text-5xl md:text-7xl font-serif font-bold text-white uppercase tracking-tight mb-6 drop-shadow-lg">
+                       Premium <span className="text-luxury-gold">Lands</span>
+                    </h1>
+                    <p className="text-white/90 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed drop-shadow-md">
+                      Explore our exclusive land projects in prime locations offering immense potential for investment, development, and building your dream home.
                     </p>
                  </div>
               </div>
@@ -637,68 +656,253 @@ const App: React.FC = () => {
 
               {/* Optional: Add Filters UI here if lands */}
               {activePage === 'lands' && (
-                <div className="bg-white rounded-xl shadow-sm p-6 mb-12 flex flex-wrap gap-4 items-center border border-gray-100">
-                  <div className="flex-1 min-w-[200px]">
-                     <label className="block text-xs font-bold text-luxury-gray uppercase tracking-wider mb-2">Search</label>
-                     <div className="relative">
-                        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-luxury-gray" />
-                        <input type="text" placeholder="Keyword or Location" className="w-full pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none transition-all" />
-                     </div>
+                <div className="bg-white rounded-[16px] shadow-[0px_4px_25px_rgba(0,0,0,0.04)] p-6 md:p-8 mb-16 flex flex-col gap-6 border border-gray-100 z-20 relative -mt-24 mx-4 md:mx-0">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
+                    <div className="lg:col-span-2">
+                       <label className="block text-xs font-bold text-luxury-gray uppercase tracking-wider mb-2">Search</label>
+                       <div className="relative">
+                          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-luxury-gray" />
+                          <input
+                            type="text"
+                            placeholder="Keyword, Location, or Project Name"
+                            value={landSearchQuery}
+                            onChange={(e) => setLandSearchQuery(e.target.value)}
+                            className="w-full pl-11 pr-4 py-3 bg-[#f8f9fa] border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-luxury-gold/50 outline-none transition-all font-medium"
+                          />
+                       </div>
+                    </div>
+                    <div>
+                       <label className="block text-xs font-bold text-luxury-gray uppercase tracking-wider mb-2">District</label>
+                       <select
+                         value={landDistrict}
+                         onChange={(e) => setLandDistrict(e.target.value)}
+                         className="w-full px-4 py-3 bg-[#f8f9fa] border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-luxury-gold/50 outline-none transition-all appearance-none text-luxury-black font-medium cursor-pointer"
+                       >
+                          <option value="">All Districts</option>
+                          {Array.from(new Set(properties.filter(p => (p.type?.toLowerCase() === 'land' || p.type?.toLowerCase() === 'lands') && p.district).map(p => p.district))).sort().map(d => (
+                            <option key={d} value={d}>{d}</option>
+                          ))}
+                       </select>
+                    </div>
+                     <div>
+                       <label className="block text-xs font-bold text-luxury-gray uppercase tracking-wider mb-2">City</label>
+                       <select
+                         value={landCity}
+                         onChange={(e) => setLandCity(e.target.value)}
+                         className="w-full px-4 py-3 bg-[#f8f9fa] border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-luxury-gold/50 outline-none transition-all appearance-none text-luxury-black font-medium cursor-pointer"
+                       >
+                          <option value="">All Cities</option>
+                          {Array.from(new Set(properties.filter(p => {
+                            const isLand = (p.type?.toLowerCase() === 'land' || p.type?.toLowerCase() === 'lands');
+                            const matchesDistrict = landDistrict ? p.district === landDistrict : true;
+                            return isLand && matchesDistrict && p.city;
+                          }).map(p => p.city))).sort().map(c => (
+                            <option key={c} value={c}>{c}</option>
+                          ))}
+                       </select>
+                    </div>
+                    <div>
+                       <label className="block text-xs font-bold text-luxury-gray uppercase tracking-wider mb-2">Category</label>
+                       <select
+                         value={landCategory}
+                         onChange={(e) => setLandCategory(e.target.value)}
+                         className="w-full px-4 py-3 bg-[#f8f9fa] border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-luxury-gold/50 outline-none transition-all appearance-none text-luxury-black font-medium cursor-pointer"
+                       >
+                          <option value="">All Categories</option>
+                          <option value="Residential">Residential</option>
+                          <option value="Commercial">Commercial</option>
+                          <option value="Agricultural">Agricultural</option>
+                       </select>
+                    </div>
+                    <div>
+                       <label className="block text-xs font-bold text-luxury-gray uppercase tracking-wider mb-2">Min Price</label>
+                       <input
+                         type="number"
+                         placeholder="Minimum LKR"
+                         value={landPriceMin}
+                         onChange={(e) => setLandPriceMin(e.target.value)}
+                         className="w-full px-4 py-3 bg-[#f8f9fa] border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-luxury-gold/50 outline-none transition-all font-medium text-luxury-black"
+                       />
+                    </div>
+                    <div>
+                       <label className="block text-xs font-bold text-luxury-gray uppercase tracking-wider mb-2">Max Price</label>
+                       <input
+                         type="number"
+                         placeholder="Maximum LKR"
+                         value={landPriceMax}
+                         onChange={(e) => setLandPriceMax(e.target.value)}
+                         className="w-full px-4 py-3 bg-[#f8f9fa] border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-luxury-gold/50 outline-none transition-all font-medium text-luxury-black"
+                       />
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-[200px]">
-                     <label className="block text-xs font-bold text-luxury-gray uppercase tracking-wider mb-2">District</label>
-                     <select className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none transition-all appearance-none text-luxury-black font-medium">
-                        <option value="">All Districts</option>
-                        <option value="Colombo">Colombo</option>
-                        <option value="Gampaha">Gampaha</option>
-                        <option value="Kalutara">Kalutara</option>
-                     </select>
-                  </div>
-                   <div className="flex-1 min-w-[200px]">
-                     <label className="block text-xs font-bold text-luxury-gray uppercase tracking-wider mb-2">Category</label>
-                     <select className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none transition-all appearance-none text-luxury-black font-medium">
-                        <option value="">All Categories</option>
-                        <option value="Residential">Residential</option>
-                        <option value="Commercial">Commercial</option>
-                     </select>
-                  </div>
-                  <div className="w-full md:w-auto flex items-end">
-                     <button className="w-full md:w-auto bg-luxury-gold text-white px-8 py-2.5 rounded-lg font-bold uppercase tracking-wider text-sm hover:bg-luxury-golddark transition-all shadow-md">
-                        Filter Lands
-                     </button>
+
+                  <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-gray-100">
+                    <div className="flex items-center gap-2">
+                       <label className="text-xs font-bold text-luxury-gray uppercase tracking-wider">Sort By:</label>
+                       <select
+                         value={landSortOrder}
+                         onChange={(e) => setLandSortOrder(e.target.value)}
+                         className="bg-transparent text-sm font-medium text-luxury-black focus:outline-none cursor-pointer"
+                       >
+                         <option value="latest">Latest First</option>
+                         <option value="price_asc">Price: Low to High</option>
+                         <option value="price_desc">Price: High to Low</option>
+                       </select>
+                    </div>
+                    <div className="flex items-center gap-3 w-full sm:w-auto">
+                       <button
+                         onClick={() => {
+                           setLandSearchQuery('');
+                           setLandDistrict('');
+                           setLandCity('');
+                           setLandCategory('');
+                           setLandPriceMin('');
+                           setLandPriceMax('');
+                           setLandSortOrder('latest');
+                         }}
+                         className="w-full sm:w-auto px-6 py-2.5 rounded-xl font-bold uppercase tracking-wider text-sm text-luxury-gray hover:bg-gray-100 transition-all"
+                       >
+                          Reset
+                       </button>
+                    </div>
                   </div>
                 </div>
               )}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                {properties.filter(p => {
-                  const t = (p.type || "").trim().toLowerCase();
-                  if (activePage === 'lands') return t === 'land' || t === 'lands';
-                  if (activePage === 'houses') return t === 'house' || t === 'houses' || t === 'apartment';
-                  return true; // 'properties' shows all
-                }).map(prop => (
-                  activePage === 'lands' ? (
-                    <LandCard
-                      key={prop.id}
-                      property={prop}
-                      onClick={() => navigate('detail', prop.id)}
-                    />
-                  ) : (
-                    <div key={prop.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
-                      <div className="relative aspect-[16/10] overflow-hidden">
-                        <img src={prop.image} alt={prop.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
-                      </div>
-                      <div className="p-[20px] text-left flex flex-col flex-grow">
-                        <h3 className="text-[22px] font-serif font-bold text-[#333] mb-2">{prop.title}</h3>
-                        <p className="text-[16px] text-[#777] mb-1">Location: {prop.location.split(',')[0]}</p>
-                        <p className="text-[16px] text-[#777] mb-6 font-bold">Price: {prop.price}</p>
-                        <div className="mt-auto">
-                          <button onClick={() => navigate('detail', prop.id)} className="bg-luxury-gold text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-luxury-golddark">View Details</button>
-                        </div>
-                      </div>
-                    </div>
-                  )
-                ))}
+              {/* Featured Lands Section */}
+              {activePage === 'lands' && properties.filter(p => (p.type?.toLowerCase() === 'land' || p.type?.toLowerCase() === 'lands') && p.isFeatured).length > 0 && (
+                <div className="mb-16 bg-[#eef5f1] rounded-[20px] p-8 md:p-12">
+                  <div className="text-center max-w-2xl mx-auto mb-10">
+                    <h2 className="text-[32px] font-serif font-bold text-luxury-black mb-4">Featured Lands</h2>
+                    <p className="text-[15px] text-luxury-gray leading-relaxed">Choose from a wide range of lands across 18 districts, tailored to suit your needs and preferred location.</p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {properties
+                      .filter(p => (p.type?.toLowerCase() === 'land' || p.type?.toLowerCase() === 'lands') && p.isFeatured)
+                      .slice(0, 4)
+                      .map(prop => (
+                        <LandCard
+                          key={prop.id}
+                          property={prop}
+                          onClick={() => navigate('detail', prop.id)}
+                        />
+                      ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex items-center gap-4 mb-8">
+                 <h2 className="text-2xl font-serif font-bold text-luxury-black">
+                   {activePage === 'lands' ? 'All Lands' : activePage === 'houses' ? 'All Houses' : 'All Properties'}
+                 </h2>
+                 <div className="flex-1 h-px bg-gray-200"></div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                {(() => {
+                  // 1. Initial Filtering by Page Type
+                  let filtered = properties.filter(p => {
+                    const t = (p.type || "").trim().toLowerCase();
+                    if (activePage === 'lands') return t === 'land' || t === 'lands';
+                    if (activePage === 'houses') return t === 'house' || t === 'houses' || t === 'apartment';
+                    return true;
+                  });
+
+                  // 2. Additional Filters if on Lands Page
+                  if (activePage === 'lands') {
+                    if (landSearchQuery) {
+                       const query = landSearchQuery.toLowerCase();
+                       filtered = filtered.filter(p =>
+                         (p.title && p.title.toLowerCase().includes(query)) ||
+                         (p.location && p.location.toLowerCase().includes(query)) ||
+                         (p.city && p.city.toLowerCase().includes(query)) ||
+                         (p.district && p.district.toLowerCase().includes(query))
+                       );
+                    }
+                    if (landDistrict) filtered = filtered.filter(p => p.district === landDistrict);
+                    if (landCity) filtered = filtered.filter(p => p.city === landCity);
+                    if (landCategory) filtered = filtered.filter(p => p.category === landCategory);
+
+                    if (landPriceMin) {
+                        const min = Number(landPriceMin);
+                        if (!isNaN(min)) filtered = filtered.filter(p => (Number(p.price) || 0) >= min);
+                    }
+                    if (landPriceMax) {
+                        const max = Number(landPriceMax);
+                        if (!isNaN(max)) filtered = filtered.filter(p => (Number(p.price) || Infinity) <= max);
+                    }
+
+                    if (landSortOrder === 'price_asc') {
+                       filtered.sort((a, b) => (Number(a.price) || 0) - (Number(b.price) || 0));
+                    } else if (landSortOrder === 'price_desc') {
+                       filtered.sort((a, b) => (Number(b.price) || 0) - (Number(a.price) || 0));
+                    }
+
+                    // Exclude featured if they're already shown above (optional, but requested layout separates them)
+                    // We will keep them in the grid for completeness but sorted to top if latest
+                  }
+
+                  // 3. Pagination calculation
+                  const totalItems = filtered.length;
+                  const paginated = (activePage === 'lands') ? filtered.slice(0, landPage * landsPerPage) : filtered;
+
+                  return (
+                    <>
+                      {paginated.map(prop => (
+                        activePage === 'lands' ? (
+                          <LandCard
+                            key={prop.id}
+                            property={prop}
+                            onClick={() => navigate('detail', prop.id)}
+                          />
+                        ) : (
+                          <div key={prop.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
+                            <div className="relative aspect-[16/10] overflow-hidden">
+                              <img src={prop.image} alt={prop.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
+                            </div>
+                            <div className="p-[20px] text-left flex flex-col flex-grow">
+                              <h3 className="text-[22px] font-serif font-bold text-[#333] mb-2">{prop.title}</h3>
+                              <p className="text-[16px] text-[#777] mb-1">Location: {prop.location.split(',')[0]}</p>
+                              <p className="text-[16px] text-[#777] mb-6 font-bold">Price: {prop.price}</p>
+                              <div className="mt-auto">
+                                <button onClick={() => navigate('detail', prop.id)} className="bg-luxury-gold text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-luxury-golddark">View Details</button>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      ))}
+
+                      {/* Load More Button spanning full width at bottom if needed */}
+                      {activePage === 'lands' && totalItems > landPage * landsPerPage && (
+                         <div className="col-span-1 md:col-span-2 lg:col-span-4 flex justify-center mt-8">
+                            <button
+                               onClick={() => setLandPage(prev => prev + 1)}
+                               className="px-8 py-3 bg-white border border-luxury-gold text-luxury-gold rounded-xl font-bold uppercase tracking-wider text-sm hover:bg-luxury-gold hover:text-white transition-all shadow-sm"
+                            >
+                               Load More Lands
+                            </button>
+                         </div>
+                      )}
+
+                      {activePage === 'lands' && totalItems === 0 && (
+                         <div className="col-span-1 md:col-span-2 lg:col-span-4 text-center py-16 bg-white rounded-xl border border-gray-100">
+                            <div className="text-luxury-gray text-lg mb-4">No lands found matching your criteria.</div>
+                            <button
+                               onClick={() => {
+                                 setLandSearchQuery('');
+                                 setLandDistrict('');
+                                 setLandCity('');
+                                 setLandCategory('');
+                               }}
+                               className="text-luxury-gold font-bold hover:underline"
+                            >
+                               Clear Filters
+                            </button>
+                         </div>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
             </div>
           </div>
