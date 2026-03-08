@@ -74,9 +74,9 @@ const LandCard: React.FC<LandCardProps> = ({ property, onClick }) => {
         <div className="mt-auto pt-6 border-t border-gray-100 flex items-end justify-between">
            <div>
               <p className="text-[11px] text-luxury-gray font-bold uppercase tracking-widest mb-1.5">
-                 {property.priceLabel || 'Starting Price'}
+                 {property.priceLabel || 'PER PERCH UPWARDS'}
               </p>
-              <p className="text-[22px] font-serif font-bold text-luxury-black">
+              <p className="text-[22px] font-serif font-bold text-[#D32F2F]">
                  {formatPrice(property.price)}
               </p>
            </div>
@@ -88,7 +88,7 @@ const LandCard: React.FC<LandCardProps> = ({ property, onClick }) => {
                  onClick();
               }}
            >
-             Explore
+             Explore Land
            </button>
         </div>
       </div>

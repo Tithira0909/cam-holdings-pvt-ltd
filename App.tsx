@@ -800,7 +800,7 @@ const App: React.FC = () => {
                  <div className="flex-1 h-px bg-gray-200"></div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 {(() => {
                   // 1. Initial Filtering by Page Type
                   let filtered = properties.filter(p => {
@@ -876,7 +876,7 @@ const App: React.FC = () => {
 
                       {/* Load More Button spanning full width at bottom if needed */}
                       {activePage === 'lands' && totalItems > landPage * landsPerPage && (
-                         <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-center mt-8">
+                         <div className="col-span-1 md:col-span-2 lg:col-span-4 flex justify-center mt-8">
                             <button
                                onClick={() => setLandPage(prev => prev + 1)}
                                className="px-8 py-3 bg-white border border-luxury-gold text-luxury-gold rounded-xl font-bold uppercase tracking-wider text-sm hover:bg-luxury-gold hover:text-white transition-all shadow-sm"
@@ -887,7 +887,7 @@ const App: React.FC = () => {
                       )}
 
                       {activePage === 'lands' && totalItems === 0 && (
-                         <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-16 bg-white rounded-xl border border-gray-100">
+                         <div className="col-span-1 md:col-span-2 lg:col-span-4 text-center py-16 bg-white rounded-xl border border-gray-100">
                             <div className="text-luxury-gray text-lg mb-4">No lands found matching your criteria.</div>
                             <button
                                onClick={() => {
