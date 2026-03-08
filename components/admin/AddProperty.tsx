@@ -5,9 +5,10 @@ import { PropertyType } from '../../types';
 interface AddPropertyProps {
   onSuccess: () => void;
   onCancel: () => void;
+  forcedType?: 'House' | 'Land';
 }
 
-const AddProperty: React.FC<AddPropertyProps> = ({ onSuccess, onCancel }) => {
+const AddProperty: React.FC<AddPropertyProps> = ({ onSuccess, onCancel, forcedType }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,7 +17,7 @@ const AddProperty: React.FC<AddPropertyProps> = ({ onSuccess, onCancel }) => {
   const [slug, setSlug] = useState('');
   const [location, setLocation] = useState('');
   const [price, setPrice] = useState('');
-  const [type, setType] = useState<PropertyType>(PropertyType.LAND);
+  const [type, setType] = useState<PropertyType>(forcedType === 'House' ? PropertyType.HOUSE : PropertyType.LAND);
   const [status, setStatus] = useState('Active');
   const [description, setDescription] = useState('');
 
@@ -28,6 +29,8 @@ const AddProperty: React.FC<AddPropertyProps> = ({ onSuccess, onCancel }) => {
   const [priceLabel, setPriceLabel] = useState('');
   const [projectStatusLabel, setProjectStatusLabel] = useState('');
   const [isFeatured, setIsFeatured] = useState(false);
+  const [sortOrder, setSortOrder] = useState<number>(0);
+  const [shortDescription, setShortDescription] = useState('');
   const [isSoldOut, setIsSoldOut] = useState(false);
   const [hotlineNumber, setHotlineNumber] = useState('');
   const [whatsappNumber, setWhatsappNumber] = useState('');
@@ -103,6 +106,9 @@ const AddProperty: React.FC<AddPropertyProps> = ({ onSuccess, onCancel }) => {
       formData.append('locationLabel', locationLabel);
       formData.append('priceLabel', priceLabel);
       formData.append('projectStatusLabel', projectStatusLabel);
+      formData.append('isFeatured', String(isFeatured));
+      formData.append('sortOrder', String(sortOrder));
+      formData.append('shortDescription', shortDescription);
       formData.append('isFeatured', String(isFeatured));
       formData.append('isSoldOut', String(isSoldOut));
       formData.append('hotlineNumber', hotlineNumber);

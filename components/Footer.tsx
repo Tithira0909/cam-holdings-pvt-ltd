@@ -1,187 +1,151 @@
-import React from "react";
-import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import React, { useState, useEffect } from 'react';
+import { Mail, Phone, MapPin, ArrowRight, Instagram, Facebook, Linkedin, Youtube, ExternalLink } from 'lucide-react';
+import { NavItem } from '../types';
 
 interface FooterProps {
-  onNavigate: (page: any) => void;
+  onNavigate: (page: string) => void;
+  navigation: NavItem[];
 }
 
-const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+const Footer: React.FC<FooterProps> = ({ onNavigate, navigation }) => {
+  const [siteSettings, setSiteSettings] = useState<any>(null);
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => setSiteSettings(data))
+      .catch(err => console.error("Error loading settings in footer", err));
+  }, []);
+
+  const contactPhone = siteSettings?.contact_phone || '+94 77 123 4567';
+  const contactEmail = siteSettings?.contact_email || 'info@camholdings.com';
+  const contactAddress = siteSettings?.contact_address || '123 Premium Way, Colombo 03, Sri Lanka';
+  const siteName = siteSettings?.site_name || 'CAM Holdings';
+
   return (
-    <footer className="bg-luxury-black text-white pt-20 pb-12 border-t border-white/10">
-      <div className="max-w-7xl mx-auto px-mobile">
-        {/* Main Footer Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 mb-20">
-          {/* Column 1: About Us & Contact */}
+    <footer className="bg-luxury-black text-white pt-20 pb-10 border-t border-gray-800">
+      <div className="max-w-[1920px] mx-auto px-6 md:px-12 lg:px-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
+
+          {/* Brand & About */}
+          <div className="lg:pr-8">
+            <h3 className="font-serif text-2xl text-luxury-gold mb-6">{siteName}</h3>
+            <p className="text-gray-400 font-light leading-relaxed mb-8 text-sm">
+              Sri Lanka's premier real estate developer. We build luxury homes, curate prime lands, and deliver exceptional property services that exceed expectations and elevate lifestyles.
+            </p>
+            <div className="flex space-x-4">
+              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-luxury-gold hover:text-white transition-all">
+                <Facebook size={18} />
+              </a>
+              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-luxury-gold hover:text-white transition-all">
+                <Instagram size={18} />
+              </a>
+              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-luxury-gold hover:text-white transition-all">
+                <Linkedin size={18} />
+              </a>
+              <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-luxury-gold hover:text-white transition-all">
+                <Youtube size={18} />
+              </a>
+            </div>
+          </div>
+
+          {/* Quick Links */}
           <div>
-            <h4 className="text-white font-bold text-sm mb-8 tracking-wider">
-              About Us & Contact
-            </h4>
-            <ul className="space-y-4 text-white/60 text-sm font-light">
+            <h4 className="font-serif text-lg mb-6 tracking-wide text-white">Explore Properties</h4>
+            <ul className="space-y-4">
               <li>
-                <button
-                  onClick={() => onNavigate("about")}
-                  className="hover:text-luxury-gold transition-colors text-left"
-                >
+                <button onClick={() => onNavigate('houses')} className="text-gray-400 hover:text-luxury-gold transition-colors flex items-center group text-sm font-light">
+                  <ArrowRight size={14} className="mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-luxury-gold" />
+                  Luxury Houses
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('lands')} className="text-gray-400 hover:text-luxury-gold transition-colors flex items-center group text-sm font-light">
+                  <ArrowRight size={14} className="mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-luxury-gold" />
+                  Prime Lands
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('projects')} className="text-gray-400 hover:text-luxury-gold transition-colors flex items-center group text-sm font-light">
+                  <ArrowRight size={14} className="mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-luxury-gold" />
+                  Featured Projects
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('portfolio')} className="text-gray-400 hover:text-luxury-gold transition-colors flex items-center group text-sm font-light">
+                  <ArrowRight size={14} className="mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-luxury-gold" />
+                  Completed Portfolio
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          {/* Corporate */}
+          <div>
+            <h4 className="font-serif text-lg mb-6 tracking-wide text-white">Corporate Info</h4>
+            <ul className="space-y-4">
+              <li>
+                <button onClick={() => onNavigate('about')} className="text-gray-400 hover:text-luxury-gold transition-colors flex items-center group text-sm font-light">
+                  <ArrowRight size={14} className="mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-luxury-gold" />
                   About Us
                 </button>
               </li>
               <li>
-                <button
-                  onClick={() => onNavigate("contact")}
-                  className="hover:text-luxury-gold transition-colors text-left"
-                >
-                  Contact us
+                <button onClick={() => onNavigate('services')} className="text-gray-400 hover:text-luxury-gold transition-colors flex items-center group text-sm font-light">
+                  <ArrowRight size={14} className="mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-luxury-gold" />
+                  Our Services
                 </button>
               </li>
               <li>
-                <button
-                  onClick={() => onNavigate("about")}
-                  className="hover:text-luxury-gold transition-colors text-left"
-                >
-                  Careers
+                <button onClick={() => onNavigate('news')} className="text-gray-400 hover:text-luxury-gold transition-colors flex items-center group text-sm font-light">
+                  <ArrowRight size={14} className="mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-luxury-gold" />
+                  News & Media
                 </button>
               </li>
               <li>
-                <button
-                  onClick={() => onNavigate("testimonials")}
-                  className="hover:text-luxury-gold transition-colors text-left"
-                >
-                  Testimonials
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate("kyc")}
-                  className="hover:text-luxury-gold transition-colors text-left"
-                >
-                  KYC
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate("privacy")}
-                  className="hover:text-luxury-gold transition-colors text-left"
-                >
-                  Privacy Policy
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate("terms")}
-                  className="hover:text-luxury-gold transition-colors text-left"
-                >
-                  Terms and Conditions
+                <button onClick={() => onNavigate('contact')} className="text-gray-400 hover:text-luxury-gold transition-colors flex items-center group text-sm font-light">
+                  <ArrowRight size={14} className="mr-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-luxury-gold" />
+                  Contact Us
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Column 2: Property & Services */}
+          {/* Contact */}
           <div>
-            <h4 className="text-white font-bold text-sm mb-8 tracking-wider">
-              Property & Services
-            </h4>
-            <ul className="space-y-4 text-white/60 text-sm font-light">
-              <li>
-                <button
-                  onClick={() => onNavigate("projects")}
-                  className="hover:text-luxury-gold transition-colors text-left"
-                >
-                  Lands
-                </button>
+            <h4 className="font-serif text-lg mb-6 tracking-wide text-white">Get in Touch</h4>
+            <ul className="space-y-5">
+              <li className="flex items-start">
+                <MapPin className="text-luxury-gold mt-1 mr-4 shrink-0" size={18} />
+                <span className="text-gray-400 text-sm font-light leading-relaxed">{contactAddress}</span>
               </li>
-              <li>
-                <button
-                  onClick={() => onNavigate("projects")}
-                  className="hover:text-luxury-gold transition-colors text-left"
-                >
-                  Houses
-                </button>
+              <li className="flex items-center">
+                <Phone className="text-luxury-gold mr-4 shrink-0" size={18} />
+                <a href={`tel:${contactPhone.replace(/\\s/g, '')}`} className="text-gray-400 hover:text-white transition-colors text-sm font-light">{contactPhone}</a>
               </li>
-              <li>
-                <button
-                  onClick={() => onNavigate("portfolio")}
-                  className="hover:text-luxury-gold transition-colors text-left"
-                >
-                  Projects Properties
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate("services")}
-                  className="hover:text-luxury-gold transition-colors text-left"
-                >
-                  Services
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate("virtual-tour")}
-                  className="hover:text-luxury-gold transition-colors text-left"
-                >
-                  Virtual Tour
-                </button>
+              <li className="flex items-center">
+                <Mail className="text-luxury-gold mr-4 shrink-0" size={18} />
+                <a href={`mailto:${contactEmail}`} className="text-gray-400 hover:text-white transition-colors text-sm font-light">{contactEmail}</a>
               </li>
             </ul>
+            <button
+              onClick={() => onNavigate('contact')}
+              className="mt-8 px-6 py-3 border border-luxury-gold/50 text-luxury-gold hover:bg-luxury-gold hover:text-white rounded-lg transition-all text-sm font-medium w-full flex items-center justify-center gap-2 group"
+            >
+              Request a Call Back
+              <ExternalLink size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+            </button>
           </div>
 
-          {/* Column 3: Contact Details */}
-          <div>
-            <h4 className="text-white font-bold text-sm mb-8 tracking-wider">
-              Contact Details
-            </h4>
-            <div className="space-y-6 text-white/60 text-sm font-light leading-relaxed">
-              <div>
-                <span className="block text-white font-medium mb-1">
-                  Head Office
-                </span>
-                <p>
-                  No.75, D.S. Senanayake Mawatha,
-                  <br />
-                  Borella, Colombo-08, Sri Lanka,
-                </p>
-              </div>
-              <div className="space-y-2">
-                <p className="flex items-center gap-2">+94 112 699 822</p>
-                <p className="flex items-center gap-2">+94 112 030 890</p>
-              </div>
-              <p className="text-luxury-gold font-medium">info@camholdings.lk</p>
-            </div>
-          </div>
         </div>
 
-        {/* Brand Bottom Section */}
-        <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex items-center gap-4">
-            <img
-              src="/assets/cam_logo.png"
-              alt="Crown Asia Majestic Holdings (Pvt) Ltd"
-              className="h-10 md:h-12 w-auto object-contain"
-            />
-            <span className="font-serif text-lg tracking-[0.2em] font-bold text-white/80">
-              CROWN ASIA MAJESTIC
-            </span>
-          </div>
-
+        {/* Bottom Bar */}
+        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-light text-gray-500">
+          <p>&copy; {new Date().getFullYear()} {siteName}. All Rights Reserved.</p>
           <div className="flex gap-6">
-            {[Instagram, Linkedin, Twitter, Facebook].map((Icon, i) => (
-              <a
-                key={i}
-                href="#"
-                className="w-10 h-10 border border-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-luxury-gold hover:border-luxury-gold transition-all duration-300"
-              >
-                <Icon size={18} />
-              </a>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-12 text-center">
-          <div className="text-[8px] uppercase tracking-[0.3em] font-bold text-white/10 leading-relaxed">
-            © 2024 CROWN ASIA MAJESTIC HOLDINGS (PVT) LTD. ALL RIGHTS RESERVED.
-            <br />
-            Design and Developed by Zeatralabs.com
-            <button onClick={() => onNavigate('admin')} className="text-[10px] text-white/20 hover:text-luxury-gold transition-colors ml-4">ADMIN</button>
+            <button onClick={() => onNavigate('privacy')} className="hover:text-luxury-gold transition-colors">Privacy Policy</button>
+            <button onClick={() => onNavigate('terms')} className="hover:text-luxury-gold transition-colors">Terms of Service</button>
+            <button onClick={() => onNavigate('kyc')} className="hover:text-luxury-gold transition-colors">KYC Documentation</button>
           </div>
         </div>
       </div>

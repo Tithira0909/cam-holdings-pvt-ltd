@@ -115,8 +115,20 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                 : 'text-white/60 hover:bg-white/5 hover:text-white'
             }`}
           >
+            <MapPin size={18} />
+            Lands
+          </button>
+
+          <button
+            onClick={() => { setActiveView('houses'); setMobileMenuOpen(false); }}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
+              activeView === 'houses' || activeView === 'add-house' || activeView === 'edit-house'
+                ? 'bg-white/10 text-luxury-gold'
+                : 'text-white/60 hover:bg-white/5 hover:text-white'
+            }`}
+          >
             <Building size={18} />
-            Properties
+            Houses
           </button>
           <button
             onClick={() => { setActiveView('projects'); setMobileMenuOpen(false); }}
@@ -346,6 +358,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
         {activeView === 'properties' && (
           <PropertiesList
+            forcedType="Lands"
             onAddProperty={() => setActiveView('add-property')}
             onEditProperty={(id) => {
               setEditingPropertyId(id);
@@ -366,6 +379,33 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             propertyId={editingPropertyId}
             onSuccess={() => setActiveView('properties')}
             onCancel={() => setActiveView('properties')}
+          />
+        )}
+
+        {activeView === 'houses' && (
+          <PropertiesList
+            forcedType="Houses"
+            onAddProperty={() => setActiveView('add-house')}
+            onEditProperty={(id) => {
+              setEditingPropertyId(id);
+              setActiveView('edit-house');
+            }}
+          />
+        )}
+
+        {activeView === 'add-house' && (
+          <AddProperty
+            forcedType="House"
+            onSuccess={() => setActiveView('houses')}
+            onCancel={() => setActiveView('houses')}
+          />
+        )}
+
+        {activeView === 'edit-house' && editingPropertyId && (
+          <EditProperty
+            propertyId={editingPropertyId}
+            onSuccess={() => setActiveView('houses')}
+            onCancel={() => setActiveView('houses')}
           />
         )}
 

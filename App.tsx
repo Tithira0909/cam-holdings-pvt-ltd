@@ -4,8 +4,13 @@ import Hero from './components/Hero';
 import Stats from './components/Stats';
 import Newsletter from './components/Newsletter';
 import PropertyCard from './components/PropertyCard';
+import HouseCard from './components/HouseCard';
+import { HousesListing } from './components/houses/HousesListing';
+
 import LandCard from './components/LandCard';
 import LandDetail from './components/LandDetail';
+import HouseDetail from './components/HouseDetail';
+
 import ConsultationModal from './components/ConsultationModal';
 import Footer from './components/Footer';
 import Login from './components/admin/Login';
@@ -617,7 +622,11 @@ const App: React.FC = () => {
         )}
 
                 {/* 4. Properties Page */}
-        {(activePage === 'properties' || activePage === 'lands' || activePage === 'houses' || activePage === 'projects') && (
+        {activePage === 'houses' && (
+          <HousesListing properties={properties} onNavigate={navigate} />
+        )}
+
+        {(activePage === 'properties' || activePage === 'lands' || activePage === 'projects') && (
           <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pb-24">
 
             {/* Conditional Hero based on active page */}
@@ -1026,6 +1035,14 @@ const App: React.FC = () => {
                     property={currentProperty}
                     onNavigate={navigate}
                     recommendedLands={properties.filter(p => p.id !== currentProperty.id && (p.type?.toLowerCase() === 'land' || p.type?.toLowerCase() === 'lands')).slice(0, 3)}
+                    onOpenConsultation={() => setIsModalOpen(true)}
+                    setSelectedImage={setSelectedImage}
+                 />
+              ) : (currentProperty.type?.toLowerCase() === 'house' || currentProperty.type?.toLowerCase() === 'apartment' || currentProperty.type?.toLowerCase() === 'houses') ? (
+                 <HouseDetail
+                    property={currentProperty}
+                    onNavigate={navigate}
+                    recommendedHouses={properties.filter(p => p.id !== currentProperty.id && (p.type?.toLowerCase() === 'house' || p.type?.toLowerCase() === 'apartment' || p.type?.toLowerCase() === 'houses')).slice(0, 3)}
                     onOpenConsultation={() => setIsModalOpen(true)}
                     setSelectedImage={setSelectedImage}
                  />

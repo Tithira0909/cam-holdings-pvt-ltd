@@ -30,7 +30,6 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
   const [locationLabel, setLocationLabel] = useState('');
   const [priceLabel, setPriceLabel] = useState('');
   const [projectStatusLabel, setProjectStatusLabel] = useState('');
-  const [isFeatured, setIsFeatured] = useState(false);
   const [isSoldOut, setIsSoldOut] = useState(false);
   const [hotlineNumber, setHotlineNumber] = useState('');
   const [whatsappNumber, setWhatsappNumber] = useState('');
