@@ -4,8 +4,12 @@ import Hero from './components/Hero';
 import Stats from './components/Stats';
 import Newsletter from './components/Newsletter';
 import PropertyCard from './components/PropertyCard';
+import HouseCard from './components/HouseCard';
+
 import LandCard from './components/LandCard';
 import LandDetail from './components/LandDetail';
+import HouseDetail from './components/HouseDetail';
+
 import ConsultationModal from './components/ConsultationModal';
 import Footer from './components/Footer';
 import Login from './components/admin/Login';

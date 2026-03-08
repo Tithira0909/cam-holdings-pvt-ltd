@@ -5,6 +5,7 @@ import { Property, PropertyType } from '../../types';
 interface PropertiesListProps {
   onAddProperty: () => void;
   onEditProperty: (id: string) => void;
+  forcedType?: 'Lands' | 'Houses';
 }
 
 // Extend Property type to include status if not present in types.ts
@@ -12,14 +13,20 @@ interface AdminProperty extends Property {
   status?: string;
 }
 
-const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditProperty }) => {
+const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditProperty, forcedType }) => {
   const [properties, setProperties] = useState<AdminProperty[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Search & Filter State
   const [searchQuery, setSearchQuery] = useState('');
-  const [typeFilter, setTypeFilter] = useState('All');
+  const [typeFilter, setTypeFilter] = useState(forcedType || 'All');
+
+  useEffect(() => {
+    if (forcedType) {
+      setTypeFilter(forcedType);
+    }
+  }, [forcedType]);
 
   const filteredProperties = useMemo(() => {
     return properties

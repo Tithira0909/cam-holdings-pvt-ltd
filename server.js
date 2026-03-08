@@ -681,7 +681,7 @@ app.post('/api/properties', upload.fields([
 
     const {
       title, slug, location, price, type, status, description,
-      category, district, city, locationLabel, priceLabel, bedrooms, bathrooms,
+      category, district, city, locationLabel, priceLabel, bedrooms, bathrooms, videoUrl, projectPhilosophy, locationHighlights,
       isFeatured, isSoldOut, videoUrl, hotlineNumber, sortOrder,
       shortDescription, fullDescription,
       amenities, locationHighlights, floorPlans, brochureFiles,
@@ -769,7 +769,7 @@ app.post('/api/properties', upload.fields([
     const result = await query(
       `INSERT INTO properties (
         title, slug, location, price, type, status, description, image,
-        category, district, city, locationLabel, priceLabel, bedrooms, bathrooms,
+        category, district, city, locationLabel, priceLabel, bedrooms, bathrooms, videoUrl, projectPhilosophy, locationHighlights,
         isFeatured, isSoldOut, videoUrl, hotlineNumber, sortOrder,
         shortDescription, fullDescription, amenities, locationHighlights, floorPlans, brochureFiles,
         logoImage, blockPlanImage, roadMapImage, locationMapImage, projectStatusLabel, travelHighlights, inquiryEmail, relatedLands, metaTitle, metaDescription, ogImage, whatsappNumber
@@ -817,7 +817,7 @@ app.put('/api/properties/:id', upload.fields([
 
     const {
       title, slug, location, price, type, status, description,
-      category, district, city, locationLabel, priceLabel, bedrooms, bathrooms,
+      category, district, city, locationLabel, priceLabel, bedrooms, bathrooms, videoUrl, projectPhilosophy, locationHighlights,
       isFeatured, isSoldOut, videoUrl, hotlineNumber, sortOrder,
       shortDescription, fullDescription,
       amenities, locationHighlights, floorPlans, brochureFiles,
