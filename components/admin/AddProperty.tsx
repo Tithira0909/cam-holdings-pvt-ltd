@@ -29,6 +29,8 @@ const AddProperty: React.FC<AddPropertyProps> = ({ onSuccess, onCancel, forcedTy
   const [priceLabel, setPriceLabel] = useState('');
   const [projectStatusLabel, setProjectStatusLabel] = useState('');
   const [isFeatured, setIsFeatured] = useState(false);
+  const [sortOrder, setSortOrder] = useState<number>(0);
+  const [shortDescription, setShortDescription] = useState('');
   const [isSoldOut, setIsSoldOut] = useState(false);
   const [hotlineNumber, setHotlineNumber] = useState('');
   const [whatsappNumber, setWhatsappNumber] = useState('');
@@ -104,6 +106,9 @@ const AddProperty: React.FC<AddPropertyProps> = ({ onSuccess, onCancel, forcedTy
       formData.append('locationLabel', locationLabel);
       formData.append('priceLabel', priceLabel);
       formData.append('projectStatusLabel', projectStatusLabel);
+      formData.append('isFeatured', String(isFeatured));
+      formData.append('sortOrder', String(sortOrder));
+      formData.append('shortDescription', shortDescription);
       formData.append('isFeatured', String(isFeatured));
       formData.append('isSoldOut', String(isSoldOut));
       formData.append('hotlineNumber', hotlineNumber);

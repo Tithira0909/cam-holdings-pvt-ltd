@@ -682,9 +682,9 @@ app.post('/api/properties', upload.fields([
     const {
       title, slug, location, price, type, status, description,
       category, district, city, locationLabel, priceLabel, bedrooms, bathrooms, videoUrl, projectPhilosophy, locationHighlights,
-      isFeatured, isSoldOut, videoUrl, hotlineNumber, sortOrder,
+      isFeatured, isSoldOut, hotlineNumber, sortOrder,
       shortDescription, fullDescription,
-      amenities, locationHighlights, floorPlans, brochureFiles,
+      amenities, floorPlans, brochureFiles,
       projectStatusLabel, travelHighlights, inquiryEmail, relatedLands, metaTitle, metaDescription, ogImage, whatsappNumber
     } = req.body;
 
@@ -738,15 +738,16 @@ app.post('/api/properties', upload.fields([
         priceLabel ?? null,
         bedrooms ?? null,
         bathrooms ?? null,
+        videoUrl ?? null,
+        projectPhilosophy ?? null,
+        locationHighlightsStr ?? null,
         isFeatured === 'true' || isFeatured === true ? 1 : 0,
         isSoldOut === 'true' || isSoldOut === true ? 1 : 0,
-        videoUrl ?? null,
         hotlineNumber ?? null,
         sortOrder || 0,
         shortDescription ?? null,
         fullDescription ?? null,
         amenitiesStr ?? null,
-        locationHighlightsStr ?? null,
         floorPlansStr ?? null,
         brochureFilesStr ?? null,
         logoImageUrl ?? null,
@@ -770,10 +771,10 @@ app.post('/api/properties', upload.fields([
       `INSERT INTO properties (
         title, slug, location, price, type, status, description, image,
         category, district, city, locationLabel, priceLabel, bedrooms, bathrooms, videoUrl, projectPhilosophy, locationHighlights,
-        isFeatured, isSoldOut, videoUrl, hotlineNumber, sortOrder,
-        shortDescription, fullDescription, amenities, locationHighlights, floorPlans, brochureFiles,
+        isFeatured, isSoldOut, hotlineNumber, sortOrder,
+        shortDescription, fullDescription, amenities, floorPlans, brochureFiles,
         logoImage, blockPlanImage, roadMapImage, locationMapImage, projectStatusLabel, travelHighlights, inquiryEmail, relatedLands, metaTitle, metaDescription, ogImage, whatsappNumber
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       params
     );
 
@@ -818,9 +819,9 @@ app.put('/api/properties/:id', upload.fields([
     const {
       title, slug, location, price, type, status, description,
       category, district, city, locationLabel, priceLabel, bedrooms, bathrooms, videoUrl, projectPhilosophy, locationHighlights,
-      isFeatured, isSoldOut, videoUrl, hotlineNumber, sortOrder,
+      isFeatured, isSoldOut, hotlineNumber, sortOrder,
       shortDescription, fullDescription,
-      amenities, locationHighlights, floorPlans, brochureFiles,
+      amenities, floorPlans, brochureFiles,
       projectStatusLabel, travelHighlights, inquiryEmail, relatedLands, metaTitle, metaDescription, ogImage, whatsappNumber
     } = req.body;
 
@@ -878,15 +879,16 @@ app.put('/api/properties/:id', upload.fields([
         priceLabel ?? null,
         bedrooms ?? null,
         bathrooms ?? null,
+        videoUrl ?? null,
+        projectPhilosophy ?? null,
+        locationHighlightsStr ?? null,
         isFeatured === 'true' || isFeatured === true ? 1 : 0,
         isSoldOut === 'true' || isSoldOut === true ? 1 : 0,
-        videoUrl ?? null,
         hotlineNumber ?? null,
         sortOrder || 0,
         shortDescription ?? null,
         fullDescription ?? null,
         amenitiesStr ?? null,
-        locationHighlightsStr ?? null,
         floorPlansStr ?? null,
         brochureFilesStr ?? null,
         logoImageUrl ?? null,

@@ -1,75 +1,79 @@
 import React from 'react';
 import { Property } from '../types';
+import { MapPin, BedDouble, Bath, ChevronRight } from 'lucide-react';
 
 interface HouseCardProps {
   property: Property;
   onClick: () => void;
 }
 
-const formatPrice = (price?: string) => {
-  if (!price) return '';
-  const num = Number(price.replace(/[^0-9.-]+/g,""));
-  if (!isNaN(num) && num > 0) {
-    return new Intl.NumberFormat('en-LK').format(num) + ' LKR';
-  }
-  return price;
-};
-
 const HouseCard: React.FC<HouseCardProps> = ({ property, onClick }) => {
   return (
     <div
-      className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer group transform hover:-translate-y-2"
       onClick={onClick}
+      className="group bg-white rounded-2xl overflow-hidden shadow-[0_4px_20px_rgb(0,0,0,0.05)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.12)] transition-all duration-500 cursor-pointer flex flex-col h-full transform hover:-translate-y-2 border border-gray-50"
     >
-      <div className="relative aspect-[4/3] overflow-hidden bg-gray-200">
+      <div className="relative h-64 overflow-hidden">
         <img
           src={property.image}
           alt={property.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
         />
-        {property.isSoldOut && (
-          <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
-            <span className="bg-red-600 text-white font-bold uppercase tracking-widest py-2 px-6 rounded-md transform -rotate-12 border-2 border-white shadow-lg">
+
+        {/* Badges */}
+        <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
+          {property.isFeatured && (
+            <span className="bg-luxury-gold text-white px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-md">
+              Featured
+            </span>
+          )}
+          {property.isSoldOut && (
+            <span className="bg-red-500 text-white px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-md">
               Sold Out
             </span>
-          </div>
-        )}
+          )}
+        </div>
+
+        {/* Location Overlay */}
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 pt-12">
+           <div className="flex items-center text-white/90 text-sm font-medium">
+             <MapPin size={16} className="mr-1.5 text-luxury-gold" />
+             {property.city || property.location}
+           </div>
+        </div>
       </div>
 
-      <div className="p-6">
-        <h3 className="font-serif text-xl font-bold text-[#111] uppercase tracking-wider mb-2 group-hover:text-[#b4904d] transition-colors line-clamp-1">
+      <div className="p-6 flex flex-col flex-1">
+        <h3 className="text-xl font-serif text-luxury-black mb-3 line-clamp-2 group-hover:text-luxury-gold transition-colors duration-300">
           {property.title}
         </h3>
 
-        <p className="text-gray-500 uppercase tracking-widest text-xs font-bold mb-4 line-clamp-1">
-          {property.locationLabel || property.location}
-        </p>
+        {property.shortDescription && (
+          <p className="text-gray-500 text-sm mb-4 line-clamp-2 font-light">
+            {property.shortDescription}
+          </p>
+        )}
 
-        <div className="mb-4 pb-4 border-b border-gray-100">
-          <p className="text-2xl font-serif font-bold text-[#b4904d]">
-            {formatPrice(property.price)}
-          </p>
-          <p className="text-gray-400 text-[10px] uppercase tracking-widest font-bold mt-1">
-            {property.priceLabel || 'PER UNIT UPWARDS'}
-          </p>
+        <div className="flex flex-wrap items-center gap-5 text-sm text-gray-600 mb-6 pt-4 border-t border-gray-100">
+          <div className="flex items-center gap-2 group-hover:text-luxury-black transition-colors">
+            <BedDouble size={18} className="text-luxury-gold/70" />
+            <span className="font-medium">{property.bedrooms || property.beds || '-'} Beds</span>
+          </div>
+          <div className="flex items-center gap-2 group-hover:text-luxury-black transition-colors">
+            <Bath size={18} className="text-luxury-gold/70" />
+            <span className="font-medium">{property.bathrooms || property.baths || '-'} Baths</span>
+          </div>
         </div>
 
-        <div className="flex gap-4 mb-6">
-          {property.bedrooms && (
-            <div className="text-sm font-medium text-gray-700">
-              <span className="font-bold text-[#111]">{property.bedrooms}</span> Bedrooms
-            </div>
-          )}
-          {property.bathrooms && (
-            <div className="text-sm font-medium text-gray-700">
-              <span className="font-bold text-[#111]">{property.bathrooms}</span> Bathrooms
-            </div>
-          )}
+        <div className="mt-auto flex items-center justify-between pt-4 border-t border-gray-50">
+          <div>
+            <p className="text-[11px] text-gray-400 uppercase tracking-widest mb-1 font-semibold">{property.priceLabel || 'Starting From'}</p>
+            <p className="text-2xl font-serif text-luxury-black">{property.price}</p>
+          </div>
+          <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-luxury-gold group-hover:text-white transition-all duration-300 shadow-sm group-hover:shadow-md">
+            <ChevronRight size={20} className="transform group-hover:translate-x-1 transition-transform" />
+          </div>
         </div>
-
-        <button className="w-full py-3 bg-gray-50 text-[#111] text-xs font-bold uppercase tracking-widest rounded-lg group-hover:bg-[#111] group-hover:text-white transition-colors">
-          Explore House
-        </button>
       </div>
     </div>
   );
