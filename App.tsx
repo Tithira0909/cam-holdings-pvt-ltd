@@ -771,17 +771,15 @@ const App: React.FC = () => {
 
               {/* Featured Lands Section */}
               {activePage === 'lands' && properties.filter(p => (p.type?.toLowerCase() === 'land' || p.type?.toLowerCase() === 'lands') && p.isFeatured).length > 0 && (
-                <div className="mb-16">
-                  <div className="flex items-end justify-between mb-8">
-                    <div>
-                      <h2 className="text-3xl font-serif font-bold text-luxury-black mb-2">Featured Projects</h2>
-                      <p className="text-luxury-gray">Explore our handpicked premium land developments</p>
-                    </div>
+                <div className="mb-16 bg-[#eef5f1] rounded-[20px] p-8 md:p-12">
+                  <div className="text-center max-w-2xl mx-auto mb-10">
+                    <h2 className="text-[32px] font-serif font-bold text-luxury-black mb-4">Featured Lands</h2>
+                    <p className="text-[15px] text-luxury-gray leading-relaxed">Choose from a wide range of lands across 18 districts, tailored to suit your needs and preferred location.</p>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {properties
                       .filter(p => (p.type?.toLowerCase() === 'land' || p.type?.toLowerCase() === 'lands') && p.isFeatured)
-                      .slice(0, 3)
+                      .slice(0, 4)
                       .map(prop => (
                         <LandCard
                           key={prop.id}
