@@ -112,19 +112,19 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
                  <p className="font-bold text-[#b4904d]">{property.hotlineNumber}</p>
                </div>
              )}
-             {property.bedrooms && (
+             {(property.bedrooms !== undefined || property.beds !== undefined) && (
                <div className="bg-white px-6 py-4 rounded-xl border border-gray-100 shadow-sm">
                  <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Bedrooms</p>
                  <p className="font-bold text-[#111] flex items-center gap-2">
-                   <BedDouble size={16} className="text-[#b4904d]" /> {property.bedrooms}
+                   <BedDouble size={16} className="text-[#b4904d]" /> {property.bedrooms ?? property.beds}
                  </p>
                </div>
              )}
-              {property.bathrooms && (
+               {(property.bathrooms !== undefined || property.baths !== undefined) && (
                <div className="bg-white px-6 py-4 rounded-xl border border-gray-100 shadow-sm">
                  <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Bathrooms</p>
                  <p className="font-bold text-[#111] flex items-center gap-2">
-                   <Bath size={16} className="text-[#b4904d]" /> {property.bathrooms}
+                   <Bath size={16} className="text-[#b4904d]" /> {property.bathrooms ?? property.baths}
                  </p>
                </div>
              )}

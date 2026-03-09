@@ -57,11 +57,11 @@ const HouseCard: React.FC<HouseCardProps> = ({ property, onClick }) => {
         <div className="flex flex-wrap items-center gap-5 text-sm text-gray-600 mb-6 pt-4 border-t border-gray-100">
           <div className="flex items-center gap-2 group-hover:text-luxury-black transition-colors">
             <BedDouble size={18} className="text-luxury-gold/70" />
-            <span className="font-medium">{property.bedrooms || property.beds || '-'} Beds</span>
+            <span className="font-medium">{property.bedrooms ?? property.beds ?? '-'} Beds</span>
           </div>
           <div className="flex items-center gap-2 group-hover:text-luxury-black transition-colors">
             <Bath size={18} className="text-luxury-gold/70" />
-            <span className="font-medium">{property.bathrooms || property.baths || '-'} Baths</span>
+            <span className="font-medium">{property.bathrooms ?? property.baths ?? '-'} Baths</span>
           </div>
         </div>
 

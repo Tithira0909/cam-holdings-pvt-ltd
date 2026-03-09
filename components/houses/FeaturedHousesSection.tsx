@@ -105,11 +105,11 @@ export const FeaturedHousesSection: React.FC<FeaturedHousesSectionProps> = ({ pr
                   <div className="flex flex-wrap gap-4 text-sm text-gray-500 mb-6 pt-4 border-t border-gray-50">
                     <div className="flex items-center gap-2">
                       <BedDouble size={18} className="text-luxury-gold/70" />
-                      <span>{property.bedrooms || property.beds || '-'} Beds</span>
+                      <span>{property.bedrooms ?? property.beds ?? '-'} Beds</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Bath size={18} className="text-luxury-gold/70" />
-                      <span>{property.bathrooms || property.baths || '-'} Baths</span>
+                      <span>{property.bathrooms ?? property.baths ?? '-'} Baths</span>
                     </div>
                   </div>
 
