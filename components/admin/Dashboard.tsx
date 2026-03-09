@@ -279,7 +279,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             <div className="flex justify-between items-start mb-4 relative z-10">
               <div>
                 <p className="text-sm text-luxury-gray font-bold uppercase tracking-wider">Total Lands</p>
-                <h3 className="text-4xl font-serif font-bold text-luxury-black mt-2">{PROPERTIES.filter(p => p.type === 'Land').length}</h3>
+                <h3 className="text-4xl font-serif font-bold text-luxury-black mt-2">{PROPERTIES.length /* Placeholder */}</h3>
               </div>
               <div className="p-3 bg-blue-50 rounded-xl text-blue-600 group-hover:scale-110 transition-transform">
                 <MapPin size={24} />
@@ -376,7 +376,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
         {activeView === 'edit-property' && editingPropertyId && (
           <EditProperty
-            propertyId={editingPropertyId}
+            propertyId={editingPropertyId.replace(/^(land|house)-/, '')}
             onSuccess={() => setActiveView('properties')}
             onCancel={() => setActiveView('properties')}
           />
@@ -403,7 +403,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
         {activeView === 'edit-house' && editingPropertyId && (
           <EditProperty
-            propertyId={editingPropertyId}
+            propertyId={editingPropertyId.replace(/^(land|house)-/, '')}
             onSuccess={() => setActiveView('houses')}
             onCancel={() => setActiveView('houses')}
           />

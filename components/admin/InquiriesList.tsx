@@ -12,7 +12,7 @@ interface Inquiry {
   phone: string;
   subject: string;
   status: 'new' | 'replied' | 'closed';
-  created_at: string;
+  createdAt: string;
 }
 
 const InquiriesList: React.FC<InquiriesListProps> = ({ onViewInquiry }) => {
@@ -63,7 +63,7 @@ const InquiriesList: React.FC<InquiriesListProps> = ({ onViewInquiry }) => {
                 <td className="px-6 py-4 font-bold text-luxury-black text-sm">{inq.full_name}</td>
                 <td className="px-6 py-4 text-sm text-gray-600">{inq.email}</td>
                 <td className="px-6 py-4 text-sm text-gray-800 font-medium">{inq.subject}</td>
-                <td className="px-6 py-4 text-xs text-gray-500">{new Date(inq.created_at).toLocaleDateString()}</td>
+                <td className="px-6 py-4 text-xs text-gray-500">{new Date(inq.createdAt).toLocaleDateString()}</td>
                 <td className="px-6 py-4">
                   <span className={`px-2 py-1 text-xs font-bold rounded-full uppercase tracking-wider ${
                     inq.status === 'new' ? 'bg-blue-100 text-blue-700' :

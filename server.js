@@ -270,7 +270,7 @@ app.delete('/api/settings/site/hero', async (req, res) => {
 
 app.get('/api/settings/roles', async (req, res) => {
   try {
-    const roles = await query('SELECT * FROM roles ORDER BY created_at DESC');
+    const roles = await query('SELECT * FROM roles ORDER BY createdAt DESC');
 
     // Parse custom_modules which is stored as string/JSON
     const formattedRoles = roles.map(role => {
@@ -406,7 +406,7 @@ app.get('/api/services/:slug', async (req, res) => {
 // GET admin services list
 app.get('/api/admin/services', async (req, res) => {
   try {
-    const services = await query('SELECT * FROM services ORDER BY sort_order ASC, created_at DESC');
+    const services = await query('SELECT * FROM services ORDER BY sort_order ASC, createdAt DESC');
     res.json(services);
   } catch (err) {
     console.error('Error fetching services:', err);
@@ -490,20 +490,20 @@ app.put('/api/admin/services/:id', upload.single('cover_image'), async (req, res
 
 // --- Admin Property Gallery Images Management ---
 
-// GET images for a property
-app.get('/api/admin/properties/:id/images', async (req, res) => {
+// GET images for a land
+app.get('/api/admin/lands/:id/images', async (req, res) => {
   try {
     const { id } = req.params;
-    const images = await query('SELECT * FROM property_images WHERE property_id = ? ORDER BY id ASC', [id]);
+    const images = await query('SELECT * FROM land_images WHERE land_id = ? ORDER BY id ASC', [id]);
     res.json(images);
   } catch (err) {
-    console.error('Error fetching property images:', err);
-    res.status(500).json({ error: 'Failed to fetch property images' });
+    console.error('Error fetching land images:', err);
+    res.status(500).json({ error: 'Failed to fetch land images' });
   }
 });
 
-// POST multiple images for a property
-app.post('/api/admin/properties/:id/images', upload.array('images', 10), async (req, res) => {
+// POST multiple images for a land
+app.post('/api/admin/lands/:id/images', upload.array('images', 10), async (req, res) => {
   try {
     const { id } = req.params;
     if (!req.files || req.files.length === 0) {
@@ -514,24 +514,24 @@ app.post('/api/admin/properties/:id/images', upload.array('images', 10), async (
     for (const file of req.files) {
       const imageUrl = `/uploads/${file.filename}`;
       const result = await query(
-        'INSERT INTO property_images (property_id, image_url) VALUES (?, ?)',
+        'INSERT INTO land_images (land_id, image_url) VALUES (?, ?)',
         [id, imageUrl]
       );
-      insertedImages.push({ id: result.insertId, property_id: id, image_url: imageUrl });
+      insertedImages.push({ id: result.insertId, land_id: id, image_url: imageUrl });
     }
 
     res.status(201).json(insertedImages);
   } catch (err) {
-    console.error('Error uploading property images:', err);
-    res.status(500).json({ error: 'Failed to upload property images' });
+    console.error('Error uploading land images:', err);
+    res.status(500).json({ error: 'Failed to upload land images' });
   }
 });
 
 // DELETE a specific image
-app.delete('/api/admin/properties/images/:imageId', async (req, res) => {
+app.delete('/api/admin/lands/images/:imageId', async (req, res) => {
   try {
     const { imageId } = req.params;
-    const result = await query('DELETE FROM property_images WHERE id = ?', [imageId]);
+    const result = await query('DELETE FROM land_images WHERE id = ?', [imageId]);
 
     // Note: To be fully complete, you might want to also delete the physical file from the /uploads folder using fs.unlinkSync.
     // For now we just remove the DB record.
@@ -541,8 +541,8 @@ app.delete('/api/admin/properties/images/:imageId', async (req, res) => {
     }
     res.json({ message: 'Image deleted successfully' });
   } catch (err) {
-    console.error('Error deleting property image:', err);
-    res.status(500).json({ error: 'Failed to delete property image' });
+    console.error('Error deleting land image:', err);
+    res.status(500).json({ error: 'Failed to delete land image' });
   }
 });
 
@@ -575,11 +575,84 @@ const safeParseJSON = (data, fallback = []) => {
   }
 };
 
-// GET all properties
-app.get('/api/properties', async (req, res) => {
+
+// GET images for a house
+app.get('/api/admin/houses/:id/images', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const images = await query('SELECT * FROM house_images WHERE house_id = ? ORDER BY id ASC', [id]);
+    res.json(images);
+  } catch (err) {
+    console.error('Error fetching house images:', err);
+    res.status(500).json({ error: 'Failed to fetch house images' });
+  }
+});
+
+// POST multiple images for a house
+app.post('/api/admin/houses/:id/images', upload.array('images', 10), async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ error: 'No files uploaded' });
+    }
+
+    const insertedImages = [];
+    for (const file of req.files) {
+      const imageUrl = `/uploads/${file.filename}`;
+      const result = await query(
+        'INSERT INTO house_images (house_id, image_url) VALUES (?, ?)',
+        [id, imageUrl]
+      );
+      insertedImages.push({ id: result.insertId, house_id: id, image_url: imageUrl });
+    }
+
+    res.status(201).json(insertedImages);
+  } catch (err) {
+    console.error('Error uploading house images:', err);
+    res.status(500).json({ error: 'Failed to upload house images' });
+  }
+});
+
+// DELETE a specific image
+app.delete('/api/admin/houses/images/:imageId', async (req, res) => {
+  try {
+    const { imageId } = req.params;
+    const result = await query('DELETE FROM house_images WHERE id = ?', [imageId]);
+
+    // Note: To be fully complete, you might want to also delete the physical file from the /uploads folder using fs.unlinkSync.
+    // For now we just remove the DB record.
+
+    if (result.affectedRows === 0 && result.changes === 0) { // changes for sqlite, affectedRows for mysql
+      return res.status(404).json({ error: 'Image not found' });
+    }
+    res.json({ message: 'Image deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting house image:', err);
+    res.status(500).json({ error: 'Failed to delete house image' });
+  }
+});
+
+// DELETE service
+app.delete('/api/admin/services/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await query('DELETE FROM services WHERE id = ?', [id]);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Service not found' });
+    }
+    res.json({ message: 'Service deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting service:', err);
+    res.status(500).json({ error: 'Failed to delete service' });
+  }
+});
+
+
+// GET all lands
+app.get('/api/lands', async (req, res) => {
   try {
     const { type } = req.query;
-    let sql = 'SELECT * FROM properties';
+    let sql = 'SELECT * FROM lands';
     let params = [];
 
     if (type) {
@@ -589,12 +662,12 @@ app.get('/api/properties', async (req, res) => {
       params = types;
     }
 
-    sql += ' ORDER BY sortOrder ASC, created_at DESC';
+    sql += ' ORDER BY sortOrder ASC, createdAt DESC';
 
-    const properties = await query(sql, params);
+    const lands = await query(sql, params);
 
     // Parse JSON fields
-    const parsedProperties = properties.map(p => ({
+    const parsedLands = lands.map(p => ({
       ...p,
       amenities: safeParseJSON(p.amenities),
       locationHighlights: safeParseJSON(p.locationHighlights),
@@ -606,50 +679,50 @@ app.get('/api/properties', async (req, res) => {
       isSoldOut: !!p.isSoldOut,
     }));
 
-    res.json(parsedProperties);
+    res.json(parsedLands);
   } catch (err) {
-    console.error('Error fetching properties:', err);
-    res.status(500).json({ error: 'Failed to fetch properties' });
+    console.error('Error fetching lands:', err);
+    res.status(500).json({ error: 'Failed to fetch lands' });
   }
 });
 
-// GET property by ID
-app.get('/api/properties/:identifier', async (req, res) => {
+// GET land by ID
+app.get('/api/lands/:identifier', async (req, res) => {
   try {
     const { identifier } = req.params;
-    let properties;
+    let lands;
 
     // Check if identifier is a number (id) or a string (slug)
     if (!isNaN(identifier)) {
-        properties = await query('SELECT * FROM properties WHERE id = ?', [identifier]);
+        lands = await query('SELECT * FROM lands WHERE id = ?', [identifier]);
     } else {
-        properties = await query('SELECT * FROM properties WHERE slug = ?', [identifier]);
+        lands = await query('SELECT * FROM lands WHERE slug = ?', [identifier]);
     }
 
-    if (!properties || properties.length === 0) {
-      return res.status(404).json({ error: 'Property not found' });
+    if (!lands || lands.length === 0) {
+      return res.status(404).json({ error: 'Land not found' });
     }
 
-    const property = properties[0];
+    const land = lands[0];
 
     // Fetch gallery images
-    const images = await query('SELECT * FROM property_images WHERE property_id = ? ORDER BY id ASC', [property.id]);
-    property.images = images.map(img => ({ id: img.id, image_url: img.image_url }));
+    const images = await query('SELECT * FROM land_images WHERE land_id = ? ORDER BY id ASC', [land.id]);
+    land.images = images.map(img => ({ id: img.id, image_url: img.image_url }));
 
     // Parse JSON fields
-    property.amenities = safeParseJSON(property.amenities);
-    property.locationHighlights = safeParseJSON(property.locationHighlights);
-    property.floorPlans = safeParseJSON(property.floorPlans);
-    property.brochureFiles = safeParseJSON(property.brochureFiles);
-    property.travelHighlights = safeParseJSON(property.travelHighlights);
-    property.relatedLands = safeParseJSON(property.relatedLands);
-    property.isFeatured = !!property.isFeatured;
-    property.isSoldOut = !!property.isSoldOut;
+    land.amenities = safeParseJSON(land.amenities);
+    land.locationHighlights = safeParseJSON(land.locationHighlights);
+    land.floorPlans = safeParseJSON(land.floorPlans);
+    land.brochureFiles = safeParseJSON(land.brochureFiles);
+    land.travelHighlights = safeParseJSON(land.travelHighlights);
+    land.relatedLands = safeParseJSON(land.relatedLands);
+    land.isFeatured = !!land.isFeatured;
+    land.isSoldOut = !!land.isSoldOut;
 
-    res.json(property);
+    res.json(land);
   } catch (err) {
-    console.error('Error fetching property:', err);
-    res.status(500).json({ error: 'Failed to fetch property' });
+    console.error('Error fetching land:', err);
+    res.status(500).json({ error: 'Failed to fetch land' });
   }
 });
 
@@ -664,8 +737,8 @@ const safeStringifyJSON = (data) => {
   }
 };
 
-// POST new property
-app.post('/api/properties', upload.fields([
+// POST new land
+app.post('/api/lands', upload.fields([
     { name: 'image', maxCount: 1 },
     { name: 'gallery', maxCount: 10 },
     { name: 'logoImage', maxCount: 1 },
@@ -675,7 +748,7 @@ app.post('/api/properties', upload.fields([
     { name: 'brochureFile', maxCount: 1 }
 ]), async (req, res) => {
   try {
-    console.log('--- POST /api/properties ---');
+    console.log('--- POST /api/lands ---');
     console.log('req.body:', req.body);
     console.log('req.files exists:', !!req.files);
 
@@ -766,9 +839,9 @@ app.post('/api/properties', upload.fields([
 
     console.log('SQL Params:', params);
 
-    // Insert property
+    // Insert land
     const result = await query(
-      `INSERT INTO properties (
+      `INSERT INTO lands (
         title, slug, location, price, type, status, description, image,
         category, district, city, locationLabel, priceLabel, bedrooms, bathrooms, videoUrl, projectPhilosophy, locationHighlights,
         isFeatured, isSoldOut, hotlineNumber, sortOrder,
@@ -778,30 +851,30 @@ app.post('/api/properties', upload.fields([
       params
     );
 
-    const propertyId = result.insertId;
+    const landId = result.insertId;
 
     // Handle gallery images
     if (req.files['gallery']) {
       for (const file of req.files['gallery']) {
         const imageUrl = `/uploads/${file.filename}`;
         await query(
-          'INSERT INTO property_images (property_id, image_url) VALUES (?, ?)',
-          [propertyId, imageUrl]
+          'INSERT INTO land_images (land_id, image_url) VALUES (?, ?)',
+          [landId, imageUrl]
         );
       }
     }
 
-    const newProperty = await query('SELECT * FROM properties WHERE id = ?', [propertyId]);
-    res.status(201).json(newProperty[0]);
+    const newLand = await query('SELECT * FROM lands WHERE id = ?', [landId]);
+    res.status(201).json(newLand[0]);
 
   } catch (error) {
-    console.error('Error saving property:', error);
-    res.status(500).json({ error: 'Failed to save property: ' + error.message });
+    console.error('Error saving land:', error);
+    res.status(500).json({ error: 'Failed to save land: ' + error.message });
   }
 });
 
-// PUT update property
-app.put('/api/properties/:id', upload.fields([
+// PUT update land
+app.put('/api/lands/:id', upload.fields([
     { name: 'image', maxCount: 1 },
     { name: 'gallery', maxCount: 10 },
     { name: 'logoImage', maxCount: 1 },
@@ -812,7 +885,7 @@ app.put('/api/properties/:id', upload.fields([
 ]), async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(`--- PUT /api/properties/${id} ---`);
+    console.log(`--- PUT /api/lands/${id} ---`);
     console.log('req.body:', req.body);
     console.log('req.files exists:', !!req.files);
 
@@ -830,9 +903,9 @@ app.put('/api/properties/:id', upload.fields([
       return res.status(400).json({ error: 'Missing required fields: title, location, price, and type are required.' });
     }
 
-    const existing = await query('SELECT * FROM properties WHERE id = ?', [id]);
+    const existing = await query('SELECT * FROM lands WHERE id = ?', [id]);
     if (!existing || existing.length === 0) {
-      return res.status(404).json({ error: 'Property not found' });
+      return res.status(404).json({ error: 'Land not found' });
     }
 
     let mainImageUrl = existing[0].image;
@@ -909,7 +982,7 @@ app.put('/api/properties/:id', upload.fields([
     console.log('SQL Params:', params);
 
     await query(
-      `UPDATE properties SET
+      `UPDATE lands SET
         title = ?, slug = ?, location = ?, price = ?, type = ?, status = ?, description = ?, image = ?,
         category = ?, district = ?, city = ?, locationLabel = ?, priceLabel = ?, bedrooms = ?, bathrooms = ?,
         isFeatured = ?, isSoldOut = ?, videoUrl = ?, hotlineNumber = ?, sortOrder = ?,
@@ -923,35 +996,405 @@ app.put('/api/properties/:id', upload.fields([
       for (const file of req.files['gallery']) {
         const imageUrl = `/uploads/${file.filename}`;
         await query(
-          'INSERT INTO property_images (property_id, image_url) VALUES (?, ?)',
+          'INSERT INTO land_images (land_id, image_url) VALUES (?, ?)',
           [id, imageUrl]
         );
       }
     }
 
-    const updatedProperty = await query('SELECT * FROM properties WHERE id = ?', [id]);
-    res.json(updatedProperty[0]);
+    const updatedLand = await query('SELECT * FROM lands WHERE id = ?', [id]);
+    res.json(updatedLand[0]);
 
   } catch (error) {
-    console.error('Error updating property:', error);
-    res.status(500).json({ error: 'Failed to update property' });
+    console.error('Error updating land:', error);
+    res.status(500).json({ error: 'Failed to update land' });
   }
 });
 
-// DELETE property
-app.delete('/api/properties/:id', async (req, res) => {
+// DELETE land
+app.delete('/api/lands/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await query('DELETE FROM properties WHERE id = ?', [id]);
+    const result = await query('DELETE FROM lands WHERE id = ?', [id]);
 
     if (result.affectedRows === 0) {
-       return res.status(404).json({ error: 'Property not found' });
+       return res.status(404).json({ error: 'Land not found' });
     }
 
-    res.json({ message: 'Property deleted successfully' });
+    res.json({ message: 'Land deleted successfully' });
   } catch (error) {
-    console.error('Error deleting property:', error);
-    res.status(500).json({ error: 'Failed to delete property' });
+    console.error('Error deleting land:', error);
+    res.status(500).json({ error: 'Failed to delete land' });
+  }
+});
+
+
+// GET all houses
+app.get('/api/houses', async (req, res) => {
+  try {
+    const { type } = req.query;
+    let sql = 'SELECT * FROM houses';
+    let params = [];
+
+    if (type) {
+      const types = type.split(',').map(t => t.trim());
+      const placeholders = types.map(() => '?').join(',');
+      sql += ` WHERE type IN (${placeholders})`;
+      params = types;
+    }
+
+    sql += ' ORDER BY sortOrder ASC, createdAt DESC';
+
+    const houses = await query(sql, params);
+
+    // Parse JSON fields
+    const parsedHouses = houses.map(p => ({
+      ...p,
+      amenities: safeParseJSON(p.amenities),
+      locationHighlights: safeParseJSON(p.locationHighlights),
+      floorPlans: safeParseJSON(p.floorPlans),
+      brochureFiles: safeParseJSON(p.brochureFiles),
+      travelHighlights: safeParseJSON(p.travelHighlights),
+      relatedLands: safeParseJSON(p.relatedLands),
+      isFeatured: !!p.isFeatured,
+      isSoldOut: !!p.isSoldOut,
+    }));
+
+    res.json(parsedHouses);
+  } catch (err) {
+    console.error('Error fetching houses:', err);
+    res.status(500).json({ error: 'Failed to fetch houses' });
+  }
+});
+
+// GET house by ID
+app.get('/api/houses/:identifier', async (req, res) => {
+  try {
+    const { identifier } = req.params;
+    let houses;
+
+    // Check if identifier is a number (id) or a string (slug)
+    if (!isNaN(identifier)) {
+        houses = await query('SELECT * FROM houses WHERE id = ?', [identifier]);
+    } else {
+        houses = await query('SELECT * FROM houses WHERE slug = ?', [identifier]);
+    }
+
+    if (!houses || houses.length === 0) {
+      return res.status(404).json({ error: 'House not found' });
+    }
+
+    const house = houses[0];
+
+    // Fetch gallery images
+    const images = await query('SELECT * FROM house_images WHERE house_id = ? ORDER BY id ASC', [house.id]);
+    house.images = images.map(img => ({ id: img.id, image_url: img.image_url }));
+
+    // Parse JSON fields
+    house.amenities = safeParseJSON(house.amenities);
+    house.locationHighlights = safeParseJSON(house.locationHighlights);
+    house.floorPlans = safeParseJSON(house.floorPlans);
+    house.brochureFiles = safeParseJSON(house.brochureFiles);
+    house.travelHighlights = safeParseJSON(house.travelHighlights);
+    house.relatedLands = safeParseJSON(house.relatedLands);
+    house.isFeatured = !!house.isFeatured;
+    house.isSoldOut = !!house.isSoldOut;
+
+    res.json(house);
+  } catch (err) {
+    console.error('Error fetching house:', err);
+    res.status(500).json({ error: 'Failed to fetch house' });
+  }
+});
+
+// POST new house
+app.post('/api/houses', upload.fields([
+    { name: 'image', maxCount: 1 },
+    { name: 'gallery', maxCount: 10 },
+    { name: 'logoImage', maxCount: 1 },
+    { name: 'blockPlanImage', maxCount: 1 },
+    { name: 'roadMapImage', maxCount: 1 },
+    { name: 'locationMapImage', maxCount: 1 },
+    { name: 'brochureFile', maxCount: 1 }
+]), async (req, res) => {
+  try {
+    console.log('--- POST /api/houses ---');
+    console.log('req.body:', req.body);
+    console.log('req.files exists:', !!req.files);
+
+    const {
+      title, slug, location, price, type, status, description,
+      category, district, city, locationLabel, priceLabel, bedrooms, bathrooms, videoUrl, projectPhilosophy, locationHighlights,
+      isFeatured, isSoldOut, hotlineNumber, sortOrder,
+      shortDescription, fullDescription,
+      amenities, floorPlans, brochureFiles,
+      projectStatusLabel, travelHighlights, inquiryEmail, relatedLands, metaTitle, metaDescription, ogImage, whatsappNumber
+    } = req.body;
+
+    // Backend validation for required fields
+    if (!title || !location || !price || !type) {
+      return res.status(400).json({ error: 'Missing required fields: title, location, price, and type are required.' });
+    }
+
+    // Handle main image
+    let mainImageUrl = null;
+    if (req.files['image']) {
+      mainImageUrl = `/uploads/${req.files['image'][0].filename}`;
+    }
+    let logoImageUrl = null;
+    if (req.files['logoImage']) {
+      logoImageUrl = `/uploads/${req.files['logoImage'][0].filename}`;
+    }
+    let blockPlanImageUrl = null;
+    if (req.files['blockPlanImage']) {
+      blockPlanImageUrl = `/uploads/${req.files['blockPlanImage'][0].filename}`;
+    }
+    let roadMapImageUrl = null;
+    if (req.files['roadMapImage']) {
+      roadMapImageUrl = `/uploads/${req.files['roadMapImage'][0].filename}`;
+    }
+    let locationMapImageUrl = null;
+    if (req.files['locationMapImage']) {
+      locationMapImageUrl = `/uploads/${req.files['locationMapImage'][0].filename}`;
+    }
+
+    const amenitiesStr = typeof amenities === 'string' ? amenities : safeStringifyJSON(amenities);
+    const locationHighlightsStr = typeof locationHighlights === 'string' ? locationHighlights : safeStringifyJSON(locationHighlights);
+    const floorPlansStr = typeof floorPlans === 'string' ? floorPlans : safeStringifyJSON(floorPlans);
+    const brochureFilesStr = typeof brochureFiles === 'string' ? brochureFiles : safeStringifyJSON(brochureFiles);
+    const travelHighlightsStr = typeof travelHighlights === 'string' ? travelHighlights : safeStringifyJSON(travelHighlights);
+    const relatedLandsStr = typeof relatedLands === 'string' ? relatedLands : safeStringifyJSON(relatedLands);
+
+    const params = [
+        title ?? null,
+        slug ?? null,
+        location ?? null,
+        price ?? null,
+        type ?? null,
+        status || 'Active',
+        description ?? null,
+        mainImageUrl ?? null,
+        category ?? null,
+        district ?? null,
+        city ?? null,
+        locationLabel ?? null,
+        priceLabel ?? null,
+        bedrooms ?? null,
+        bathrooms ?? null,
+        videoUrl ?? null,
+        projectPhilosophy ?? null,
+        locationHighlightsStr ?? null,
+        isFeatured === 'true' || isFeatured === true ? 1 : 0,
+        isSoldOut === 'true' || isSoldOut === true ? 1 : 0,
+        hotlineNumber ?? null,
+        sortOrder || 0,
+        shortDescription ?? null,
+        fullDescription ?? null,
+        amenitiesStr ?? null,
+        floorPlansStr ?? null,
+        brochureFilesStr ?? null,
+        logoImageUrl ?? null,
+        blockPlanImageUrl ?? null,
+        roadMapImageUrl ?? null,
+        locationMapImageUrl ?? null,
+        projectStatusLabel ?? null,
+        travelHighlightsStr ?? null,
+        inquiryEmail ?? null,
+        relatedLandsStr ?? null,
+        metaTitle ?? null,
+        metaDescription ?? null,
+        ogImage ?? null,
+        whatsappNumber ?? null
+    ];
+
+    console.log('SQL Params:', params);
+
+    // Insert house
+    const result = await query(
+      `INSERT INTO houses (
+        title, slug, location, price, type, status, description, image,
+        category, district, city, locationLabel, priceLabel, bedrooms, bathrooms, videoUrl, projectPhilosophy, locationHighlights,
+        isFeatured, isSoldOut, hotlineNumber, sortOrder,
+        shortDescription, fullDescription, amenities, floorPlans, brochureFiles,
+        logoImage, blockPlanImage, roadMapImage, locationMapImage, projectStatusLabel, travelHighlights, inquiryEmail, relatedLands, metaTitle, metaDescription, ogImage, whatsappNumber
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      params
+    );
+
+    const houseId = result.insertId;
+
+    // Handle gallery images
+    if (req.files['gallery']) {
+      for (const file of req.files['gallery']) {
+        const imageUrl = `/uploads/${file.filename}`;
+        await query(
+          'INSERT INTO house_images (house_id, image_url) VALUES (?, ?)',
+          [houseId, imageUrl]
+        );
+      }
+    }
+
+    const newHouse = await query('SELECT * FROM houses WHERE id = ?', [houseId]);
+    res.status(201).json(newHouse[0]);
+
+  } catch (error) {
+    console.error('Error saving house:', error);
+    res.status(500).json({ error: 'Failed to save house: ' + error.message });
+  }
+});
+
+// PUT update house
+app.put('/api/houses/:id', upload.fields([
+    { name: 'image', maxCount: 1 },
+    { name: 'gallery', maxCount: 10 },
+    { name: 'logoImage', maxCount: 1 },
+    { name: 'blockPlanImage', maxCount: 1 },
+    { name: 'roadMapImage', maxCount: 1 },
+    { name: 'locationMapImage', maxCount: 1 },
+    { name: 'brochureFile', maxCount: 1 }
+]), async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(`--- PUT /api/houses/${id} ---`);
+    console.log('req.body:', req.body);
+    console.log('req.files exists:', !!req.files);
+
+    const {
+      title, slug, location, price, type, status, description,
+      category, district, city, locationLabel, priceLabel, bedrooms, bathrooms, videoUrl, projectPhilosophy, locationHighlights,
+      isFeatured, isSoldOut, hotlineNumber, sortOrder,
+      shortDescription, fullDescription,
+      amenities, floorPlans, brochureFiles,
+      projectStatusLabel, travelHighlights, inquiryEmail, relatedLands, metaTitle, metaDescription, ogImage, whatsappNumber
+    } = req.body;
+
+    // Backend validation for required fields
+    if (!title || !location || !price || !type) {
+      return res.status(400).json({ error: 'Missing required fields: title, location, price, and type are required.' });
+    }
+
+    const existing = await query('SELECT * FROM houses WHERE id = ?', [id]);
+    if (!existing || existing.length === 0) {
+      return res.status(404).json({ error: 'House not found' });
+    }
+
+    let mainImageUrl = existing[0].image;
+    if (req.files['image']) {
+      mainImageUrl = `/uploads/${req.files['image'][0].filename}`;
+    }
+    let logoImageUrl = existing[0].logoImage;
+    if (req.files['logoImage']) {
+      logoImageUrl = `/uploads/${req.files['logoImage'][0].filename}`;
+    }
+    let blockPlanImageUrl = existing[0].blockPlanImage;
+    if (req.files['blockPlanImage']) {
+      blockPlanImageUrl = `/uploads/${req.files['blockPlanImage'][0].filename}`;
+    }
+    let roadMapImageUrl = existing[0].roadMapImage;
+    if (req.files['roadMapImage']) {
+      roadMapImageUrl = `/uploads/${req.files['roadMapImage'][0].filename}`;
+    }
+    let locationMapImageUrl = existing[0].locationMapImage;
+    if (req.files['locationMapImage']) {
+      locationMapImageUrl = `/uploads/${req.files['locationMapImage'][0].filename}`;
+    }
+
+    const amenitiesStr = typeof amenities === 'string' ? amenities : safeStringifyJSON(amenities);
+    const locationHighlightsStr = typeof locationHighlights === 'string' ? locationHighlights : safeStringifyJSON(locationHighlights);
+    const floorPlansStr = typeof floorPlans === 'string' ? floorPlans : safeStringifyJSON(floorPlans);
+    const brochureFilesStr = typeof brochureFiles === 'string' ? brochureFiles : safeStringifyJSON(brochureFiles);
+    const travelHighlightsStr = typeof travelHighlights === 'string' ? travelHighlights : safeStringifyJSON(travelHighlights);
+    const relatedLandsStr = typeof relatedLands === 'string' ? relatedLands : safeStringifyJSON(relatedLands);
+
+    const params = [
+        title ?? null,
+        slug ?? null,
+        location ?? null,
+        price ?? null,
+        type ?? null,
+        status || 'Active',
+        description ?? null,
+        mainImageUrl ?? null,
+        category ?? null,
+        district ?? null,
+        city ?? null,
+        locationLabel ?? null,
+        priceLabel ?? null,
+        bedrooms ?? null,
+        bathrooms ?? null,
+        videoUrl ?? null,
+        projectPhilosophy ?? null,
+        locationHighlightsStr ?? null,
+        isFeatured === 'true' || isFeatured === true ? 1 : 0,
+        isSoldOut === 'true' || isSoldOut === true ? 1 : 0,
+        hotlineNumber ?? null,
+        sortOrder || 0,
+        shortDescription ?? null,
+        fullDescription ?? null,
+        amenitiesStr ?? null,
+        floorPlansStr ?? null,
+        brochureFilesStr ?? null,
+        logoImageUrl ?? null,
+        blockPlanImageUrl ?? null,
+        roadMapImageUrl ?? null,
+        locationMapImageUrl ?? null,
+        projectStatusLabel ?? null,
+        travelHighlightsStr ?? null,
+        inquiryEmail ?? null,
+        relatedLandsStr ?? null,
+        metaTitle ?? null,
+        metaDescription ?? null,
+        ogImage ?? null,
+        whatsappNumber ?? null,
+        id
+    ];
+
+    console.log('SQL Params:', params);
+
+    await query(
+      `UPDATE houses SET
+        title = ?, slug = ?, location = ?, price = ?, type = ?, status = ?, description = ?, image = ?,
+        category = ?, district = ?, city = ?, locationLabel = ?, priceLabel = ?, bedrooms = ?, bathrooms = ?,
+        isFeatured = ?, isSoldOut = ?, videoUrl = ?, hotlineNumber = ?, sortOrder = ?,
+        shortDescription = ?, fullDescription = ?, amenities = ?, locationHighlights = ?, floorPlans = ?, brochureFiles = ?,
+        logoImage = ?, blockPlanImage = ?, roadMapImage = ?, locationMapImage = ?, projectStatusLabel = ?, travelHighlights = ?, inquiryEmail = ?, relatedLands = ?, metaTitle = ?, metaDescription = ?, ogImage = ?, whatsappNumber = ?
+      WHERE id = ?`,
+      params
+    );
+
+    if (req.files['gallery']) {
+      for (const file of req.files['gallery']) {
+        const imageUrl = `/uploads/${file.filename}`;
+        await query(
+          'INSERT INTO house_images (house_id, image_url) VALUES (?, ?)',
+          [id, imageUrl]
+        );
+      }
+    }
+
+    const updatedHouse = await query('SELECT * FROM houses WHERE id = ?', [id]);
+    res.json(updatedHouse[0]);
+
+  } catch (error) {
+    console.error('Error updating house:', error);
+    res.status(500).json({ error: 'Failed to update house' });
+  }
+});
+
+// DELETE house
+app.delete('/api/houses/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await query('DELETE FROM houses WHERE id = ?', [id]);
+
+    if (result.affectedRows === 0) {
+       return res.status(404).json({ error: 'House not found' });
+    }
+
+    res.json({ message: 'House deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting house:', error);
+    res.status(500).json({ error: 'Failed to delete house' });
   }
 });
 
@@ -960,7 +1403,7 @@ app.delete('/api/properties/:id', async (req, res) => {
 // GET all projects
 app.get('/api/projects', async (req, res) => {
   try {
-    const projects = await query('SELECT * FROM projects ORDER BY created_at DESC');
+    const projects = await query('SELECT * FROM projects ORDER BY createdAt DESC');
     res.json(projects);
   } catch (err) {
     console.error('Error fetching projects:', err);
@@ -1090,7 +1533,7 @@ app.post('/api/inquiries', async (req, res) => {
 // GET admin inquiries list
 app.get('/api/admin/inquiries', async (req, res) => {
   try {
-    const inquiries = await query('SELECT * FROM inquiries ORDER BY created_at DESC');
+    const inquiries = await query('SELECT * FROM inquiries ORDER BY createdAt DESC');
     res.json(inquiries);
   } catch (error) {
     console.error('Error fetching inquiries:', error);
@@ -1195,7 +1638,7 @@ app.listen(PORT, () => {
 
 app.get('/api/settings/email', async (req, res) => {
   try {
-    const configs = await query('SELECT id, mailer, host, port, username, encryption, from_address, from_name, status, created_at FROM email_settings WHERE status = "Active" LIMIT 1');
+    const configs = await query('SELECT id, mailer, host, port, username, encryption, from_address, from_name, status, createdAt FROM email_settings WHERE status = "Active" LIMIT 1');
     if (!configs || configs.length === 0) {
       return res.status(404).json({ error: 'No active email configuration found' });
     }
@@ -1208,7 +1651,7 @@ app.get('/api/settings/email', async (req, res) => {
 
 app.get('/api/settings/email/all', async (req, res) => {
   try {
-    const configs = await query('SELECT id, mailer, host, port, username, encryption, from_address, from_name, status, created_at FROM email_settings ORDER BY created_at DESC');
+    const configs = await query('SELECT id, mailer, host, port, username, encryption, from_address, from_name, status, createdAt FROM email_settings ORDER BY createdAt DESC');
     res.json(configs);
   } catch (err) {
     console.error('Error fetching email settings:', err);
@@ -1230,7 +1673,7 @@ app.post('/api/settings/email', async (req, res) => {
       [mailer || 'smtp', host, port, username, password, encryption || 'none', from_address, from_name, status || 'Inactive']
     );
 
-    const newConfig = await query('SELECT id, mailer, host, port, username, encryption, from_address, from_name, status, created_at FROM email_settings WHERE id = ?', [result.insertId]);
+    const newConfig = await query('SELECT id, mailer, host, port, username, encryption, from_address, from_name, status, createdAt FROM email_settings WHERE id = ?', [result.insertId]);
     res.status(201).json(newConfig[0]);
   } catch (err) {
     console.error('Error adding email setting:', err);
@@ -1260,7 +1703,7 @@ app.put('/api/settings/email/:id', async (req, res) => {
 
     await query(updateQuery, params);
 
-    const updatedConfig = await query('SELECT id, mailer, host, port, username, encryption, from_address, from_name, status, created_at FROM email_settings WHERE id = ?', [id]);
+    const updatedConfig = await query('SELECT id, mailer, host, port, username, encryption, from_address, from_name, status, createdAt FROM email_settings WHERE id = ?', [id]);
     res.json(updatedConfig[0]);
   } catch (err) {
     console.error('Error updating email setting:', err);

@@ -130,7 +130,11 @@ const AddProperty: React.FC<AddPropertyProps> = ({ onSuccess, onCancel, forcedTy
       if (roadMapImage) formData.append('roadMapImage', roadMapImage);
       if (locationMapImage) formData.append('locationMapImage', locationMapImage);
 
-      const response = await fetch('/api/properties', {
+      let url = '/api/lands';
+      if (formData.type === 'House' || formData.type === 'Apartment') {
+        url = '/api/houses';
+      }
+      const response = await fetch(url, {
         method: 'POST',
         body: formData,
       });

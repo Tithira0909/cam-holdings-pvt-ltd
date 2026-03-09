@@ -45,7 +45,7 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditPr
         return matchesSearch && matchesType;
       })
       .sort((a, b) => {
-         // Sort by ID descending (newest first) since we don't have created_at mapped easily in frontend type
+         // Sort by ID descending (newest first) since we don't have createdAt mapped easily in frontend type
          return parseInt(b.id) - parseInt(a.id);
       });
   }, [properties, searchQuery, typeFilter]);
@@ -57,12 +57,27 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditPr
   const fetchProperties = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/properties');
-      if (!response.ok) {
+      const [landsRes, housesRes] = await Promise.all([
+        fetch('/api/lands'),
+        fetch('/api/houses')
+      ]);
+
+      if (!landsRes.ok || !housesRes.ok) {
         throw new Error('Failed to fetch properties');
       }
-      const data = await response.json();
-      setProperties(data.map((p: any) => ({ ...p, id: String(p.id) })));
+
+      const landsData = await landsRes.json();
+      const housesData = await housesRes.json();
+
+      // Namespace IDs to avoid collision since lands and houses have overlapping numeric IDs
+      const mappedLands = landsData.map((p: any) => ({ ...p, id: String(p.id), _typeLabel: 'land', _originalId: String(p.id) }));
+      const mappedHouses = housesData.map((p: any) => ({ ...p, id: String(p.id), _typeLabel: 'house', _originalId: String(p.id) }));
+
+      const allProps = [...mappedLands, ...mappedHouses];
+
+      // Update the internal state with these extended properties
+      // Note: We'll modify id slightly in a way that Edit and Delete buttons can handle
+      setProperties(allProps.map(p => ({ ...p, id: `${p._typeLabel}-${p.id}` })));
       setError(null);
     } catch (err) {
       console.error('Error fetching properties:', err);
@@ -72,11 +87,19 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditPr
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (combinedId: string) => {
     if (!window.confirm('Are you sure you want to delete this property?')) return;
 
     try {
-      const response = await fetch(`/api/properties/${id}`, {
+      const propToDelete = properties.find((p: any) => p.id === combinedId);
+      if (!propToDelete) return;
+
+      const isLand = combinedId.startsWith('land-');
+      const actualId = combinedId.replace(/^(land|house)-/, '');
+
+      const endpoint = isLand ? `/api/lands/${actualId}` : `/api/houses/${actualId}`;
+
+      const response = await fetch(endpoint, {
         method: 'DELETE',
       });
 
@@ -143,17 +166,7 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditPr
                />
             </div>
          </div>
-         <div className="w-[150px]">
-            <select
-               value={typeFilter}
-               onChange={(e) => setTypeFilter(e.target.value)}
-               className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none transition-all"
-            >
-               <option value="All">All Types</option>
-               <option value="Lands">Lands</option>
-               <option value="Houses">Houses / Apartments</option>
-            </select>
-         </div>
+
       </div>
 
       {properties.length === 0 ? (

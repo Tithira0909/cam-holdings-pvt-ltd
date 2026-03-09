@@ -80,7 +80,11 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
 
   const fetchPropertyDetails = async () => {
     try {
-      const response = await fetch(`/api/properties/${propertyId}`);
+      let res = await fetch(`/api/lands/${propertyId}`);
+      if (!res.ok) {
+        res = await fetch(`/api/houses/${propertyId}`);
+      }
+      const response = res;
       if (!response.ok) {
         throw new Error('Failed to fetch property details');
       }
@@ -168,7 +172,11 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
   const handleDeleteExistingImage = async (imageId: number) => {
     if (!window.confirm('Are you sure you want to delete this gallery image?')) return;
     try {
-      const res = await fetch(`/api/admin/properties/images/${imageId}`, {
+      let url = `/api/admin/lands/images/${imageId}`;
+      if (formData.type === 'House' || formData.type === 'Apartment') {
+        url = `/api/admin/houses/images/${imageId}`;
+      }
+      const res = await fetch(url, {
         method: 'DELETE',
       });
       if (res.ok) {
@@ -192,7 +200,11 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
     });
 
     try {
-      const res = await fetch(`/api/admin/properties/${propertyId}/images`, {
+      let url = `/api/admin/lands/${propertyId}/images`;
+      if (formData.type === 'House' || formData.type === 'Apartment') {
+        url = `/api/admin/houses/${propertyId}/images`;
+      }
+      const res = await fetch(url, {
         method: 'POST',
         body: formData,
       });
@@ -254,7 +266,11 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
       if (roadMapImage) formData.append('roadMapImage', roadMapImage);
       if (locationMapImage) formData.append('locationMapImage', locationMapImage);
 
-      const response = await fetch(`/api/properties/${propertyId}`, {
+      let url = `/api/lands/${propertyId}`;
+      if (formData.type === 'House' || formData.type === 'Apartment') {
+        url = `/api/houses/${propertyId}`;
+      }
+      const response = await fetch(url, {
         method: 'PUT',
         body: formData,
       });

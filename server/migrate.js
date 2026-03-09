@@ -51,7 +51,7 @@ async function migrate() {
             console.log('Schema applied.');
 
             // Check count
-            const res = await db.get('SELECT count(*) as count FROM properties');
+            const res = await db.get('SELECT count(*) as count FROM lands');
             if (res.count === 0 && fs.existsSync(seedPath)) {
                 console.log('Seeding...');
                 const seedSql = fs.readFileSync(seedPath, 'utf8');
@@ -72,7 +72,7 @@ async function migrate() {
             }
             console.log('Schema applied.');
 
-            const res = await query('SELECT count(*) as count FROM properties');
+            const res = await query('SELECT count(*) as count FROM lands');
             if (res[0].count === 0 && fs.existsSync(seedPath)) {
                 console.log('Seeding...');
                 const seedSql = fs.readFileSync(seedPath, 'utf8');
