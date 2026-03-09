@@ -30,7 +30,7 @@ def test():
 
         # Test the click handler goes to dashboard view
         # First navigate away from dashboard view
-        page.locator('button >> text="Properties"').click()
+        page.locator('button:has-text("Lands")').click()
         time.sleep(1)
 
         # Click the logo div

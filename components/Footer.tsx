@@ -142,10 +142,14 @@ const Footer: React.FC<FooterProps> = ({ onNavigate, navigation }) => {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-light text-gray-500">
           <p>&copy; {new Date().getFullYear()} {siteName}. All Rights Reserved.</p>
-          <div className="flex gap-6">
+          <div className="flex gap-6 items-center">
             <button onClick={() => onNavigate('privacy')} className="hover:text-luxury-gold transition-colors">Privacy Policy</button>
             <button onClick={() => onNavigate('terms')} className="hover:text-luxury-gold transition-colors">Terms of Service</button>
             <button onClick={() => onNavigate('kyc')} className="hover:text-luxury-gold transition-colors">KYC Documentation</button>
+            <div className="w-px h-3 bg-white/20 mx-2"></div>
+            <button onClick={() => onNavigate('admin')} className="text-luxury-gray hover:text-white text-sm transition-colors">
+              Admin Login
+            </button>
           </div>
         </div>
       </div>
