@@ -65,14 +65,25 @@ const HouseCard: React.FC<HouseCardProps> = ({ property, onClick }) => {
           </div>
         </div>
 
-        <div className="mt-auto flex items-center justify-between pt-4 border-t border-gray-50">
-          <div>
-            <p className="text-[11px] text-gray-400 uppercase tracking-widest mb-1 font-semibold">{property.priceLabel || 'Starting From'}</p>
-            <p className="text-2xl font-serif text-luxury-black">{property.price}</p>
-          </div>
-          <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-luxury-gold group-hover:text-white transition-all duration-300 shadow-sm group-hover:shadow-md">
-            <ChevronRight size={20} className="transform group-hover:translate-x-1 transition-transform" />
-          </div>
+        <div className="mt-auto pt-6 border-t border-gray-100 flex items-end justify-between">
+           <div>
+              <p className="text-[11px] text-luxury-gray font-bold uppercase tracking-widest mb-1.5">
+                 {property.priceLabel || 'PER UNIT UPWARDS'}
+              </p>
+              <p className="text-[22px] font-serif font-bold text-luxury-black">
+                 {property.price}
+              </p>
+           </div>
+
+           <button
+              className="bg-transparent text-luxury-black border-2 border-luxury-gold px-5 py-2.5 text-[13px] font-bold uppercase tracking-wider rounded-xl transition-all duration-300 group-hover:bg-luxury-gold group-hover:text-white"
+              onClick={(e) => {
+                 e.stopPropagation();
+                 onClick();
+              }}
+           >
+             Explore House
+           </button>
         </div>
       </div>
     </div>

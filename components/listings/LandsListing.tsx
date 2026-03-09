@@ -1,19 +1,19 @@
 import React, { useState, useMemo } from 'react';
 import { Property } from '../../types';
-import { ListingHero } from '../listings/ListingHero';
-import { FeaturedPropertiesSection } from '../listings/FeaturedPropertiesSection';
-import { PropertyFilterSidebar } from '../listings/PropertyFilterSidebar';
-import { QuickLinksSection } from '../listings/QuickLinksSection';
-import { ListingsPagination } from '../listings/ListingsPagination';
-import { ListingsEmptyState } from '../listings/ListingsEmptyState';
-import HouseCard from '../HouseCard';
+import { ListingHero } from './ListingHero';
+import { FeaturedPropertiesSection } from './FeaturedPropertiesSection';
+import { PropertyFilterSidebar } from './PropertyFilterSidebar';
+import { QuickLinksSection } from './QuickLinksSection';
+import { ListingsPagination } from './ListingsPagination';
+import { ListingsEmptyState } from './ListingsEmptyState';
+import LandCard from '../LandCard';
 
-interface HousesListingProps {
+interface LandsListingProps {
   properties: Property[];
   onNavigate: (page: string, id: string) => void;
 }
 
-export const HousesListing: React.FC<HousesListingProps> = ({ properties, onNavigate }) => {
+export const LandsListing: React.FC<LandsListingProps> = ({ properties, onNavigate }) => {
   const itemsPerPage = 9;
 
   const [filters, setFilters] = useState({
@@ -28,17 +28,18 @@ export const HousesListing: React.FC<HousesListingProps> = ({ properties, onNavi
   const [activeFilters, setActiveFilters] = useState({ ...filters });
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Extract houses only
-  const houses = useMemo(() => {
+  // Extract lands only
+  const lands = useMemo(() => {
     return properties.filter(p => {
       const t = (p.type || "").trim().toLowerCase();
-      return t === 'house' || t === 'houses' || t === 'apartment';
+      return t === 'land' || t === 'lands';
     });
   }, [properties]);
 
   const handleSearch = () => {
     setActiveFilters({ ...filters });
     setCurrentPage(1);
+    // On mobile we might want to close the filter sidebar drawer here
   };
 
   const handleQuickLink = (key: string, value: string) => {
@@ -48,8 +49,8 @@ export const HousesListing: React.FC<HousesListingProps> = ({ properties, onNavi
     setCurrentPage(1);
   };
 
-  const filteredHouses = useMemo(() => {
-    return houses.filter(p => {
+  const filteredLands = useMemo(() => {
+    return lands.filter(p => {
       let matches = true;
 
       if (activeFilters.category && p.category !== activeFilters.category) matches = false;
@@ -76,20 +77,21 @@ export const HousesListing: React.FC<HousesListingProps> = ({ properties, onNavi
 
       return matches;
     }).sort((a, b) => {
+       // First sort by order if available, else standard fallback
        return (b.sortOrder || 0) - (a.sortOrder || 0);
     });
-  }, [houses, activeFilters]);
+  }, [lands, activeFilters]);
 
-  const totalPages = Math.ceil(filteredHouses.length / itemsPerPage);
-  const paginatedHouses = filteredHouses.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const totalPages = Math.ceil(filteredLands.length / itemsPerPage);
+  const paginatedLands = filteredLands.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div className="bg-[#fcfcfc] min-h-screen pb-24 font-sans animate-in fade-in duration-500">
-      <ListingHero type="Houses" />
+      <ListingHero type="Lands" />
 
       <FeaturedPropertiesSection
-        properties={houses}
-        type="Houses"
+        properties={lands}
+        type="Lands"
         onNavigate={(id) => onNavigate('detail', id)}
       />
 
@@ -98,10 +100,10 @@ export const HousesListing: React.FC<HousesListingProps> = ({ properties, onNavi
         {/* Main Listing Header */}
         <div className="mb-12 text-center max-w-2xl mx-auto">
           <h2 className="text-3xl md:text-5xl font-serif text-luxury-black mb-4">
-            Find Your Dream House
+            Find Your Dream Property
           </h2>
           <p className="text-gray-500 font-light text-lg">
-            Use the filters to discover premium properties that match your lifestyle and budget.
+            Use the filters to discover premium land properties that match your exact requirements.
           </p>
         </div>
 
@@ -110,16 +112,16 @@ export const HousesListing: React.FC<HousesListingProps> = ({ properties, onNavi
           {/* Sidebar Left */}
           <div className="w-full lg:w-[320px] xl:w-[360px] flex-shrink-0 order-2 lg:order-1">
             <PropertyFilterSidebar
-              type="Houses"
+              type="Lands"
               filters={filters}
               setFilters={setFilters}
-              properties={houses}
+              properties={lands}
               onSearch={handleSearch}
             />
             <div className="hidden lg:block">
               <QuickLinksSection
-                type="Houses"
-                properties={houses}
+                type="Lands"
+                properties={lands}
                 onSelectLink={handleQuickLink}
               />
             </div>
@@ -127,11 +129,11 @@ export const HousesListing: React.FC<HousesListingProps> = ({ properties, onNavi
 
           {/* Results Right */}
           <div className="flex-1 min-w-0 order-1 lg:order-2">
-            {/* Mobile Quick Links */}
+            {/* Mobile Quick Links - placed above results on small screens */}
             <div className="lg:hidden mb-8">
               <QuickLinksSection
-                type="Houses"
-                properties={houses}
+                type="Lands"
+                properties={lands}
                 onSelectLink={handleQuickLink}
               />
             </div>
@@ -139,12 +141,13 @@ export const HousesListing: React.FC<HousesListingProps> = ({ properties, onNavi
             {/* Results Header */}
             <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-100">
                <h3 className="text-xl font-serif font-bold text-luxury-black">
-                 {filteredHouses.length} {filteredHouses.length === 1 ? 'House' : 'Houses'} Found
+                 {filteredLands.length} {filteredLands.length === 1 ? 'Land' : 'Lands'} Found
                </h3>
+               {/* Optional sorting dropdown could go here */}
             </div>
 
             {/* Grid */}
-            {filteredHouses.length === 0 ? (
+            {filteredLands.length === 0 ? (
               <ListingsEmptyState onReset={() => {
                 const reset = { category: '', district: '', city: '', minPrice: '', maxPrice: '', keyword: '' };
                 setFilters(reset);
@@ -153,8 +156,8 @@ export const HousesListing: React.FC<HousesListingProps> = ({ properties, onNavi
             ) : (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-                  {paginatedHouses.map(prop => (
-                    <HouseCard
+                  {paginatedLands.map(prop => (
+                    <LandCard
                       key={prop.id}
                       property={prop}
                       onClick={() => onNavigate('detail', prop.id)}
