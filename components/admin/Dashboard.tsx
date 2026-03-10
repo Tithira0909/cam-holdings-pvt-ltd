@@ -17,6 +17,8 @@ import { PROPERTIES, PROJECTS } from '../../constants';
 import PropertiesList from './PropertiesList';
 import AddProperty from './AddProperty';
 import EditProperty from './EditProperty';
+import AddHouse from './AddHouse';
+import EditHouse from './EditHouse';
 import InquiriesList from './InquiriesList';
 import InquiryDetail from './InquiryDetail';
 import ServicesList from './ServicesList';
@@ -394,15 +396,14 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         )}
 
         {activeView === 'add-house' && (
-          <AddProperty
-            forcedType="House"
+          <AddHouse
             onSuccess={() => setActiveView('houses')}
             onCancel={() => setActiveView('houses')}
           />
         )}
 
         {activeView === 'edit-house' && editingPropertyId && (
-          <EditProperty
+          <EditHouse
             propertyId={editingPropertyId.replace(/^(land|house)-/, '')}
             onSuccess={() => setActiveView('houses')}
             onCancel={() => setActiveView('houses')}
