@@ -43,7 +43,7 @@ const LandCard: React.FC<LandCardProps> = ({ property, onClick }) => {
              </div>
           )}
           {property.isSoldOut && (
-            <div className="bg-[#D32F2F] text-white text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-lg shadow-md">
+            <div className="bg-luxury-black text-white text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-lg shadow-md border border-white/10">
               Sold Out
             </div>
           )}
@@ -76,7 +76,7 @@ const LandCard: React.FC<LandCardProps> = ({ property, onClick }) => {
               <p className="text-[11px] text-luxury-gray font-bold uppercase tracking-widest mb-1.5">
                  {property.priceLabel || 'PER PERCH UPWARDS'}
               </p>
-              <p className="text-[22px] font-serif font-bold text-[#D32F2F]">
+              <p className="text-[22px] font-serif font-bold text-luxury-black">
                  {formatPrice(property.price)}
               </p>
            </div>
