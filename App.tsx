@@ -731,7 +731,7 @@ const App: React.FC = () => {
           <div className="animate-in fade-in duration-500 bg-[#f4f4f4] pb-32">
             {propertyError ? (
               <div className="h-[60vh] flex flex-col items-center justify-center text-center">
-                <p className="text-xl text-red-500 font-serif mb-4">{propertyError}</p>
+                <p className="text-xl text-luxury-gold font-serif mb-4">{propertyError}</p>
                 <button onClick={() => navigate('properties')} className="px-6 py-2 bg-luxury-gold text-white rounded hover:bg-opacity-90 transition shadow-md">Back to Properties</button>
               </div>
             ) : !currentProperty ? (

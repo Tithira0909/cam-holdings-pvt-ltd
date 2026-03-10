@@ -21,7 +21,7 @@ const formatPrice = (price?: string) => {
 };
 
 const renderFacilityIcon = (label: string) => {
-  return <CheckCircle2 size={24} className="text-red-600 mb-2" />;
+  return <CheckCircle2 size={24} className="text-luxury-gold mb-2" />;
 };
 
 const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommendedLands, onOpenConsultation, setSelectedImage }) => {
@@ -52,9 +52,9 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
         {/* 1. BREADCRUMB + TITLE */}
         <div className="mb-6">
           <div className="text-xs text-gray-500 mb-2 flex items-center gap-2 tracking-wider font-semibold uppercase">
-            <span className="cursor-pointer hover:text-red-600 transition-colors" onClick={() => onNavigate('home')}>Home</span>
+            <span className="cursor-pointer hover:text-luxury-gold transition-colors" onClick={() => onNavigate('home')}>Home</span>
             <span>&gt;</span>
-            <span className="cursor-pointer hover:text-red-600 transition-colors" onClick={() => onNavigate('lands')}>Lands</span>
+            <span className="cursor-pointer hover:text-luxury-gold transition-colors" onClick={() => onNavigate('lands')}>Lands</span>
             <span>&gt;</span>
             <span className="text-gray-900">{property.title}</span>
           </div>
@@ -80,7 +80,7 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
                {allImages.map((img, idx) => (
                  <div
                    key={idx}
-                   className={`flex-shrink-0 w-32 md:w-full aspect-video overflow-hidden cursor-pointer transition-all border-4 ${mainImage === img ? 'border-red-600 opacity-100' : 'border-transparent opacity-70 hover:opacity-100'}`}
+                   className={`flex-shrink-0 w-32 md:w-full aspect-video overflow-hidden cursor-pointer transition-all border-4 ${mainImage === img ? 'border-luxury-gold opacity-100' : 'border-transparent opacity-70 hover:opacity-100'}`}
                    onClick={() => setMainImage(img)}
                  >
                    <img src={img} alt={`${property.title} ${idx}`} className="w-full h-full object-cover" />
@@ -94,8 +94,8 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-12 border-b border-gray-200 pb-8">
            <div>
               <p className="text-gray-500 text-sm font-bold uppercase mb-1">{property.priceLabel || 'Starting Price'}</p>
-              <h2 className="text-4xl lg:text-5xl font-bold text-red-600">
-                {formatPrice(property.price)} <span className="text-xl text-red-600/80">LKR</span>
+              <h2 className="text-4xl lg:text-5xl font-bold text-luxury-gold">
+                {formatPrice(property.price)} <span className="text-xl text-luxury-gold/80">LKR</span>
               </h2>
            </div>
 
@@ -135,7 +135,7 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
                        const label = typeof hl === 'string' ? hl : hl.label;
                        return (
                           <li key={idx} className="flex items-start gap-4 text-gray-700 font-medium text-lg">
-                             <span className="text-red-600 mt-1.5 text-xl leading-none">•</span>
+                             <span className="text-luxury-gold mt-1.5 text-xl leading-none">•</span>
                              <span>{label}</span>
                           </li>
                        );
@@ -152,7 +152,7 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
                 <ul className="space-y-4">
                    {paymentPlanItems.map((item, idx) => (
                       <li key={idx} className="flex items-start gap-4 text-gray-700 font-medium text-lg">
-                         <span className="text-red-600 mt-1.5 text-xl leading-none">•</span>
+                         <span className="text-luxury-gold mt-1.5 text-xl leading-none">•</span>
                          <span>{item}</span>
                       </li>
                    ))}
@@ -186,7 +186,7 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
                      {property.blockPlanImage && (
                         <button
                            onClick={() => setActiveTab('block')}
-                           className={`px-8 py-3 font-bold uppercase text-sm transition-colors ${activeTab === 'block' ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-900'}`}
+                           className={`px-8 py-3 font-bold uppercase text-sm transition-colors ${activeTab === 'block' ? 'bg-luxury-gold text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-900'}`}
                         >
                            Block Plan
                         </button>
@@ -194,7 +194,7 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
                      {property.roadMapImage && (
                         <button
                            onClick={() => setActiveTab('road')}
-                           className={`px-8 py-3 font-bold uppercase text-sm transition-colors ${activeTab === 'road' ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-900'}`}
+                           className={`px-8 py-3 font-bold uppercase text-sm transition-colors ${activeTab === 'road' ? 'bg-luxury-gold text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-900'}`}
                         >
                            Road Map
                         </button>
@@ -202,7 +202,7 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
                      {property.locationMapImage && (
                         <button
                            onClick={() => setActiveTab('location')}
-                           className={`px-8 py-3 font-bold uppercase text-sm transition-colors ${activeTab === 'location' ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-900'}`}
+                           className={`px-8 py-3 font-bold uppercase text-sm transition-colors ${activeTab === 'location' ? 'bg-luxury-gold text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-900'}`}
                         >
                            Location
                         </button>
@@ -235,18 +235,18 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
                 <h3 className="text-xl font-bold text-gray-900 mb-6 uppercase tracking-wider text-center">Inquire</h3>
                 <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert("Inquiry sent successfully!"); }}>
                    <div>
-                      <input type="text" required placeholder="Name" className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none transition-all placeholder:text-gray-400" />
+                      <input type="text" required placeholder="Name" className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold outline-none transition-all placeholder:text-gray-400" />
                    </div>
                    <div>
-                      <input type="tel" required placeholder="Phone Number" className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none transition-all placeholder:text-gray-400" />
+                      <input type="tel" required placeholder="Phone Number" className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold outline-none transition-all placeholder:text-gray-400" />
                    </div>
                    <div>
-                      <input type="email" required placeholder="Email Address" className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none transition-all placeholder:text-gray-400" />
+                      <input type="email" required placeholder="Email Address" className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold outline-none transition-all placeholder:text-gray-400" />
                    </div>
                    <div>
-                      <textarea rows={4} placeholder="Message" className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none transition-all placeholder:text-gray-400 resize-none"></textarea>
+                      <textarea rows={4} placeholder="Message" className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold outline-none transition-all placeholder:text-gray-400 resize-none"></textarea>
                    </div>
-                   <button type="submit" className="w-full bg-red-600 text-white font-bold uppercase tracking-wider py-4 hover:bg-red-700 transition-colors mt-4 text-sm">
+                   <button type="submit" className="w-full bg-luxury-gold text-white font-bold uppercase tracking-wider py-4 hover:bg-luxury-golddark transition-colors mt-4 text-sm">
                       Send
                    </button>
                 </form>
@@ -274,7 +274,7 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
          <a href={`tel:${property.hotlineNumber}`} className="flex-1 bg-gray-900 text-white py-3.5 rounded-lg font-bold uppercase tracking-wider text-sm flex items-center justify-center gap-2">
             <PhoneCall size={16} /> Call
          </a>
-         <button onClick={onOpenConsultation} className="flex-1 bg-red-600 text-white py-3.5 rounded-lg font-bold uppercase tracking-wider text-sm flex items-center justify-center gap-2">
+         <button onClick={onOpenConsultation} className="flex-1 bg-luxury-gold text-white py-3.5 rounded-lg font-bold uppercase tracking-wider text-sm flex items-center justify-center gap-2">
             <MessageSquare size={16} /> Inquire
          </button>
       </div>
