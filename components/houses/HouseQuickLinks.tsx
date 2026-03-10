@@ -51,7 +51,7 @@ export const HouseQuickLinks: React.FC<HouseQuickLinksProps> = ({
                 onClick={() => onSelectDistrict(selectedDistrict === d ? '' : d)}
                 className={`px-3 py-1.5 text-sm rounded-full transition-colors border ${
                   selectedDistrict === d
-                    ? 'bg-luxury-gold text-white border-luxury-gold shadow-md'
+                    ? 'bg-red-600 text-white border-red-600 shadow-md'
                     : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100 hover:border-gray-300'
                 }`}
               >
@@ -72,7 +72,7 @@ export const HouseQuickLinks: React.FC<HouseQuickLinksProps> = ({
                 onClick={() => onSelectCity(selectedCity === c ? '' : c)}
                 className={`px-3 py-1.5 text-sm rounded-full transition-colors border ${
                   selectedCity === c
-                    ? 'bg-luxury-gold text-white border-luxury-gold shadow-md'
+                    ? 'bg-red-600 text-white border-red-600 shadow-md'
                     : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100 hover:border-gray-300'
                 }`}
               >
@@ -83,7 +83,7 @@ export const HouseQuickLinks: React.FC<HouseQuickLinksProps> = ({
             {cities.length > 10 && (
               <button
                 onClick={() => setShowAllCities(!showAllCities)}
-                className="px-3 py-1.5 text-sm rounded-full text-luxury-gold hover:underline font-medium"
+                className="px-3 py-1.5 text-sm rounded-full text-red-600 hover:underline font-medium"
               >
                 {showAllCities ? 'Show Less' : `+${cities.length - 10} More`}
               </button>

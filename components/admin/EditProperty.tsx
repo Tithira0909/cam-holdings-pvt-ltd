@@ -289,7 +289,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
 
   if (initialLoading) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 text-luxury-gold">
+      <div className="flex flex-col items-center justify-center h-64 text-red-600">
         <Loader2 size={48} className="animate-spin mb-4" />
         <p className="font-serif text-lg">Loading property details...</p>
       </div>
@@ -330,7 +330,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                       if (!slug) setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''));
                     }}
                     required
-                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                   />
                 </div>
                 <div>
@@ -340,7 +340,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                     value={slug}
                     onChange={(e) => setSlug(e.target.value)}
                     required
-                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -349,7 +349,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                     <select
                       value={type}
                       onChange={(e) => setType(e.target.value as PropertyType)}
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                     >
                       {Object.values(PropertyType).map(t => (
                         <option key={t} value={t}>{t}</option>
@@ -362,7 +362,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                       type="text"
                       value={category}
                       onChange={(e) => setCategory(e.target.value)}
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                     />
                   </div>
                 </div>
@@ -375,7 +375,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                         min="0"
                         value={bedrooms}
                         onChange={(e) => setBedrooms(e.target.value ? Number(e.target.value) : '')}
-                        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                       />
                     </div>
                     <div>
@@ -385,7 +385,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                         min="0"
                         value={bathrooms}
                         onChange={(e) => setBathrooms(e.target.value ? Number(e.target.value) : '')}
-                        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                       />
                     </div>
                   </div>
@@ -398,7 +398,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                       type="text"
                       value={projectStatusLabel}
                       onChange={(e) => setProjectStatusLabel(e.target.value)}
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                     />
                  </div>
                  <div>
@@ -407,7 +407,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                       type="number"
                       value={sortOrder}
                       onChange={(e) => setSortOrder(Number(e.target.value))}
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                     />
                  </div>
                  <div className="grid grid-cols-3 gap-4 pt-4">
@@ -433,7 +433,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={4}
-                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm resize-none"
+                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm resize-none"
                 ></textarea>
               </div>
               <div>
@@ -442,7 +442,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                   value={fullDescription}
                   onChange={(e) => setFullDescription(e.target.value)}
                   rows={4}
-                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm resize-none"
+                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm resize-none"
                 ></textarea>
               </div>
             </div>
@@ -460,7 +460,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
                       required
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm font-bold text-luxury-black"
+                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm font-bold text-luxury-black"
                     />
                  </div>
                  <div>
@@ -469,7 +469,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                       type="text"
                       value={priceLabel}
                       onChange={(e) => setPriceLabel(e.target.value)}
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                     />
                  </div>
               </div>
@@ -481,7 +481,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                          type="text"
                          value={district}
                          onChange={(e) => setDistrict(e.target.value)}
-                         className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                         className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                        />
                     </div>
                     <div>
@@ -490,7 +490,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                          type="text"
                          value={city}
                          onChange={(e) => setCity(e.target.value)}
-                         className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                         className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                        />
                     </div>
                  </div>
@@ -500,7 +500,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                       type="text"
                       value={locationLabel}
                       onChange={(e) => setLocationLabel(e.target.value)}
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                     />
                  </div>
               </div>
@@ -517,7 +517,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                   <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Main Cover Image *</label>
                   <div
                     onClick={() => mainImageInputRef.current?.click()}
-                    className={`border-2 border-dashed border-gray-300 rounded-xl aspect-[16/9] flex flex-col items-center justify-center cursor-pointer hover:border-luxury-gold transition-colors ${mainImagePreview ? 'bg-gray-50' : ''}`}
+                    className={`border-2 border-dashed border-gray-300 rounded-xl aspect-[16/9] flex flex-col items-center justify-center cursor-pointer hover:border-red-600 transition-colors ${mainImagePreview ? 'bg-gray-50' : ''}`}
                   >
                     {mainImagePreview ? (
                       <div className="relative w-full h-full group">
@@ -541,7 +541,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                   <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Project Logo</label>
                   <div
                     onClick={() => logoImageInputRef.current?.click()}
-                    className={`border-2 border-dashed border-gray-300 rounded-xl aspect-square flex flex-col items-center justify-center cursor-pointer hover:border-luxury-gold transition-colors bg-gray-50`}
+                    className={`border-2 border-dashed border-gray-300 rounded-xl aspect-square flex flex-col items-center justify-center cursor-pointer hover:border-red-600 transition-colors bg-gray-50`}
                   >
                     {logoImagePreview ? (
                        <div className="relative w-full h-full group p-4">
@@ -565,7 +565,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                {/* Block Plan */}
                <div>
                   <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Block Plan</label>
-                  <div onClick={() => blockPlanImageInputRef.current?.click()} className="border-2 border-dashed border-gray-300 rounded-xl aspect-video flex items-center justify-center cursor-pointer hover:border-luxury-gold bg-gray-50">
+                  <div onClick={() => blockPlanImageInputRef.current?.click()} className="border-2 border-dashed border-gray-300 rounded-xl aspect-video flex items-center justify-center cursor-pointer hover:border-red-600 bg-gray-50">
                     {blockPlanImagePreview ? <img src={blockPlanImagePreview} className="w-full h-full object-contain p-2" /> : <p className="text-xs text-gray-500">Upload Block Plan</p>}
                     <input type="file" ref={blockPlanImageInputRef} onChange={(e) => handleImageChange(e, setBlockPlanImage, setBlockPlanImagePreview)} accept="image/*" className="hidden" />
                   </div>
@@ -574,7 +574,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                {/* Road Map */}
                <div>
                   <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Road Map</label>
-                  <div onClick={() => roadMapImageInputRef.current?.click()} className="border-2 border-dashed border-gray-300 rounded-xl aspect-video flex items-center justify-center cursor-pointer hover:border-luxury-gold bg-gray-50">
+                  <div onClick={() => roadMapImageInputRef.current?.click()} className="border-2 border-dashed border-gray-300 rounded-xl aspect-video flex items-center justify-center cursor-pointer hover:border-red-600 bg-gray-50">
                     {roadMapImagePreview ? <img src={roadMapImagePreview} className="w-full h-full object-contain p-2" /> : <p className="text-xs text-gray-500">Upload Road Map</p>}
                     <input type="file" ref={roadMapImageInputRef} onChange={(e) => handleImageChange(e, setRoadMapImage, setRoadMapImagePreview)} accept="image/*" className="hidden" />
                   </div>
@@ -583,7 +583,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                {/* Location Map */}
                <div>
                   <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Location Map</label>
-                  <div onClick={() => locationMapImageInputRef.current?.click()} className="border-2 border-dashed border-gray-300 rounded-xl aspect-video flex items-center justify-center cursor-pointer hover:border-luxury-gold bg-gray-50">
+                  <div onClick={() => locationMapImageInputRef.current?.click()} className="border-2 border-dashed border-gray-300 rounded-xl aspect-video flex items-center justify-center cursor-pointer hover:border-red-600 bg-gray-50">
                     {locationMapImagePreview ? <img src={locationMapImagePreview} className="w-full h-full object-contain p-2" /> : <p className="text-xs text-gray-500">Upload Location Map</p>}
                     <input type="file" ref={locationMapImageInputRef} onChange={(e) => handleImageChange(e, setLocationMapImage, setLocationMapImagePreview)} accept="image/*" className="hidden" />
                   </div>
@@ -629,7 +629,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                 >
                   <div className="flex flex-col items-center justify-center gap-3">
                     {uploadingGallery ? (
-                      <Loader2 size={32} className="text-luxury-gold animate-spin" />
+                      <Loader2 size={32} className="text-red-600 animate-spin" />
                     ) : (
                       <Upload size={32} className="text-luxury-gray" />
                     )}
@@ -663,9 +663,9 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                      onChange={(e) => setNewFacility(e.target.value)}
                      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addFacility(); } }}
                      placeholder="e.g. 3 Phase Electricity, Tar Road, Tap Water..."
-                     className="flex-1 p-3 bg-white border border-gray-300 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none"
+                     className="flex-1 p-3 bg-white border border-gray-300 rounded-lg text-sm focus:ring-1 focus:ring-red-600 outline-none"
                   />
-                  <button type="button" onClick={addFacility} className="bg-luxury-black text-white px-6 rounded-lg font-bold uppercase tracking-wider text-xs hover:bg-luxury-gold transition-colors">
+                  <button type="button" onClick={addFacility} className="bg-luxury-black text-white px-6 rounded-lg font-bold uppercase tracking-wider text-xs hover:bg-red-600 transition-colors">
                      Add
                   </button>
                </div>
@@ -689,21 +689,21 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                <div className="space-y-4">
                   <div>
                     <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Hotline Number</label>
-                    <input type="text" value={hotlineNumber} onChange={e => setHotlineNumber(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none" />
+                    <input type="text" value={hotlineNumber} onChange={e => setHotlineNumber(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-red-600 outline-none" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">WhatsApp Number</label>
-                    <input type="text" value={whatsappNumber} onChange={e => setWhatsappNumber(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none" />
+                    <input type="text" value={whatsappNumber} onChange={e => setWhatsappNumber(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-red-600 outline-none" />
                   </div>
                </div>
                <div className="space-y-4">
                   <div>
                     <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">SEO Title</label>
-                    <input type="text" value={metaTitle} onChange={e => setMetaTitle(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none" />
+                    <input type="text" value={metaTitle} onChange={e => setMetaTitle(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-red-600 outline-none" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">SEO Description</label>
-                    <textarea value={metaDescription} onChange={e => setMetaDescription(e.target.value)} rows={2} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none resize-none"></textarea>
+                    <textarea value={metaDescription} onChange={e => setMetaDescription(e.target.value)} rows={2} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-red-600 outline-none resize-none"></textarea>
                   </div>
                </div>
             </div>
@@ -721,7 +721,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
             <button
               type="submit"
               disabled={loading}
-              className="px-8 py-3 bg-luxury-gold text-white rounded-lg font-bold uppercase tracking-wider hover:bg-luxury-golddark transition-all shadow-gold-glow disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-8 py-3 bg-red-600 text-white rounded-lg font-bold uppercase tracking-wider hover:bg-red-600dark transition-all shadow-gold-glow disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {loading && <Loader2 size={18} className="animate-spin" />}
               {loading ? 'Updating Property...' : 'Update Property'}

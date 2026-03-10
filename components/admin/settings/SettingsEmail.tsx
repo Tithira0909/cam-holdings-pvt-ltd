@@ -172,7 +172,7 @@ export default function SettingsEmail() {
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64"><Loader2 className="animate-spin text-luxury-gold" size={32} /></div>;
+    return <div className="flex items-center justify-center h-64"><Loader2 className="animate-spin text-red-600" size={32} /></div>;
   }
 
   return (
@@ -188,15 +188,15 @@ export default function SettingsEmail() {
         <div className="p-6 border-b border-luxury-border flex justify-between items-center">
           <div>
             <h2 className="text-xl font-serif font-bold text-luxury-black flex items-center gap-2">
-              <Mail className="text-luxury-gold" size={24} /> Email Configurations (SMTP)
+              <Mail className="text-red-600" size={24} /> Email Configurations (SMTP)
             </h2>
             <p className="text-sm text-luxury-gray mt-1">Manage SMTP settings used for sending inquiry replies.</p>
           </div>
           <div className="flex gap-4">
             <button onClick={() => setIsTestModalOpen(true)} className="bg-white text-luxury-black border border-luxury-border px-4 py-2 rounded-lg font-bold text-sm hover:bg-gray-50 transition-all flex items-center gap-2 shadow-sm">
-              <Send size={16} className="text-luxury-gold" /> Test Email
+              <Send size={16} className="text-red-600" /> Test Email
             </button>
-            <button onClick={handleOpenAdd} className="bg-luxury-gold text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-luxury-golddark transition-all flex items-center gap-2 shadow-sm">
+            <button onClick={handleOpenAdd} className="bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-red-600dark transition-all flex items-center gap-2 shadow-sm">
               <Plus size={16} /> Add Configuration
             </button>
           </div>
@@ -236,7 +236,7 @@ export default function SettingsEmail() {
                       )}
                     </td>
                     <td className="px-6 py-4 flex justify-end gap-3">
-                      <button onClick={() => handleOpenEdit(config)} className="text-luxury-gold hover:text-luxury-golddark p-1 rounded hover:bg-luxury-gold/10 transition-colors" title="Edit">
+                      <button onClick={() => handleOpenEdit(config)} className="text-red-600 hover:text-red-600dark p-1 rounded hover:bg-red-600/10 transition-colors" title="Edit">
                         <Edit size={18} />
                       </button>
                       <button onClick={() => handleDelete(config.id)} className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 transition-colors" title="Delete">
@@ -269,23 +269,23 @@ export default function SettingsEmail() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-bold text-luxury-black mb-1">Host (SMTP Server)*</label>
-                    <input type="text" required value={formData.host} onChange={e => setFormData({...formData, host: e.target.value})} className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none" placeholder="smtp.gmail.com" />
+                    <input type="text" required value={formData.host} onChange={e => setFormData({...formData, host: e.target.value})} className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none" placeholder="smtp.gmail.com" />
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-luxury-black mb-1">Port*</label>
-                    <input type="number" required value={formData.port} onChange={e => setFormData({...formData, port: parseInt(e.target.value)})} className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none" placeholder="587" />
+                    <input type="number" required value={formData.port} onChange={e => setFormData({...formData, port: parseInt(e.target.value)})} className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none" placeholder="587" />
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-luxury-black mb-1">Username*</label>
-                    <input type="text" required value={formData.username} onChange={e => setFormData({...formData, username: e.target.value})} className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none" placeholder="user@example.com" />
+                    <input type="text" required value={formData.username} onChange={e => setFormData({...formData, username: e.target.value})} className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none" placeholder="user@example.com" />
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-luxury-black mb-1">Password {editingConfig && '(Leave blank to keep)'}</label>
-                    <input type="password" required={!editingConfig} value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none" placeholder="••••••••" />
+                    <input type="password" required={!editingConfig} value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none" placeholder="••••••••" />
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-luxury-black mb-1">Encryption</label>
-                    <select value={formData.encryption} onChange={e => setFormData({...formData, encryption: e.target.value})} className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none bg-white">
+                    <select value={formData.encryption} onChange={e => setFormData({...formData, encryption: e.target.value})} className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none bg-white">
                       <option value="tls">TLS (STARTTLS)</option>
                       <option value="ssl">SSL</option>
                       <option value="none">None</option>
@@ -293,18 +293,18 @@ export default function SettingsEmail() {
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-luxury-black mb-1">Status</label>
-                    <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none bg-white">
+                    <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none bg-white">
                       <option value="Active">Active</option>
                       <option value="Inactive">Inactive</option>
                     </select>
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-luxury-black mb-1">From Address*</label>
-                    <input type="email" required value={formData.from_address} onChange={e => setFormData({...formData, from_address: e.target.value})} className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none" placeholder="noreply@example.com" />
+                    <input type="email" required value={formData.from_address} onChange={e => setFormData({...formData, from_address: e.target.value})} className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none" placeholder="noreply@example.com" />
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-luxury-black mb-1">From Name</label>
-                    <input type="text" value={formData.from_name} onChange={e => setFormData({...formData, from_name: e.target.value})} className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none" placeholder="CAM Holdings" />
+                    <input type="text" value={formData.from_name} onChange={e => setFormData({...formData, from_name: e.target.value})} className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none" placeholder="CAM Holdings" />
                   </div>
                 </div>
               </form>
@@ -314,7 +314,7 @@ export default function SettingsEmail() {
               <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-gray-600 font-bold hover:bg-gray-200 rounded-lg transition-colors">
                 Cancel
               </button>
-              <button form="emailForm" type="submit" className="px-6 py-2 bg-luxury-gold text-white font-bold rounded-lg hover:bg-luxury-golddark transition-colors shadow-sm">
+              <button form="emailForm" type="submit" className="px-6 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-600dark transition-colors shadow-sm">
                 Save Configuration
               </button>
             </div>
@@ -342,7 +342,7 @@ export default function SettingsEmail() {
                     required
                     value={testEmail}
                     onChange={e => setTestEmail(e.target.value)}
-                    className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none"
+                    className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none"
                     placeholder="you@example.com"
                   />
                   <p className="text-xs text-gray-500 mt-2">This will send a test email using the currently <strong>Active</strong> configuration.</p>
@@ -354,7 +354,7 @@ export default function SettingsEmail() {
               <button onClick={() => setIsTestModalOpen(false)} className="px-4 py-2 text-gray-600 font-bold hover:bg-gray-200 rounded-lg transition-colors">
                 Cancel
               </button>
-              <button form="testEmailForm" type="submit" disabled={testing} className="px-6 py-2 bg-luxury-gold text-white font-bold rounded-lg hover:bg-luxury-golddark transition-colors shadow-sm flex items-center gap-2 disabled:opacity-50">
+              <button form="testEmailForm" type="submit" disabled={testing} className="px-6 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-600dark transition-colors shadow-sm flex items-center gap-2 disabled:opacity-50">
                 {testing ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
                 {testing ? 'Sending...' : 'Send Test'}
               </button>

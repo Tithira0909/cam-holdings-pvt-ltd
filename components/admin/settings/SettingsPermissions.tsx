@@ -146,7 +146,7 @@ export default function SettingsPermissions() {
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64"><Loader2 className="animate-spin text-luxury-gold" size={32} /></div>;
+    return <div className="flex items-center justify-center h-64"><Loader2 className="animate-spin text-red-600" size={32} /></div>;
   }
 
   return (
@@ -162,7 +162,7 @@ export default function SettingsPermissions() {
         <div className="p-6 border-b border-luxury-border flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <h2 className="text-xl font-serif font-bold text-luxury-black flex items-center gap-2">
-              <Shield className="text-luxury-gold" size={24} /> Permission Settings
+              <Shield className="text-red-600" size={24} /> Permission Settings
             </h2>
           </div>
           <div className="flex gap-4 w-full md:w-auto">
@@ -175,10 +175,10 @@ export default function SettingsPermissions() {
                 placeholder="Search roles..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none text-sm"
+                className="w-full pl-10 pr-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none text-sm"
               />
             </div>
-            <button onClick={handleOpenAdd} className="bg-luxury-gold text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-luxury-golddark transition-all flex items-center gap-2 shadow-sm whitespace-nowrap">
+            <button onClick={handleOpenAdd} className="bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-red-600dark transition-all flex items-center gap-2 shadow-sm whitespace-nowrap">
               <Plus size={16} /> Add New Role
             </button>
           </div>
@@ -207,7 +207,7 @@ export default function SettingsPermissions() {
                           <span key={i} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded border border-gray-200">{acc}</span>
                         ))
                       ) : (
-                        <span className="px-2 py-1 bg-luxury-gold/10 text-luxury-golddark text-xs font-bold rounded border border-luxury-gold/20">{role.access_level}</span>
+                        <span className="px-2 py-1 bg-red-600/10 text-red-600dark text-xs font-bold rounded border border-red-600/20">{role.access_level}</span>
                       )}
                     </div>
                   </td>
@@ -217,7 +217,7 @@ export default function SettingsPermissions() {
                     </span>
                   </td>
                   <td className="px-6 py-4 flex justify-end gap-3">
-                    <button onClick={() => handleOpenEdit(role)} className="text-luxury-gray hover:text-luxury-gold p-1 transition-colors" title="Edit">
+                    <button onClick={() => handleOpenEdit(role)} className="text-luxury-gray hover:text-red-600 p-1 transition-colors" title="Edit">
                       <Edit size={18} />
                     </button>
                     <button onClick={() => handleDelete(role.id)} className="text-luxury-gray hover:text-red-500 p-1 transition-colors" title="Delete">
@@ -251,12 +251,12 @@ export default function SettingsPermissions() {
               <form id="roleForm" onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label className="block text-sm font-bold text-luxury-black mb-1">Role Name</label>
-                  <input type="text" required value={formData.role_name} onChange={e => setFormData({...formData, role_name: e.target.value})} className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none" placeholder="e.g. Content Editor" />
+                  <input type="text" required value={formData.role_name} onChange={e => setFormData({...formData, role_name: e.target.value})} className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none" placeholder="e.g. Content Editor" />
                 </div>
 
                 <div>
                   <label className="block text-sm font-bold text-luxury-black mb-1">Access Level</label>
-                  <select value={formData.access_type} onChange={e => setFormData({...formData, access_type: e.target.value})} className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none bg-white mb-3">
+                  <select value={formData.access_type} onChange={e => setFormData({...formData, access_type: e.target.value})} className="w-full px-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none bg-white mb-3">
                     <option value="Full Access">Full Access</option>
                     <option value="Read Only">Read Only</option>
                     <option value="Custom">Custom Modules</option>
@@ -266,7 +266,7 @@ export default function SettingsPermissions() {
                     <div className="grid grid-cols-2 gap-2 p-4 bg-gray-50 rounded-lg border border-gray-200">
                       {ALL_MODULES.map(mod => (
                         <label key={mod} className="flex items-center gap-2 cursor-pointer">
-                           <input type="checkbox" checked={formData.custom_modules.includes(mod)} onChange={() => toggleModule(mod)} className="rounded border-gray-300 text-luxury-gold focus:ring-luxury-gold" />
+                           <input type="checkbox" checked={formData.custom_modules.includes(mod)} onChange={() => toggleModule(mod)} className="rounded border-gray-300 text-red-600 focus:ring-red-600" />
                            <span className="text-sm text-gray-700">{mod}</span>
                         </label>
                       ))}
@@ -279,7 +279,7 @@ export default function SettingsPermissions() {
                   <div className="flex items-center gap-3">
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" checked={formData.status === 'Active'} onChange={e => setFormData({...formData, status: e.target.checked ? 'Active' : 'Inactive'})} />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-luxury-gold"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
                     </label>
                     <span className="text-sm font-medium text-gray-700">{formData.status}</span>
                   </div>
@@ -291,7 +291,7 @@ export default function SettingsPermissions() {
               <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-gray-600 font-bold hover:bg-gray-200 rounded-lg transition-colors">
                 Cancel
               </button>
-              <button form="roleForm" type="submit" className="px-6 py-2 bg-luxury-gold text-white font-bold rounded-lg hover:bg-luxury-golddark transition-colors shadow-sm">
+              <button form="roleForm" type="submit" className="px-6 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-600dark transition-colors shadow-sm">
                 Save Role
               </button>
             </div>

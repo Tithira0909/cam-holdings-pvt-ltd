@@ -51,7 +51,7 @@ export const HouseFiltersSidebar: React.FC<HouseFiltersSidebarProps> = ({
           {isMobileOpen ? 'Hide Filters' : 'Filter Houses'}
         </div>
         <div className="flex items-center gap-4">
-          <span className="bg-luxury-gold/20 text-luxury-gold px-2.5 py-1 rounded-full text-xs font-bold border border-luxury-gold/30">
+          <span className="bg-red-600/20 text-red-600 px-2.5 py-1 rounded-full text-xs font-bold border border-red-600/30">
             {totalResults}
           </span>
           {isMobileOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
@@ -79,14 +79,14 @@ export const HouseFiltersSidebar: React.FC<HouseFiltersSidebarProps> = ({
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5 ml-1">Keyword</label>
               <div className="relative group">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-luxury-gold transition-colors" size={18} />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-600 transition-colors" size={18} />
                 <input
                   type="text"
                   name="keyword"
                   value={filters.keyword}
                   onChange={handleChange}
                   placeholder="e.g. Kottawa, Villa"
-                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-luxury-gold/20 focus:border-luxury-gold outline-none transition-all placeholder:text-gray-400"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-600/20 focus:border-red-600 outline-none transition-all placeholder:text-gray-400"
                 />
               </div>
             </div>
@@ -96,12 +96,12 @@ export const HouseFiltersSidebar: React.FC<HouseFiltersSidebarProps> = ({
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5 ml-1">Property Category</label>
                 <div className="relative group">
-                  <Building className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-luxury-gold transition-colors" size={18} />
+                  <Building className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-600 transition-colors" size={18} />
                   <select
                     name="category"
                     value={filters.category}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-luxury-gold/20 focus:border-luxury-gold outline-none transition-all appearance-none cursor-pointer"
+                    className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-600/20 focus:border-red-600 outline-none transition-all appearance-none cursor-pointer"
                   >
                     <option value="">All Categories</option>
                     {categories.map(c => (
@@ -118,12 +118,12 @@ export const HouseFiltersSidebar: React.FC<HouseFiltersSidebarProps> = ({
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5 ml-1">District</label>
                 <div className="relative group">
-                  <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-luxury-gold transition-colors" size={18} />
+                  <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-600 transition-colors" size={18} />
                   <select
                     name="district"
                     value={filters.district}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-luxury-gold/20 focus:border-luxury-gold outline-none transition-all appearance-none cursor-pointer"
+                    className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-600/20 focus:border-red-600 outline-none transition-all appearance-none cursor-pointer"
                   >
                     <option value="">All Districts</option>
                     {districts.map(d => (
@@ -140,12 +140,12 @@ export const HouseFiltersSidebar: React.FC<HouseFiltersSidebarProps> = ({
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5 ml-1">City</label>
                 <div className="relative group">
-                  <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-luxury-gold transition-colors" size={18} />
+                  <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-600 transition-colors" size={18} />
                   <select
                     name="city"
                     value={filters.city}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-luxury-gold/20 focus:border-luxury-gold outline-none transition-all appearance-none cursor-pointer"
+                    className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-600/20 focus:border-red-600 outline-none transition-all appearance-none cursor-pointer"
                   >
                     <option value="">All Cities</option>
                     {cities.map(c => (
@@ -167,7 +167,7 @@ export const HouseFiltersSidebar: React.FC<HouseFiltersSidebarProps> = ({
                   value={filters.minPrice}
                   onChange={handleChange}
                   placeholder="Min"
-                  className="w-1/2 px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-luxury-gold/20 focus:border-luxury-gold outline-none transition-all placeholder:text-gray-400"
+                  className="w-1/2 px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-600/20 focus:border-red-600 outline-none transition-all placeholder:text-gray-400"
                 />
                 <span className="text-gray-400">-</span>
                 <input
@@ -176,7 +176,7 @@ export const HouseFiltersSidebar: React.FC<HouseFiltersSidebarProps> = ({
                   value={filters.maxPrice}
                   onChange={handleChange}
                   placeholder="Max"
-                  className="w-1/2 px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-luxury-gold/20 focus:border-luxury-gold outline-none transition-all placeholder:text-gray-400"
+                  className="w-1/2 px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-600/20 focus:border-red-600 outline-none transition-all placeholder:text-gray-400"
                 />
               </div>
             </div>
@@ -194,7 +194,7 @@ export const HouseFiltersSidebar: React.FC<HouseFiltersSidebarProps> = ({
               <button
                 type="submit"
                 onClick={() => { if(window.innerWidth < 1024) setIsMobileOpen(false); }}
-                className="flex-[2] px-4 py-3 bg-luxury-gold text-white font-medium rounded-lg hover:bg-opacity-90 transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                className="flex-[2] px-4 py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-opacity-90 transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2"
               >
                 <Search size={18} />
                 Search

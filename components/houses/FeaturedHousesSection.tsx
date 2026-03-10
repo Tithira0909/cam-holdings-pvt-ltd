@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, BedDouble, Bath, MapPin } from 'lucide-react';
 import { Property } from '../../types';
+import ScrollAnimation from '../ScrollAnimation';
 
 interface FeaturedHousesSectionProps {
   properties: Property[];
@@ -36,34 +37,37 @@ export const FeaturedHousesSection: React.FC<FeaturedHousesSectionProps> = ({ pr
   return (
     <div className="bg-gray-50 py-16 md:py-24 font-sans border-b border-gray-100">
       <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12">
-        <div className="flex justify-between items-end mb-10 max-w-7xl mx-auto">
-          <div>
-            <h2 className="text-3xl md:text-4xl font-serif text-luxury-black mb-3">Featured Houses</h2>
-            <p className="text-gray-600 max-w-2xl text-lg font-light">Explore our handpicked selection of premium properties, offering unparalleled luxury and comfort.</p>
-          </div>
+        <ScrollAnimation delay={0.1}>
+          <div className="flex justify-between items-end mb-10 max-w-7xl mx-auto">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-serif text-luxury-black mb-3">Featured Houses</h2>
+              <p className="text-gray-600 max-w-2xl text-lg font-light">Explore our handpicked selection of premium properties, offering unparalleled luxury and comfort.</p>
+            </div>
 
-          <div className="hidden md:flex gap-3">
-            <button
-              onClick={() => scroll('left')}
-              disabled={scrollPosition <= 0}
-              className={`p-3 rounded-full flex items-center justify-center transition-all ${
-                scrollPosition <= 0
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  : 'bg-white text-luxury-black hover:bg-luxury-gold hover:text-white shadow-md'
-              }`}
-            >
-              <ChevronLeft size={24} />
-            </button>
-            <button
-              onClick={() => scroll('right')}
-              className="p-3 bg-white text-luxury-black hover:bg-luxury-gold hover:text-white rounded-full flex items-center justify-center transition-all shadow-md"
-            >
-              <ChevronRight size={24} />
-            </button>
+            <div className="hidden md:flex gap-3">
+              <button
+                onClick={() => scroll('left')}
+                disabled={scrollPosition <= 0}
+                className={`p-3 rounded-full flex items-center justify-center transition-all ${
+                  scrollPosition <= 0
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-white text-luxury-black hover:bg-red-600 hover:text-white shadow-md'
+                }`}
+              >
+                <ChevronLeft size={24} />
+              </button>
+              <button
+                onClick={() => scroll('right')}
+                className="p-3 bg-white text-luxury-black hover:bg-red-600 hover:text-white rounded-full flex items-center justify-center transition-all shadow-md"
+              >
+                <ChevronRight size={24} />
+              </button>
+            </div>
           </div>
-        </div>
+        </ScrollAnimation>
 
-        <div className="relative max-w-[1920px] mx-auto">
+        <ScrollAnimation delay={0.2}>
+          <div className="relative max-w-[1920px] mx-auto">
           <div
             ref={scrollContainerRef}
             onScroll={handleScroll}
@@ -94,21 +98,21 @@ export const FeaturedHousesSection: React.FC<FeaturedHousesSectionProps> = ({ pr
                   </div>
                   <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent">
                     <div className="flex items-center text-white/90 text-sm">
-                      <MapPin size={16} className="mr-1.5 text-luxury-gold" />
+                      <MapPin size={16} className="mr-1.5 text-red-600" />
                       {property.city || property.location}
                     </div>
                   </div>
                 </div>
 
                 <div className="p-6">
-                  <h3 className="text-xl font-serif text-luxury-black mb-2 line-clamp-1 group-hover:text-luxury-gold transition-colors">{property.title}</h3>
+                  <h3 className="text-xl font-serif text-luxury-black mb-2 line-clamp-1 group-hover:text-red-600 transition-colors">{property.title}</h3>
                   <div className="flex flex-wrap gap-4 text-sm text-gray-500 mb-6 pt-4 border-t border-gray-50">
                     <div className="flex items-center gap-2">
-                      <BedDouble size={18} className="text-luxury-gold/70" />
+                      <BedDouble size={18} className="text-red-600/70" />
                       <span>{property.bedrooms ?? property.beds ?? '-'} Beds</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Bath size={18} className="text-luxury-gold/70" />
+                      <Bath size={18} className="text-red-600/70" />
                       <span>{property.bathrooms ?? property.baths ?? '-'} Baths</span>
                     </div>
                   </div>
@@ -118,7 +122,7 @@ export const FeaturedHousesSection: React.FC<FeaturedHousesSectionProps> = ({ pr
                       <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">{property.priceLabel || 'Starting From'}</p>
                       <p className="text-xl font-medium text-luxury-black">{property.price}</p>
                     </div>
-                    <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-luxury-gold group-hover:text-white transition-colors duration-300">
+                    <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-red-600 group-hover:text-white transition-colors duration-300">
                       <ChevronRight size={20} />
                     </div>
                   </div>
@@ -126,7 +130,8 @@ export const FeaturedHousesSection: React.FC<FeaturedHousesSectionProps> = ({ pr
               </div>
             ))}
           </div>
-        </div>
+          </div>
+        </ScrollAnimation>
       </div>
     </div>
   );

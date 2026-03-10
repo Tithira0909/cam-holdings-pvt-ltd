@@ -133,7 +133,7 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
 
              {/* Payment Plan */}
              <section>
-                <h3 className="text-2xl font-bold text-gray-900 mb-6 uppercase">
+                <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 uppercase tracking-tight">
                   Payment Plan
                 </h3>
                 <ul className="space-y-4">

@@ -37,7 +37,7 @@ const InquiriesList: React.FC<InquiriesListProps> = ({ onViewInquiry }) => {
     }
   };
 
-  if (loading) return <div className="flex justify-center p-12 text-luxury-gold"><Loader2 className="animate-spin" size={32} /></div>;
+  if (loading) return <div className="flex justify-center p-12 text-red-600"><Loader2 className="animate-spin" size={32} /></div>;
 
   return (
     <div className="bg-white rounded-xl shadow-sm overflow-hidden animate-in fade-in duration-300">
@@ -76,7 +76,7 @@ const InquiriesList: React.FC<InquiriesListProps> = ({ onViewInquiry }) => {
                 <td className="px-6 py-4">
                   <button
                     onClick={() => onViewInquiry(String(inq.id))}
-                    className="flex items-center gap-2 text-luxury-gold font-bold text-xs uppercase hover:underline"
+                    className="flex items-center gap-2 text-red-600 font-bold text-xs uppercase hover:underline"
                   >
                     <Eye size={14} /> View
                   </button>

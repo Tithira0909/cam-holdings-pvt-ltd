@@ -23,7 +23,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
   return (
     <div className="min-h-screen bg-luxury-black flex items-center justify-center p-4">
-      <div className="bg-white/5 backdrop-blur-lg border border-luxury-gold/20 p-8 rounded-2xl w-full max-w-md shadow-gold-glow">
+      <div className="bg-white/5 backdrop-blur-lg border border-red-600/20 p-8 rounded-2xl w-full max-w-md shadow-gold-glow">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-serif font-bold text-white mb-2">Admin Login</h1>
           <p className="text-white/60 text-sm">Enter your credentials to access the dashboard</p>
@@ -33,12 +33,12 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           <div>
             <label className="block text-white/80 text-sm font-bold mb-2 ml-1">Username</label>
             <div className="relative">
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 text-luxury-gold" size={20} />
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 text-red-600" size={20} />
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full bg-white/10 border border-white/20 rounded-lg py-3 pl-10 pr-4 text-white placeholder-white/40 focus:outline-none focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold transition-all"
+                className="w-full bg-white/10 border border-white/20 rounded-lg py-3 pl-10 pr-4 text-white placeholder-white/40 focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all"
                 placeholder="Enter username"
               />
             </div>
@@ -47,12 +47,12 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           <div>
             <label className="block text-white/80 text-sm font-bold mb-2 ml-1">Password</label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-luxury-gold" size={20} />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-red-600" size={20} />
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-white/10 border border-white/20 rounded-lg py-3 pl-10 pr-4 text-white placeholder-white/40 focus:outline-none focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold transition-all"
+                className="w-full bg-white/10 border border-white/20 rounded-lg py-3 pl-10 pr-4 text-white placeholder-white/40 focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all"
                 placeholder="Enter password"
               />
             </div>
@@ -66,7 +66,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
           <button
             type="submit"
-            className="w-full bg-luxury-gold text-white font-bold py-3 rounded-lg hover:bg-luxury-golddark transition-all transform active:scale-95 shadow-lg uppercase tracking-wider"
+            className="w-full bg-red-600 text-white font-bold py-3 rounded-lg hover:bg-red-600dark transition-all transform active:scale-95 shadow-lg uppercase tracking-wider"
           >
             Sign In
           </button>

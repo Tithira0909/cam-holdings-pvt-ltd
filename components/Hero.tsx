@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Home } from 'lucide-react';
+import ScrollAnimation from './ScrollAnimation';
 
 interface HeroProps {
   onNavigate: (page: any) => void;
@@ -44,7 +45,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         <div className="animate-in fade-in slide-in-from-bottom-12 duration-1000 bg-transparent rounded-[15px] p-6 md:p-12">
           <h1 className="text-4xl md:text-[48px] font-serif font-bold text-white mb-5 leading-[1.2] uppercase tracking-tight nav-text-shadow">
             Find Your <br />
-            <span className="text-luxury-gold">Dream Property</span>
+            <span className="text-red-600">Dream Property</span>
           </h1>
           
           <p className="text-white text-base md:text-[18px] font-sans font-normal leading-[1.6] max-w-2xl mx-auto mb-10 nav-text-shadow">
@@ -55,18 +56,18 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
           <div className="flex flex-row items-center justify-center gap-5 w-full">
             <button 
               onClick={() => onNavigate('lands')}
-              className="w-[120px] sm:w-[150px] bg-white border-2 border-luxury-gold rounded-[8px] py-6 flex flex-col items-center justify-center gap-2 group transition-all duration-300 hover:bg-luxury-gold shadow-lg active:scale-95"
+              className="w-[120px] sm:w-[150px] bg-white border-2 border-red-600 rounded-[8px] py-6 flex flex-col items-center justify-center gap-2 group transition-all duration-300 hover:bg-red-600 shadow-lg active:scale-95"
             >
-              <MapPin size={24} className="text-luxury-gold group-hover:text-white transition-colors" />
+              <MapPin size={24} className="text-red-600 group-hover:text-white transition-colors" />
               <p className="text-[14px] font-sans font-bold uppercase tracking-widest text-luxury-black group-hover:text-white m-0">
                 Lands
               </p>
             </button>
             <button 
               onClick={() => onNavigate('houses')}
-              className="w-[120px] sm:w-[150px] bg-white border-2 border-luxury-gold rounded-[8px] py-6 flex flex-col items-center justify-center gap-2 group transition-all duration-300 hover:bg-luxury-gold shadow-lg active:scale-95"
+              className="w-[120px] sm:w-[150px] bg-white border-2 border-red-600 rounded-[8px] py-6 flex flex-col items-center justify-center gap-2 group transition-all duration-300 hover:bg-red-600 shadow-lg active:scale-95"
             >
-              <Home size={24} className="text-luxury-gold group-hover:text-white transition-colors" />
+              <Home size={24} className="text-red-600 group-hover:text-white transition-colors" />
               <p className="text-[14px] font-sans font-bold uppercase tracking-widest text-luxury-black group-hover:text-white m-0">
                 Houses
               </p>

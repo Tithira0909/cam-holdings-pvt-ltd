@@ -1,4 +1,5 @@
 import React from 'react';
+import ScrollAnimation from './ScrollAnimation';
 
 interface StatsProps {
   onNavigate: (page: any) => void;
@@ -14,38 +15,45 @@ const Stats: React.FC<StatsProps> = ({ onNavigate }) => {
         
         {/* Left Side: General Trust Metrics */}
         <div className="lg:col-span-5 space-y-12">
-          <div className="flex items-center gap-6 group">
-            <div className="w-1.5 h-16 bg-luxury-gold rounded-full shrink-0 group-hover:scale-y-110 transition-transform duration-500" />
-            <div>
-              <div className="text-5xl font-serif font-black text-luxury-black mb-1">30</div>
-              <div className="text-lg text-luxury-gray font-medium tracking-wide">Years of Trust</div>
+          <ScrollAnimation delay={0.1} direction="right">
+            <div className="flex items-center gap-6 group">
+              <div className="w-1.5 h-16 bg-red-600 rounded-full shrink-0 group-hover:scale-y-110 transition-transform duration-500" />
+              <div>
+                <div className="text-5xl font-serif font-black text-luxury-black mb-1">30</div>
+                <div className="text-lg text-luxury-gray font-medium tracking-wide">Years of Trust</div>
+              </div>
             </div>
-          </div>
+          </ScrollAnimation>
 
-          <div className="flex items-center gap-6 group">
-            <div className="w-1.5 h-16 bg-luxury-gold rounded-full shrink-0 group-hover:scale-y-110 transition-transform duration-500" />
-            <div>
-              <div className="text-5xl font-serif font-black text-luxury-black mb-1">18</div>
-              <div className="text-lg text-luxury-gray font-medium tracking-wide">Districts Covered</div>
+          <ScrollAnimation delay={0.2} direction="right">
+            <div className="flex items-center gap-6 group">
+              <div className="w-1.5 h-16 bg-red-600 rounded-full shrink-0 group-hover:scale-y-110 transition-transform duration-500" />
+              <div>
+                <div className="text-5xl font-serif font-black text-luxury-black mb-1">18</div>
+                <div className="text-lg text-luxury-gray font-medium tracking-wide">Districts Covered</div>
+              </div>
             </div>
-          </div>
+          </ScrollAnimation>
 
-          <div className="flex items-center gap-6 group">
-            <div className="w-1.5 h-16 bg-luxury-gold rounded-full shrink-0 group-hover:scale-y-110 transition-transform duration-500" />
-            <div>
-              <div className="text-5xl font-serif font-black text-luxury-black mb-1">300+</div>
-              <div className="text-lg text-luxury-gray font-medium tracking-wide">Satisfied Customers</div>
+          <ScrollAnimation delay={0.3} direction="right">
+            <div className="flex items-center gap-6 group">
+              <div className="w-1.5 h-16 bg-red-600 rounded-full shrink-0 group-hover:scale-y-110 transition-transform duration-500" />
+              <div>
+                <div className="text-5xl font-serif font-black text-luxury-black mb-1">300+</div>
+                <div className="text-lg text-luxury-gray font-medium tracking-wide">Satisfied Customers</div>
+              </div>
             </div>
-          </div>
+          </ScrollAnimation>
         </div>
 
         {/* Right Side: Visual Category Cards */}
         <div className="lg:col-span-7 flex flex-col md:flex-row gap-8 justify-end">
           {/* Houses Card */}
-          <div 
-            onClick={() => onNavigate('houses')}
-            className="relative w-full md:w-[320px] aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl group cursor-pointer transition-all duration-300 hover:scale-[1.05] hover:shadow-gold-glow-lg"
-          >
+          <ScrollAnimation delay={0.4}>
+            <div
+              onClick={() => onNavigate('houses')}
+              className="relative w-full md:w-[320px] aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl group cursor-pointer transition-all duration-300 hover:scale-[1.05] hover:shadow-gold-glow-lg"
+            >
             <img 
               src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=800" 
               alt="Houses" 
@@ -56,22 +64,24 @@ const Stats: React.FC<StatsProps> = ({ onNavigate }) => {
               <h3 className="text-2xl font-serif font-bold text-white mb-6 uppercase tracking-brand">Houses</h3>
               <div className="space-y-4 text-left">
                 <div>
-                  <span className="text-3xl font-black text-luxury-gold block">5</span>
+                  <span className="text-3xl font-black text-red-600 block">5</span>
                   <span className="text-xs font-bold text-white/80 uppercase tracking-widest">On Going Projects</span>
                 </div>
                 <div>
-                  <span className="text-3xl font-black text-luxury-gold block">28</span>
+                  <span className="text-3xl font-black text-red-600 block">28</span>
                   <span className="text-xs font-bold text-white/80 uppercase tracking-widest">Completed Projects</span>
                 </div>
               </div>
             </div>
-          </div>
+            </div>
+          </ScrollAnimation>
 
           {/* Lands Card */}
-          <div 
-            onClick={() => onNavigate('lands')}
-            className="relative w-full md:w-[320px] aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl group cursor-pointer md:mt-12 transition-all duration-300 hover:scale-[1.05] hover:shadow-gold-glow-lg"
-          >
+          <ScrollAnimation delay={0.6}>
+            <div
+              onClick={() => onNavigate('lands')}
+              className="relative w-full md:w-[320px] aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl group cursor-pointer md:mt-12 transition-all duration-300 hover:scale-[1.05] hover:shadow-gold-glow-lg"
+            >
             <img 
               src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=800" 
               alt="Lands" 
@@ -82,16 +92,17 @@ const Stats: React.FC<StatsProps> = ({ onNavigate }) => {
               <h3 className="text-2xl font-serif font-bold text-white mb-6 uppercase tracking-brand">Lands</h3>
               <div className="space-y-4 text-left">
                 <div>
-                  <span className="text-3xl font-black text-luxury-gold block">11</span>
+                  <span className="text-3xl font-black text-red-600 block">11</span>
                   <span className="text-xs font-bold text-white/80 uppercase tracking-widest">On Going Projects</span>
                 </div>
                 <div>
-                  <span className="text-3xl font-black text-luxury-gold block">42</span>
+                  <span className="text-3xl font-black text-red-600 block">42</span>
                   <span className="text-xs font-bold text-white/80 uppercase tracking-widest">Completed Projects</span>
                 </div>
               </div>
             </div>
-          </div>
+            </div>
+          </ScrollAnimation>
         </div>
 
       </div>

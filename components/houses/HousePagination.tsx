@@ -32,7 +32,7 @@ export const HousePagination: React.FC<HousePaginationProps> = ({ currentPage, t
             onClick={() => onPageChange(page)}
             className={`w-10 h-10 rounded-full font-medium transition-all flex items-center justify-center ${
               currentPage === page
-                ? 'bg-luxury-gold text-white shadow-md transform scale-105'
+                ? 'bg-red-600 text-white shadow-md transform scale-105'
                 : 'text-gray-600 hover:bg-gray-100 hover:text-luxury-black'
             }`}
           >

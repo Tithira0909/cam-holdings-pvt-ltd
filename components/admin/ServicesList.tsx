@@ -48,7 +48,7 @@ const ServicesList: React.FC<ServicesListProps> = ({ onAddService, onEditService
     }
   };
 
-  if (loading) return <div className="flex justify-center p-12 text-luxury-gold"><Loader2 className="animate-spin" size={32} /></div>;
+  if (loading) return <div className="flex justify-center p-12 text-red-600"><Loader2 className="animate-spin" size={32} /></div>;
 
   return (
     <div className="bg-white rounded-xl shadow-sm overflow-hidden animate-in fade-in duration-300">
@@ -56,7 +56,7 @@ const ServicesList: React.FC<ServicesListProps> = ({ onAddService, onEditService
         <h2 className="text-xl font-serif font-bold text-luxury-black">Services</h2>
         <button
           onClick={onAddService}
-          className="flex items-center gap-2 px-4 py-2 bg-luxury-gold text-white rounded-lg font-bold text-sm uppercase tracking-wider hover:bg-luxury-golddark transition-all shadow-gold-glow"
+          className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-bold text-sm uppercase tracking-wider hover:bg-red-600dark transition-all shadow-gold-glow"
         >
           <Plus size={16} />
           Add New Service
@@ -91,7 +91,7 @@ const ServicesList: React.FC<ServicesListProps> = ({ onAddService, onEditService
                 <td className="px-6 py-4 text-xs text-gray-500">{new Date(svc.updated_at).toLocaleDateString()}</td>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-2">
-                    <button onClick={() => onEditService(svc.id)} className="p-2 text-luxury-gray hover:text-luxury-gold transition-colors rounded-full hover:bg-luxury-offwhite">
+                    <button onClick={() => onEditService(svc.id)} className="p-2 text-luxury-gray hover:text-red-600 transition-colors rounded-full hover:bg-luxury-offwhite">
                       <Edit size={16} />
                     </button>
                     <button onClick={() => handleDelete(svc.id)} className="p-2 text-luxury-gray hover:text-red-500 transition-colors rounded-full hover:bg-red-50">

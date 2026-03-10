@@ -181,7 +181,7 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
                       if (!slug) setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''));
                     }}
                     required
-                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                     placeholder="e.g. LUXE Thalahena"
                   />
                 </div>
@@ -192,7 +192,7 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
                     value={slug}
                     onChange={(e) => setSlug(e.target.value)}
                     required
-                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                     placeholder="e.g. luxe-thalahena"
                   />
                 </div>
@@ -203,7 +203,7 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
                       type="text"
                       value={category}
                       onChange={(e) => setCategory(e.target.value)}
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                       placeholder="e.g. Luxury Villa"
                     />
                   </div>
@@ -216,7 +216,7 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
                       min="0"
                       value={bedrooms}
                       onChange={(e) => setBedrooms(e.target.value ? Number(e.target.value) : '')}
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                       placeholder="e.g. 4"
                     />
                   </div>
@@ -227,7 +227,7 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
                       min="0"
                       value={bathrooms}
                       onChange={(e) => setBathrooms(e.target.value ? Number(e.target.value) : '')}
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                       placeholder="e.g. 3"
                     />
                   </div>
@@ -240,7 +240,7 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
                       type="text"
                       value={projectStatusLabel}
                       onChange={(e) => setProjectStatusLabel(e.target.value)}
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                       placeholder="e.g. Ongoing / Live / Sold Out"
                     />
                  </div>
@@ -250,7 +250,7 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
                       type="number"
                       value={sortOrder}
                       onChange={(e) => setSortOrder(Number(e.target.value))}
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                       placeholder="e.g. 10"
                     />
                  </div>
@@ -276,7 +276,7 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={4}
-                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm resize-none"
+                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm resize-none"
                 placeholder="Detailed property description..."
               ></textarea>
             </div>
@@ -294,7 +294,7 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
                       required
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm font-bold text-luxury-black"
+                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm font-bold text-luxury-black"
                       placeholder="e.g. 1500000 (Numeric value preferred)"
                     />
                  </div>
@@ -304,7 +304,7 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
                       type="text"
                       value={priceLabel}
                       onChange={(e) => setPriceLabel(e.target.value)}
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                       placeholder="e.g. LKR per perch upwards"
                     />
                  </div>
@@ -317,7 +317,7 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
                          type="text"
                          value={district}
                          onChange={(e) => setDistrict(e.target.value)}
-                         className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                         className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                          placeholder="e.g. Colombo"
                        />
                     </div>
@@ -327,7 +327,7 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
                          type="text"
                          value={city}
                          onChange={(e) => setCity(e.target.value)}
-                         className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                         className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                          placeholder="e.g. Malabe"
                        />
                     </div>
@@ -338,7 +338,7 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
                       type="text"
                       value={locationLabel}
                       onChange={(e) => setLocationLabel(e.target.value)}
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all text-sm"
                       placeholder="e.g. 1.5km to Malabe town"
                     />
                  </div>
@@ -356,7 +356,7 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
                   <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Main Cover Image *</label>
                   <div
                     onClick={() => mainImageInputRef.current?.click()}
-                    className={`border-2 border-dashed border-gray-300 rounded-xl aspect-[16/9] flex flex-col items-center justify-center cursor-pointer hover:border-luxury-gold transition-colors ${mainImagePreview ? 'bg-gray-50' : ''}`}
+                    className={`border-2 border-dashed border-gray-300 rounded-xl aspect-[16/9] flex flex-col items-center justify-center cursor-pointer hover:border-red-600 transition-colors ${mainImagePreview ? 'bg-gray-50' : ''}`}
                   >
                     {mainImagePreview ? (
                       <div className="relative w-full h-full group">
@@ -380,7 +380,7 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
                   <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Project Logo</label>
                   <div
                     onClick={() => logoImageInputRef.current?.click()}
-                    className={`border-2 border-dashed border-gray-300 rounded-xl aspect-square flex flex-col items-center justify-center cursor-pointer hover:border-luxury-gold transition-colors bg-gray-50`}
+                    className={`border-2 border-dashed border-gray-300 rounded-xl aspect-square flex flex-col items-center justify-center cursor-pointer hover:border-red-600 transition-colors bg-gray-50`}
                   >
                     {logoImagePreview ? (
                       <img src={logoImagePreview} alt="Logo Preview" className="w-3/4 h-3/4 object-contain" />
@@ -399,7 +399,7 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
                {/* Block Plan */}
                <div>
                   <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Block Plan</label>
-                  <div onClick={() => blockPlanImageInputRef.current?.click()} className="border-2 border-dashed border-gray-300 rounded-xl aspect-video flex items-center justify-center cursor-pointer hover:border-luxury-gold bg-gray-50">
+                  <div onClick={() => blockPlanImageInputRef.current?.click()} className="border-2 border-dashed border-gray-300 rounded-xl aspect-video flex items-center justify-center cursor-pointer hover:border-red-600 bg-gray-50">
                     {blockPlanImagePreview ? <img src={blockPlanImagePreview} className="w-full h-full object-contain p-2" /> : <p className="text-xs text-gray-500">Upload Block Plan</p>}
                     <input type="file" ref={blockPlanImageInputRef} onChange={(e) => handleImageChange(e, setBlockPlanImage, setBlockPlanImagePreview)} accept="image/*" className="hidden" />
                   </div>
@@ -408,7 +408,7 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
                {/* Road Map */}
                <div>
                   <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Road Map</label>
-                  <div onClick={() => roadMapImageInputRef.current?.click()} className="border-2 border-dashed border-gray-300 rounded-xl aspect-video flex items-center justify-center cursor-pointer hover:border-luxury-gold bg-gray-50">
+                  <div onClick={() => roadMapImageInputRef.current?.click()} className="border-2 border-dashed border-gray-300 rounded-xl aspect-video flex items-center justify-center cursor-pointer hover:border-red-600 bg-gray-50">
                     {roadMapImagePreview ? <img src={roadMapImagePreview} className="w-full h-full object-contain p-2" /> : <p className="text-xs text-gray-500">Upload Road Map</p>}
                     <input type="file" ref={roadMapImageInputRef} onChange={(e) => handleImageChange(e, setRoadMapImage, setRoadMapImagePreview)} accept="image/*" className="hidden" />
                   </div>
@@ -417,7 +417,7 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
                {/* Location Map */}
                <div>
                   <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Location Map</label>
-                  <div onClick={() => locationMapImageInputRef.current?.click()} className="border-2 border-dashed border-gray-300 rounded-xl aspect-video flex items-center justify-center cursor-pointer hover:border-luxury-gold bg-gray-50">
+                  <div onClick={() => locationMapImageInputRef.current?.click()} className="border-2 border-dashed border-gray-300 rounded-xl aspect-video flex items-center justify-center cursor-pointer hover:border-red-600 bg-gray-50">
                     {locationMapImagePreview ? <img src={locationMapImagePreview} className="w-full h-full object-contain p-2" /> : <p className="text-xs text-gray-500">Upload Location Map</p>}
                     <input type="file" ref={locationMapImageInputRef} onChange={(e) => handleImageChange(e, setLocationMapImage, setLocationMapImagePreview)} accept="image/*" className="hidden" />
                   </div>
@@ -441,9 +441,9 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
                      onChange={(e) => setNewFacility(e.target.value)}
                      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addFacility(); } }}
                      placeholder="e.g. 3 Phase Electricity, Tar Road, Tap Water..."
-                     className="flex-1 p-3 bg-white border border-gray-300 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none"
+                     className="flex-1 p-3 bg-white border border-gray-300 rounded-lg text-sm focus:ring-1 focus:ring-red-600 outline-none"
                   />
-                  <button type="button" onClick={addFacility} className="bg-luxury-black text-white px-6 rounded-lg font-bold uppercase tracking-wider text-xs hover:bg-luxury-gold transition-colors">
+                  <button type="button" onClick={addFacility} className="bg-luxury-black text-white px-6 rounded-lg font-bold uppercase tracking-wider text-xs hover:bg-red-600 transition-colors">
                      Add
                   </button>
                </div>
@@ -467,21 +467,21 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
                <div className="space-y-4">
                   <div>
                     <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Hotline Number</label>
-                    <input type="text" value={hotlineNumber} onChange={e => setHotlineNumber(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none" placeholder="+94 77 xxx xxxx" />
+                    <input type="text" value={hotlineNumber} onChange={e => setHotlineNumber(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-red-600 outline-none" placeholder="+94 77 xxx xxxx" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">WhatsApp Number</label>
-                    <input type="text" value={whatsappNumber} onChange={e => setWhatsappNumber(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none" placeholder="+9477xxxxxxx" />
+                    <input type="text" value={whatsappNumber} onChange={e => setWhatsappNumber(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-red-600 outline-none" placeholder="+9477xxxxxxx" />
                   </div>
                </div>
                <div className="space-y-4">
                   <div>
                     <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">SEO Title</label>
-                    <input type="text" value={metaTitle} onChange={e => setMetaTitle(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none" placeholder="Meta Title" />
+                    <input type="text" value={metaTitle} onChange={e => setMetaTitle(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-red-600 outline-none" placeholder="Meta Title" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">SEO Description</label>
-                    <textarea value={metaDescription} onChange={e => setMetaDescription(e.target.value)} rows={2} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none resize-none" placeholder="Meta description..."></textarea>
+                    <textarea value={metaDescription} onChange={e => setMetaDescription(e.target.value)} rows={2} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-red-600 outline-none resize-none" placeholder="Meta description..."></textarea>
                   </div>
                </div>
             </div>
@@ -499,7 +499,7 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
             <button
               type="submit"
               disabled={loading}
-              className="px-8 py-3 bg-luxury-gold text-white rounded-lg font-bold uppercase tracking-wider hover:bg-luxury-golddark transition-all shadow-gold-glow disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-8 py-3 bg-red-600 text-white rounded-lg font-bold uppercase tracking-wider hover:bg-red-600dark transition-all shadow-gold-glow disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {loading && <Loader2 size={18} className="animate-spin" />}
               {loading ? 'Saving House...' : 'Save House'}

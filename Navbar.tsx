@@ -55,7 +55,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
             className="flex items-center gap-3 cursor-pointer group"
           >
             <div className={`font-serif text-3xl md:text-4xl font-bold tracking-brand transition-colors ${logoColorClass}`}>
-              <span className="text-luxury-gold">C</span>AM
+              <span className="text-red-600">C</span>AM
             </div>
           </div>
 
@@ -65,17 +65,17 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
               <div key={idx} className="relative group/dropdown">
                 <button
                   onClick={() => onNavigate(link.page === 'dropdown' ? 'properties' : link.page as any)}
-                  className={`text-[16px] uppercase tracking-luxury font-bold transition-all relative group hover:text-luxury-gold ${
+                  className={`text-[16px] uppercase tracking-luxury font-bold transition-all relative group hover:text-red-600 ${
                     (activePage === link.page || activePage === 'properties' || (link.dropdown && link.dropdown.some(d => d.page === activePage)))
-                      ? 'text-luxury-gold'
+                      ? 'text-red-600'
                       : textColorClass
                   }`}
                 >
                   {link.label}
-                  <span className={`absolute -bottom-1 left-0 w-0 h-0.5 bg-luxury-gold transition-all group-hover:w-full ${(activePage === link.page || (link.dropdown && link.dropdown.some(d => d.page === activePage))) ? 'w-full' : ''}`}></span>
+                  <span className={`absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 transition-all group-hover:w-full ${(activePage === link.page || (link.dropdown && link.dropdown.some(d => d.page === activePage))) ? 'w-full' : ''}`}></span>
                 </button>
                 {link.dropdown && (
-                  <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-xl opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all duration-300 transform origin-top border-t-2 border-luxury-gold z-[150]">
+                  <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-xl opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all duration-300 transform origin-top border-t-2 border-red-600 z-[150]">
                     {link.dropdown.map((sub, subIdx) => (
                       <button
                         key={subIdx}
@@ -84,7 +84,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
                           onNavigate(sub.page as any);
                         }}
                         className={`block w-full text-left px-6 py-4 text-[14px] uppercase tracking-widest font-bold transition-colors ${
-                          activePage === sub.page ? 'text-luxury-gold bg-gray-50' : 'text-luxury-black hover:text-luxury-gold hover:bg-gray-50'
+                          activePage === sub.page ? 'text-red-600 bg-gray-50' : 'text-luxury-black hover:text-red-600 hover:bg-gray-50'
                         }`}
                       >
                         {sub.label}
@@ -100,12 +100,12 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
           <div className="hidden xl:flex items-center gap-6 ml-10">
             <div className={`flex items-center gap-4 border-l ${useWhiteText ? 'border-white/20' : 'border-luxury-black/10'} pl-6`}>
               {[Facebook, Youtube, Instagram].map((Icon, i) => (
-                <a key={i} href="#" className={`${textColorClass} hover:text-luxury-gold transition-all`}>
+                <a key={i} href="#" className={`${textColorClass} hover:text-red-600 transition-all`}>
                   <Icon size={18} />
                 </a>
               ))}
             </div>
-            <div className={`flex items-center gap-2 ${textColorClass} hover:text-luxury-gold cursor-pointer`}>
+            <div className={`flex items-center gap-2 ${textColorClass} hover:text-red-600 cursor-pointer`}>
               <Globe size={18} />
               <select className="bg-transparent text-[14px] font-bold uppercase tracking-widest outline-none border-none cursor-pointer">
                 <option value="en" className="text-black">EN</option>
@@ -132,14 +132,14 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
         <div className={`absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-500 ${isDrawerOpen ? 'opacity-100' : 'opacity-0'}`} onClick={() => setIsDrawerOpen(false)} />
         <div className={`absolute top-0 right-0 h-full bg-white shadow-2xl transition-transform duration-300 ease-in-out ${isDrawerOpen ? 'translate-x-0' : 'translate-x-full'} w-[80%] flex flex-col`}>
           <div className="h-24 flex items-center justify-between px-10 border-b border-luxury-border">
-            <div className="font-serif text-2xl font-bold text-luxury-black tracking-widest uppercase"><span className="text-luxury-gold">C</span>AM</div>
-            <button onClick={() => setIsDrawerOpen(false)} className="text-luxury-gold"><X size={36} /></button>
+            <div className="font-serif text-2xl font-bold text-luxury-black tracking-widest uppercase"><span className="text-red-600">C</span>AM</div>
+            <button onClick={() => setIsDrawerOpen(false)} className="text-red-600"><X size={36} /></button>
           </div>
           <div className="flex-grow overflow-y-auto py-12 text-center">
             <ul className="space-y-8 px-10">
               {navLinks.map((link, idx) => (
                 <li key={idx} className="flex flex-col">
-                  <button onClick={() => { setIsDrawerOpen(false); onNavigate(link.page as any); }} className="text-2xl font-bold uppercase tracking-brand text-luxury-black hover:text-luxury-gold transition-colors block w-full">
+                  <button onClick={() => { setIsDrawerOpen(false); onNavigate(link.page as any); }} className="text-2xl font-bold uppercase tracking-brand text-luxury-black hover:text-red-600 transition-colors block w-full">
                     {link.label}
                   </button>
                   {link.dropdown && (
@@ -148,7 +148,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
                         <button
                           key={subIdx}
                           onClick={() => { setIsDrawerOpen(false); onNavigate(sub.page as any); }}
-                          className="text-lg font-bold uppercase tracking-brand text-luxury-gray hover:text-luxury-gold transition-colors block w-full"
+                          className="text-lg font-bold uppercase tracking-brand text-luxury-gray hover:text-red-600 transition-colors block w-full"
                         >
                           {sub.label}
                         </button>

@@ -102,20 +102,20 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, onClose }
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
                 const parent = e.currentTarget.parentElement;
-                if (parent) parent.innerHTML = `<div class="w-14 h-14 bg-luxury-gold flex items-center justify-center text-luxury-black font-serif text-2xl font-bold mx-auto mb-10 shadow-gold-glow">C</div>`;
+                if (parent) parent.innerHTML = `<div class="w-14 h-14 bg-red-600 flex items-center justify-center text-luxury-black font-serif text-2xl font-bold mx-auto mb-10 shadow-gold-glow">C</div>`;
               }}
             />
             <h3 className="text-white font-serif text-2xl mb-6 leading-tight tracking-tight">Elite Partner <br/> Consultation</h3>
             <p className="text-white/40 text-[11px] font-light leading-relaxed uppercase tracking-luxury">Transforming visionary site sketches into architectural motion reality.</p>
           </div>
           <div className="space-y-4">
-            <div className="text-[10px] uppercase tracking-brand text-luxury-gold font-bold">EST. 2012</div>
+            <div className="text-[10px] uppercase tracking-brand text-red-600 font-bold">EST. 2012</div>
           </div>
         </div>
 
         {/* Right Side: Content */}
         <div className="flex-1 p-8 md:p-14 overflow-y-auto custom-scrollbar bg-white">
-          <button onClick={onClose} className="absolute top-8 right-8 text-luxury-black hover:text-luxury-gold transition-colors z-20">
+          <button onClick={onClose} className="absolute top-8 right-8 text-luxury-black hover:text-red-600 transition-colors z-20">
             <X size={24} />
           </button>
 
@@ -124,7 +124,7 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, onClose }
               <button 
                 key={tab}
                 onClick={() => setActiveTab(tab as any)}
-                className={`pb-5 text-[10px] uppercase tracking-brand font-bold border-b-2 transition-all ${activeTab === tab ? 'border-luxury-gold text-luxury-gold' : 'border-transparent text-gray-400 hover:text-luxury-black'}`}
+                className={`pb-5 text-[10px] uppercase tracking-brand font-bold border-b-2 transition-all ${activeTab === tab ? 'border-red-600 text-red-600' : 'border-transparent text-gray-400 hover:text-luxury-black'}`}
               >
                 {tab === 'form' ? 'Request Proposal' : tab === 'ai' ? 'AI Concierge' : 'Vision Visualizer'}
               </button>
@@ -167,22 +167,22 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, onClose }
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-2">
                   <label className="text-[10px] uppercase tracking-luxury text-luxury-gray block font-bold">Full Name</label>
-                  <input name="full_name" type="text" className="w-full bg-luxury-offwhite border border-luxury-border p-4 text-sm focus:ring-1 focus:ring-luxury-gold outline-none" placeholder="Johnathan Doe" required />
+                  <input name="full_name" type="text" className="w-full bg-luxury-offwhite border border-luxury-border p-4 text-sm focus:ring-1 focus:ring-red-600 outline-none" placeholder="Johnathan Doe" required />
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] uppercase tracking-luxury text-luxury-gray block font-bold">Email Address</label>
-                  <input name="email" type="email" className="w-full bg-luxury-offwhite border border-luxury-border p-4 text-sm focus:ring-1 focus:ring-luxury-gold outline-none" placeholder="john@elite.com" required />
+                  <input name="email" type="email" className="w-full bg-luxury-offwhite border border-luxury-border p-4 text-sm focus:ring-1 focus:ring-red-600 outline-none" placeholder="john@elite.com" required />
                 </div>
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] uppercase tracking-luxury text-luxury-gray block font-bold">Inquiry Type</label>
-                <select name="service" className="w-full bg-luxury-offwhite border border-luxury-border p-4 text-sm focus:ring-1 focus:ring-luxury-gold outline-none appearance-none">
+                <select name="service" className="w-full bg-luxury-offwhite border border-luxury-border p-4 text-sm focus:ring-1 focus:ring-red-600 outline-none appearance-none">
                   <option>New Project Feasibility</option>
                   <option>Construction Management</option>
                   <option>Interior Architecture</option>
                 </select>
               </div>
-              <button type="submit" className="w-full py-5 bg-luxury-gold text-luxury-black font-bold uppercase text-[10px] tracking-brand shadow-gold-glow active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+              <button type="submit" className="w-full py-5 bg-red-600 text-luxury-black font-bold uppercase text-[10px] tracking-brand shadow-gold-glow active:scale-[0.98] transition-all flex items-center justify-center gap-3">
                 Send Request <Send size={16} />
               </button>
             </form>
@@ -192,7 +192,7 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, onClose }
             <div className="animate-in fade-in duration-500 flex flex-col h-[500px]">
               <div className="bg-luxury-offwhite border border-luxury-border p-8 flex-1 mb-6 text-sm leading-relaxed text-luxury-black shadow-inner overflow-y-auto custom-scrollbar font-light rounded-sm">
                 {aiResponse || <div className="text-gray-400 italic">"What are the current luxury architectural trends in Colombo?"</div>}
-                {isAiLoading && <div className="mt-4 text-luxury-gold flex items-center gap-2 font-bold animate-pulse text-[10px] tracking-brand uppercase">Concierge is analyzing...</div>}
+                {isAiLoading && <div className="mt-4 text-red-600 flex items-center gap-2 font-bold animate-pulse text-[10px] tracking-brand uppercase">Concierge is analyzing...</div>}
               </div>
               <form onSubmit={handleAiChat} className="relative">
                 <input 
@@ -200,9 +200,9 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, onClose }
                   value={aiQuery}
                   onChange={(e) => setAiQuery(e.target.value)}
                   placeholder="Ask our premium consultant..."
-                  className="w-full bg-luxury-offwhite border border-luxury-border p-5 pr-14 focus:ring-1 focus:ring-luxury-gold outline-none text-sm text-luxury-black"
+                  className="w-full bg-luxury-offwhite border border-luxury-border p-5 pr-14 focus:ring-1 focus:ring-red-600 outline-none text-sm text-luxury-black"
                 />
-                <button type="submit" disabled={isAiLoading} className="absolute right-4 top-1/2 -translate-y-1/2 text-luxury-gold hover:text-luxury-black transition-colors disabled:opacity-30">
+                <button type="submit" disabled={isAiLoading} className="absolute right-4 top-1/2 -translate-y-1/2 text-red-600 hover:text-luxury-black transition-colors disabled:opacity-30">
                   <Send size={20} />
                 </button>
               </form>
@@ -216,7 +216,7 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, onClose }
                   <p className="text-[10px] text-luxury-gray font-bold uppercase tracking-luxury">Source Visualization</p>
                   <div 
                     onClick={() => fileInputRef.current?.click()}
-                    className="aspect-video border border-dashed border-luxury-border bg-luxury-offwhite flex flex-col items-center justify-center cursor-pointer hover:border-luxury-gold transition-all relative overflow-hidden group shadow-sm"
+                    className="aspect-video border border-dashed border-luxury-border bg-luxury-offwhite flex flex-col items-center justify-center cursor-pointer hover:border-red-600 transition-all relative overflow-hidden group shadow-sm"
                   >
                     {visionImage ? (
                       <>
@@ -227,7 +227,7 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, onClose }
                       </>
                     ) : (
                       <>
-                        <Upload className="text-luxury-gold mb-3" size={28} />
+                        <Upload className="text-red-600 mb-3" size={28} />
                         <span className="text-[10px] text-luxury-gray uppercase tracking-brand font-bold">Upload Site Media</span>
                       </>
                     )}
@@ -239,7 +239,7 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, onClose }
                       <button 
                         key={ratio}
                         onClick={() => setVisionAspectRatio(ratio as any)}
-                        className={`flex-1 py-3 text-[10px] uppercase tracking-brand font-bold border transition-all ${visionAspectRatio === ratio ? 'border-luxury-gold bg-luxury-gold/5 text-luxury-gold shadow-sm' : 'border-luxury-border text-gray-400 hover:text-luxury-black'}`}
+                        className={`flex-1 py-3 text-[10px] uppercase tracking-brand font-bold border transition-all ${visionAspectRatio === ratio ? 'border-red-600 bg-red-600/5 text-red-600 shadow-sm' : 'border-luxury-border text-gray-400 hover:text-luxury-black'}`}
                       >
                         {ratio === '16:9' ? 'Landscape' : 'Portrait'}
                       </button>
@@ -253,7 +253,7 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, onClose }
                     <textarea 
                       value={visionPrompt}
                       onChange={(e) => setVisionPrompt(e.target.value)}
-                      className="w-full bg-luxury-offwhite border border-luxury-border p-5 h-28 focus:ring-1 focus:ring-luxury-gold outline-none text-sm text-luxury-black font-light resize-none"
+                      className="w-full bg-luxury-offwhite border border-luxury-border p-5 h-28 focus:ring-1 focus:ring-red-600 outline-none text-sm text-luxury-black font-light resize-none"
                       placeholder="Cinematic drone sweep across this site at dusk with garden lighting..."
                     />
                   </div>
@@ -261,7 +261,7 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, onClose }
                   <button 
                     onClick={handleGenerateVideo}
                     disabled={!visionImage || isVideoGenerating}
-                    className="w-full py-5 bg-luxury-gold text-luxury-black font-bold uppercase text-[10px] tracking-brand shadow-gold-glow active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-30"
+                    className="w-full py-5 bg-red-600 text-luxury-black font-bold uppercase text-[10px] tracking-brand shadow-gold-glow active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-30"
                   >
                     {isVideoGenerating ? (
                       <><Loader2 className="animate-spin" size={18} /> Simulating Vision...</>
@@ -277,10 +277,10 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, onClose }
                   <div className={`relative bg-luxury-black shadow-gold-glow-lg mx-auto overflow-hidden ${visionAspectRatio === '9:16' ? 'max-w-[320px] aspect-[9/16]' : 'w-full aspect-video'}`}>
                     {isVideoGenerating ? (
                       <div className="absolute inset-0 flex flex-col items-center justify-center px-10 text-center">
-                        <Loader2 className="animate-spin text-luxury-gold mb-8" size={56} />
+                        <Loader2 className="animate-spin text-red-600 mb-8" size={56} />
                         <h4 className="text-white font-serif text-xl mb-4 tracking-tight">{loadingMessages[loadingMsgIdx]}</h4>
                         <div className="w-48 h-1 bg-white/10 relative overflow-hidden">
-                           <div className="absolute inset-0 bg-luxury-gold animate-[loading-bar_4s_ease-in-out_infinite]"></div>
+                           <div className="absolute inset-0 bg-red-600 animate-[loading-bar_4s_ease-in-out_infinite]"></div>
                         </div>
                       </div>
                     ) : (

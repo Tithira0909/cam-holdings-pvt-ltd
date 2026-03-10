@@ -40,7 +40,7 @@ const LoanCalculator: React.FC<LoanCalculatorProps> = ({ initialAmount = 1000000
   return (
     <div className="bg-white p-8 rounded-2xl shadow-sm border border-luxury-border">
       <div className="flex items-center gap-3 mb-8 border-b border-luxury-border pb-4">
-        <div className="p-3 bg-luxury-offwhite rounded-xl text-luxury-gold">
+        <div className="p-3 bg-luxury-offwhite rounded-xl text-red-600">
           <Calculator size={24} />
         </div>
         <h2 className="text-2xl font-serif font-bold text-luxury-black uppercase tracking-tight">Loan Calculator</h2>
@@ -54,7 +54,7 @@ const LoanCalculator: React.FC<LoanCalculatorProps> = ({ initialAmount = 1000000
               type="number"
               value={totalAmount}
               onChange={(e) => setTotalAmount(Number(e.target.value))}
-              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all font-bold text-luxury-black"
+              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all font-bold text-luxury-black"
             />
           </div>
           <div>
@@ -63,7 +63,7 @@ const LoanCalculator: React.FC<LoanCalculatorProps> = ({ initialAmount = 1000000
               type="number"
               value={downPayment}
               onChange={(e) => setDownPayment(Number(e.target.value))}
-              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all font-bold text-luxury-black"
+              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all font-bold text-luxury-black"
             />
             <div className="flex justify-between mt-2 text-xs text-gray-500 font-bold">
                <span>0%</span>
@@ -78,7 +78,7 @@ const LoanCalculator: React.FC<LoanCalculatorProps> = ({ initialAmount = 1000000
                  type="number"
                  value={interestRate}
                  onChange={(e) => setInterestRate(Number(e.target.value))}
-                 className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all font-bold text-luxury-black"
+                 className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all font-bold text-luxury-black"
                />
              </div>
              <div>
@@ -86,7 +86,7 @@ const LoanCalculator: React.FC<LoanCalculatorProps> = ({ initialAmount = 1000000
                <select
                  value={loanTerm}
                  onChange={(e) => setLoanTerm(Number(e.target.value))}
-                 className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all font-bold text-luxury-black appearance-none"
+                 className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-red-600 outline-none transition-all font-bold text-luxury-black appearance-none"
                >
                  {[1, 2, 3, 4, 5, 10, 15, 20, 25, 30].map(year => (
                     <option key={year} value={year}>{year} Years</option>
@@ -99,7 +99,7 @@ const LoanCalculator: React.FC<LoanCalculatorProps> = ({ initialAmount = 1000000
         <div className="bg-luxury-black text-white p-8 rounded-xl flex flex-col justify-center items-center text-center relative overflow-hidden">
            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
            <p className="text-white/70 font-bold uppercase tracking-widest text-sm mb-4">Estimated Monthly Payment</p>
-           <h3 className="text-4xl md:text-5xl font-serif font-bold text-luxury-gold mb-2">{formatCurrency(monthlyPayment)}</h3>
+           <h3 className="text-4xl md:text-5xl font-serif font-bold text-red-600 mb-2">{formatCurrency(monthlyPayment)}</h3>
            <p className="text-white/50 text-xs mt-6 max-w-[250px] mx-auto">
              *This is an estimate. Actual payments may vary depending on your bank and final interest rates.
            </p>
