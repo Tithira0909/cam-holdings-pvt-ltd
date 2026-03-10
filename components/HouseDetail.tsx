@@ -39,7 +39,7 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
   const floorPlans = property.floorPlans || [];
 
   return (
-    <div className="bg-[#f8f9fa] pb-32 pt-28 min-h-screen">
+    <div className="bg-[#f8f9fa] pb-32 pt-8 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
 
         {/* Breadcrumb */}

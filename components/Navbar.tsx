@@ -47,11 +47,11 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
   const logoColorClass = useWhiteText ? 'text-white nav-text-shadow' : 'text-luxury-black';
   
   // Background logic: Transparent on home top, semi-transparent white elsewhere when scrolled or internal.
-  const bgClass = useWhiteText ? 'bg-transparent h-24' : 'nav-blur h-20 shadow-sm';
+  const bgClass = useWhiteText ? 'bg-transparent h-24' : 'bg-white/95 backdrop-blur-md shadow-sm h-24 border-b border-gray-100';
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 w-full z-[100] transition-all duration-500 ${bgClass}`}>
+      <nav className={`fixed top-0 left-0 w-full z-[999] transition-all duration-500 ${bgClass}`}>
         <div className="max-w-7xl mx-auto w-full h-full px-mobile flex justify-between items-center">
           
           {/* Logo */}
@@ -74,7 +74,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
 
 
           {/* Menu */}
-          <div className="hidden lg:flex items-center gap-4 xl:gap-8 ml-auto">
+          <div className="hidden lg:flex items-center gap-6 xl:gap-10 ml-auto h-full">
             {navLinks.map((link, idx) => (
               <div
                 key={idx}
@@ -98,14 +98,14 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
                 ) : (
                   <button
                     onClick={() => onNavigate(link.page as any)}
-                    className={`text-[12px] xl:text-[14px] uppercase tracking-wider xl:tracking-luxury font-bold transition-all relative group hover:text-luxury-gold py-4 ${
+                    className={`h-full flex items-center text-[12px] xl:text-[14px] uppercase tracking-wider xl:tracking-luxury font-bold transition-all relative group hover:text-luxury-gold px-2 ${
                       activePage === link.page
                         ? 'text-luxury-gold'
                         : textColorClass
                     }`}
                   >
                     {link.label}
-                    <span className={`absolute bottom-0 left-0 w-0 h-[2px] bg-luxury-gold transition-all duration-300 group-hover:w-full ${activePage === link.page ? 'w-full' : ''}`}></span>
+                    <span className={`absolute bottom-0 left-0 w-full h-[3px] bg-luxury-gold transition-all duration-300 scale-x-0 group-hover:scale-x-100 origin-center ${activePage === link.page ? 'scale-x-100' : ''}`}></span>
                   </button>
                 )}
 

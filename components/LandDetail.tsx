@@ -46,7 +46,7 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
     : ['Reservation Fee', 'Down Payment', 'Monthly Installment Plan', 'Bank Loan Option'];
 
   return (
-    <div className="bg-white pb-32 pt-28 min-h-screen">
+    <div className="bg-white pb-32 pt-8 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
 
         {/* 1. BREADCRUMB + TITLE */}

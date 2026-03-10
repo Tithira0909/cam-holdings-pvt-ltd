@@ -305,7 +305,7 @@ const App: React.FC = () => {
         <span>Speak to Us!</span>
       </button>
 
-      <main className="flex-grow pt-0">
+      <main className={`flex-grow ${activePage === 'home' ? 'pt-0' : 'pt-24'}`}>
         {activePage === 'home' && (
           <div className="animate-in fade-in duration-500">
             <Hero onNavigate={navigate} />
@@ -317,7 +317,7 @@ const App: React.FC = () => {
 
         {/* 1. About Us Page */}
         {activePage === 'about' && (
-          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
+          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pb-24 px-mobile">
             <div className="max-w-7xl mx-auto">
               <div className="text-center mb-16">
                 <h2 className="text-[36px] font-serif font-bold text-luxury-black mb-5 uppercase tracking-tight">About Us</h2>
@@ -387,7 +387,7 @@ const App: React.FC = () => {
 
         {/* 2. Services Page */}
         {activePage === 'services' && (
-          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
+          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pb-24 px-mobile">
             <div className="max-w-7xl mx-auto text-center mb-16">
               <h2 className="text-[36px] font-serif font-bold text-luxury-black mb-5 uppercase tracking-tight">Our Services</h2>
               <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto">At CAM Holdings, we provide a range of real estate services tailored to meet your needs.</p>
@@ -583,7 +583,7 @@ const App: React.FC = () => {
 
         {/* 3. Portfolio Page */}
         {activePage === 'portfolio' && (
-          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
+          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pb-24 px-mobile">
             <div className="max-w-7xl mx-auto text-center mb-12">
               <h2 className="text-[36px] font-serif font-bold text-luxury-black mb-5 uppercase tracking-tight">Our Portfolio</h2>
               <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto">Take a look at some of our completed projects.</p>
@@ -719,7 +719,7 @@ const App: React.FC = () => {
 
         {/* 8. Other Pages (Blogs, News etc.) */}
         {['news', 'publications', 'blogs', 'testimonials', 'kyc', 'privacy', 'terms'].includes(activePage) && (
-           <div className="pt-40 px-mobile min-h-screen text-center bg-[#f4f4f4]">
+           <div className="pt-16 px-mobile min-h-screen text-center bg-[#f4f4f4]">
              <h2 className="text-4xl font-serif font-bold text-luxury-black uppercase">{activePage.replace(/-/g, ' ')}</h2>
              <p className="text-luxury-gray mt-6 max-w-xl mx-auto">This specialized section is being curated to provide the most accurate information regarding our premium services and policies.</p>
            </div>
