@@ -13,6 +13,7 @@ import LandDetail from './components/LandDetail';
 import HouseDetail from './components/HouseDetail';
 
 import ConsultationModal from './components/ConsultationModal';
+import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Login from './components/admin/Login';
 import Dashboard from './components/admin/Dashboard';
@@ -76,6 +77,7 @@ const App: React.FC = () => {
     if (path.startsWith('/properties/houses')) return 'houses';
     if (path.startsWith('/properties')) return 'properties';
     if (path.startsWith('/houses')) return 'houses';
+    if (path.startsWith('/contact')) return 'contact';
     return 'home';
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -119,6 +121,8 @@ const App: React.FC = () => {
         setActivePage('properties');
       } else if (path.startsWith('/houses')) {
         setActivePage('houses');
+      } else if (path.startsWith('/contact')) {
+        setActivePage('contact');
       } else if (path.startsWith('/portfolio/')) {
         const id = path.split('/portfolio/')[1];
         if (id) {
@@ -248,6 +252,8 @@ const App: React.FC = () => {
       window.history.pushState({}, '', displayPage === 'properties' ? '/properties' : `/properties/${displayPage}`);
     } else if (page === 'portfolio-detail' && id) {
       window.history.pushState({}, '', `/portfolio/${id}`);
+    } else if (page === 'contact') {
+      window.history.pushState({}, '', '/contact');
     } else if (page === 'home') {
       window.history.pushState({}, '', '/');
     }
@@ -709,6 +715,11 @@ const App: React.FC = () => {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Contact Page */}
+        {activePage === 'contact' && (
+          <Contact onNavigate={navigate} />
         )}
 
         {/* 7. Other Pages (Blogs, News etc.) */}
