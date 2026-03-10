@@ -1,3 +1,4 @@
+cat << 'INNER_EOF' > App.tsx
 import React, { useState, useEffect } from 'react';
 import Navigation from './components/Navigation';
 import Hero from './components/Hero';
@@ -256,3 +257,4 @@ function App() {
 }
 
 export default App;
+INNER_EOF

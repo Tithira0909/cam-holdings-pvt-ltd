@@ -56,9 +56,9 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
             <span>&gt;</span>
             <span className="cursor-pointer hover:text-luxury-gold transition-colors" onClick={() => onNavigate('lands')}>Lands</span>
             <span>&gt;</span>
-            <span className="text-gray-900">{property.title}</span>
+            <span className="text-luxury-black">{property.title}</span>
           </div>
-          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 uppercase tracking-tight mb-2">
+          <h1 className="text-3xl md:text-5xl font-bold text-luxury-black uppercase tracking-tight mb-2">
             {property.title}
           </h1>
         </div>
@@ -102,11 +102,11 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
            <div className="flex flex-wrap gap-4">
               <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-4 min-w-[160px] flex flex-col justify-center">
                  <p className="text-xs text-gray-400 font-bold uppercase mb-1 flex items-center gap-1"><MapPin size={12}/> Location</p>
-                 <p className="font-bold text-gray-900 text-lg">{property.city || property.location || 'N/A'}</p>
+                 <p className="font-bold text-luxury-black text-lg">{property.city || property.location || 'N/A'}</p>
               </div>
               <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-4 min-w-[160px] flex flex-col justify-center">
                  <p className="text-xs text-gray-400 font-bold uppercase mb-1 flex items-center gap-1"><PhoneCall size={12}/> Hotline Number</p>
-                 <p className="font-bold text-gray-900 text-lg">{property.hotlineNumber || '011 234 5678'}</p>
+                 <p className="font-bold text-luxury-black text-lg">{property.hotlineNumber || '011 234 5678'}</p>
               </div>
            </div>
         </div>
@@ -119,7 +119,7 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
 
              {/* About This Property */}
              <section>
-                <h3 className="text-2xl font-bold text-gray-900 mb-6 uppercase">
+                <h3 className="text-2xl font-bold text-luxury-black mb-6 uppercase">
                   About This Property
                 </h3>
                 {property.fullDescription && (
@@ -146,7 +146,7 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
 
              {/* Payment Plan */}
              <section>
-                <h3 className="text-2xl font-bold text-gray-900 mb-6 uppercase">
+                <h3 className="text-2xl font-bold text-luxury-black mb-6 uppercase">
                   Payment Plan
                 </h3>
                 <ul className="space-y-4">
@@ -162,7 +162,7 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
              {/* Facilities */}
              {facilities.length > 0 && (
                <section>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-6 uppercase">
+                  <h3 className="text-2xl font-bold text-luxury-black mb-6 uppercase">
                     Facilities
                   </h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -171,7 +171,7 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
                         return (
                            <div key={idx} className="bg-gray-50 border border-gray-100 p-6 flex flex-col items-center justify-center text-center transition-shadow hover:bg-gray-100 cursor-default">
                               {renderFacilityIcon(label)}
-                              <span className="text-gray-900 font-bold text-sm mt-2 uppercase tracking-wide">{label}</span>
+                              <span className="text-luxury-black font-bold text-sm mt-2 uppercase tracking-wide">{label}</span>
                            </div>
                         );
                      })}
@@ -186,7 +186,7 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
                      {property.blockPlanImage && (
                         <button
                            onClick={() => setActiveTab('block')}
-                           className={`px-8 py-3 font-bold uppercase text-sm transition-colors ${activeTab === 'block' ? 'bg-luxury-gold text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-900'}`}
+                           className={`px-8 py-3 font-bold uppercase text-sm transition-colors ${activeTab === 'block' ? 'bg-luxury-gold text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-luxury-black'}`}
                         >
                            Block Plan
                         </button>
@@ -194,7 +194,7 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
                      {property.roadMapImage && (
                         <button
                            onClick={() => setActiveTab('road')}
-                           className={`px-8 py-3 font-bold uppercase text-sm transition-colors ${activeTab === 'road' ? 'bg-luxury-gold text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-900'}`}
+                           className={`px-8 py-3 font-bold uppercase text-sm transition-colors ${activeTab === 'road' ? 'bg-luxury-gold text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-luxury-black'}`}
                         >
                            Road Map
                         </button>
@@ -202,7 +202,7 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
                      {property.locationMapImage && (
                         <button
                            onClick={() => setActiveTab('location')}
-                           className={`px-8 py-3 font-bold uppercase text-sm transition-colors ${activeTab === 'location' ? 'bg-luxury-gold text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-900'}`}
+                           className={`px-8 py-3 font-bold uppercase text-sm transition-colors ${activeTab === 'location' ? 'bg-luxury-gold text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-luxury-black'}`}
                         >
                            Location
                         </button>
@@ -232,7 +232,7 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
           {/* RIGHT COLUMN (30%) - Inquiry Form */}
           <div className="w-full lg:w-[30%]">
              <div className="bg-white shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 p-8 lg:sticky lg:top-24">
-                <h3 className="text-xl font-bold text-gray-900 mb-6 uppercase tracking-wider text-center">Inquire</h3>
+                <h3 className="text-xl font-bold text-luxury-black mb-6 uppercase tracking-wider text-center">Inquire</h3>
                 <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert("Inquiry sent successfully!"); }}>
                    <div>
                       <input type="text" required placeholder="Name" className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold outline-none transition-all placeholder:text-gray-400" />
@@ -258,7 +258,7 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
         {/* 6. RECOMMENDED LANDS */}
         {recommendedLands && recommendedLands.length > 0 && (
            <div className="pt-24 mt-16 border-t border-gray-200">
-              <h2 className="text-2xl font-bold text-gray-900 mb-8 uppercase text-center">Recommended Lands</h2>
+              <h2 className="text-2xl font-bold text-luxury-black mb-8 uppercase text-center">Recommended Lands</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                  {recommendedLands.slice(0, 3).map(rec => (
                     <LandCard key={rec.id} property={rec} onClick={() => onNavigate('detail', rec.id)} />
