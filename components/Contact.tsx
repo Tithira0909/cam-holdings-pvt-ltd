@@ -9,7 +9,7 @@ const Contact: React.FC<ContactProps> = ({ onNavigate }) => {
   return (
     <div className="animate-in fade-in duration-500 bg-[#f4f4f4] min-h-screen pb-24">
       {/* Hero Section */}
-      <div className="w-full bg-luxury-black relative pt-32 pb-20 px-mobile overflow-hidden">
+      <div className="w-full bg-luxury-black relative pt-16 pb-20 px-mobile overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-40">
           <img
             src="https://images.unsplash.com/photo-1577412647305-991150c7d163?auto=format&fit=crop&q=80&w=1920"
