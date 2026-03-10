@@ -837,6 +837,8 @@ app.post('/api/lands', upload.fields([
 
     console.log('SQL Params:', params);
 
+    console.log('Inserting land. Params length:', params.length);
+
     // Insert land
     const result = await query(
       `INSERT INTO lands (
@@ -845,7 +847,7 @@ app.post('/api/lands', upload.fields([
         isFeatured, isSoldOut, hotlineNumber, sortOrder,
         shortDescription, fullDescription, amenities, floorPlans, brochureFiles,
         logoImage, blockPlanImage, roadMapImage, locationMapImage, projectStatusLabel, travelHighlights, inquiryEmail, relatedLands, metaTitle, metaDescription, ogImage, whatsappNumber
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       params
     );
 
@@ -1208,6 +1210,8 @@ app.post('/api/houses', upload.fields([
 
     console.log('SQL Params:', params);
 
+    console.log('Inserting house. Params length:', params.length);
+
     // Insert house
     const result = await query(
       `INSERT INTO houses (
@@ -1216,7 +1220,7 @@ app.post('/api/houses', upload.fields([
         isFeatured, isSoldOut, hotlineNumber, sortOrder,
         shortDescription, fullDescription, amenities, floorPlans, brochureFiles,
         logoImage, blockPlanImage, roadMapImage, locationMapImage, projectStatusLabel, travelHighlights, inquiryEmail, relatedLands, metaTitle, metaDescription, ogImage, whatsappNumber
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       params
     );
 
