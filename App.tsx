@@ -12,6 +12,7 @@ import LandCard from './components/LandCard';
 import LandDetail from './components/LandDetail';
 import HouseDetail from './components/HouseDetail';
 
+import Contact from './components/Contact';
 import ConsultationModal from './components/ConsultationModal';
 import Footer from './components/Footer';
 import Login from './components/admin/Login';
@@ -711,7 +712,12 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* 7. Other Pages (Blogs, News etc.) */}
+        {/* 7. Contact Us Page */}
+        {activePage === 'contact' && (
+          <Contact onNavigate={navigate} />
+        )}
+
+        {/* 8. Other Pages (Blogs, News etc.) */}
         {['news', 'publications', 'blogs', 'testimonials', 'kyc', 'privacy', 'terms'].includes(activePage) && (
            <div className="pt-40 px-mobile min-h-screen text-center bg-[#f4f4f4]">
              <h2 className="text-4xl font-serif font-bold text-luxury-black uppercase">{activePage.replace(/-/g, ' ')}</h2>
@@ -720,7 +726,7 @@ const App: React.FC = () => {
         )}
 
 
-        {/* 8. Detail Page View */}
+        {/* 9. Detail Page View */}
         {activePage === 'detail' && (
           <div className="animate-in fade-in duration-500 bg-[#f4f4f4] pb-32">
             {propertyError ? (
