@@ -91,35 +91,22 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
         </div>
 
         {/* 3. PRICE SECTION */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-12 border-b border-gray-200 pb-8">
-           <div>
-              <p className="text-gray-500 text-sm font-bold uppercase mb-1">{property.priceLabel || 'Starting Price'}</p>
-              <h2 className="text-4xl lg:text-5xl font-bold text-red-600">
-                {formatPrice(property.price)} <span className="text-xl text-red-600/80">LKR</span>
-              </h2>
-           </div>
-
-           <div className="flex flex-wrap gap-4">
-              <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-4 min-w-[160px] flex flex-col justify-center">
-                 <p className="text-xs text-gray-400 font-bold uppercase mb-1 flex items-center gap-1"><MapPin size={12}/> Location</p>
-                 <p className="font-bold text-gray-900 text-lg">{property.city || property.location || 'N/A'}</p>
-              </div>
-              <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-4 min-w-[160px] flex flex-col justify-center">
-                 <p className="text-xs text-gray-400 font-bold uppercase mb-1 flex items-center gap-1"><PhoneCall size={12}/> Hotline Number</p>
-                 <p className="font-bold text-gray-900 text-lg">{property.hotlineNumber || '011 234 5678'}</p>
-              </div>
-           </div>
+        <div className="mb-12 border-b border-gray-200 pb-8">
+           <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-red-600 tracking-tight mb-2">
+             {formatPrice(property.price)} <span className="text-2xl md:text-3xl text-red-600/80">LKR</span>
+           </h2>
+           <p className="text-gray-500 text-sm md:text-base font-bold uppercase tracking-widest">{property.priceLabel || 'PER PERCH UPWARDS'}</p>
         </div>
 
         {/* 4. TWO COLUMN CONTENT AREA */}
         <div className="flex flex-col lg:flex-row gap-12">
 
           {/* LEFT COLUMN (70%) */}
-          <div className="w-full lg:w-[70%] space-y-12">
+          <div className="w-full lg:w-[65%] space-y-16">
 
              {/* About This Property */}
              <section>
-                <h3 className="text-2xl font-bold text-gray-900 mb-6 uppercase">
+                <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 uppercase tracking-tight">
                   About This Property
                 </h3>
                 {property.fullDescription && (
@@ -162,16 +149,19 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
              {/* Facilities */}
              {facilities.length > 0 && (
                <section>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-6 uppercase">
+                  <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 uppercase tracking-tight">
                     Facilities
                   </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                      {facilities.map((fac, idx) => {
                         const label = typeof fac === 'string' ? fac : fac.label;
                         return (
-                           <div key={idx} className="bg-gray-50 border border-gray-100 p-6 flex flex-col items-center justify-center text-center transition-shadow hover:bg-gray-100 cursor-default">
-                              {renderFacilityIcon(label)}
-                              <span className="text-gray-900 font-bold text-sm mt-2 uppercase tracking-wide">{label}</span>
+                           <div key={idx} className="bg-white border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.03)] p-5 flex items-center gap-4 transition-all hover:shadow-[0_4px_15px_rgba(0,0,0,0.06)] rounded-sm">
+                              <div className="w-1.5 h-10 bg-red-600 rounded-full"></div>
+                              <div className="flex flex-col">
+                                {renderFacilityIcon(label)}
+                                <span className="text-gray-900 font-bold text-sm mt-1 uppercase tracking-wide">{label}</span>
+                              </div>
                            </div>
                         );
                      })}
@@ -182,46 +172,55 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
              {/* 5. TABBED PLAN SECTION */}
              {(property.blockPlanImage || property.roadMapImage || property.locationMapImage) && (
                <section>
-                  <div className="flex flex-wrap gap-2 mb-6">
+                  <div className="flex border-b border-gray-200 mb-8">
                      {property.blockPlanImage && (
                         <button
                            onClick={() => setActiveTab('block')}
-                           className={`px-8 py-3 font-bold uppercase text-sm transition-colors ${activeTab === 'block' ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-900'}`}
+                           className={`px-8 py-4 font-bold uppercase text-sm tracking-wider transition-all relative ${activeTab === 'block' ? 'text-red-600' : 'text-gray-500 hover:text-gray-900'}`}
                         >
                            Block Plan
+                           {activeTab === 'block' && (
+                             <div className="absolute bottom-0 left-0 w-full h-1 bg-red-600"></div>
+                           )}
                         </button>
                      )}
                      {property.roadMapImage && (
                         <button
                            onClick={() => setActiveTab('road')}
-                           className={`px-8 py-3 font-bold uppercase text-sm transition-colors ${activeTab === 'road' ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-900'}`}
+                           className={`px-8 py-4 font-bold uppercase text-sm tracking-wider transition-all relative ${activeTab === 'road' ? 'text-red-600' : 'text-gray-500 hover:text-gray-900'}`}
                         >
                            Road Map
+                           {activeTab === 'road' && (
+                             <div className="absolute bottom-0 left-0 w-full h-1 bg-red-600"></div>
+                           )}
                         </button>
                      )}
                      {property.locationMapImage && (
                         <button
                            onClick={() => setActiveTab('location')}
-                           className={`px-8 py-3 font-bold uppercase text-sm transition-colors ${activeTab === 'location' ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-900'}`}
+                           className={`px-8 py-4 font-bold uppercase text-sm tracking-wider transition-all relative ${activeTab === 'location' ? 'text-red-600' : 'text-gray-500 hover:text-gray-900'}`}
                         >
                            Location
+                           {activeTab === 'location' && (
+                             <div className="absolute bottom-0 left-0 w-full h-1 bg-red-600"></div>
+                           )}
                         </button>
                      )}
                   </div>
 
-                  <div className="bg-gray-50 border border-gray-200 p-4 cursor-pointer" onClick={() => {
+                  <div className="bg-gray-50/50 border border-gray-100 rounded-lg p-4 md:p-8 flex justify-center items-center cursor-pointer transition-all hover:bg-gray-50" onClick={() => {
                      if (activeTab === 'block' && property.blockPlanImage) setSelectedImage(property.blockPlanImage);
                      if (activeTab === 'road' && property.roadMapImage) setSelectedImage(property.roadMapImage);
                      if (activeTab === 'location' && property.locationMapImage) setSelectedImage(property.locationMapImage);
                   }}>
                      {activeTab === 'block' && property.blockPlanImage && (
-                        <img src={property.blockPlanImage} alt="Block Plan" className="w-full h-auto" />
+                        <img src={property.blockPlanImage} alt="Block Plan" className="max-w-full h-auto max-h-[600px] object-contain shadow-sm rounded" />
                      )}
                      {activeTab === 'road' && property.roadMapImage && (
-                        <img src={property.roadMapImage} alt="Road Map" className="w-full h-auto" />
+                        <img src={property.roadMapImage} alt="Road Map" className="max-w-full h-auto max-h-[600px] object-contain shadow-sm rounded" />
                      )}
                      {activeTab === 'location' && property.locationMapImage && (
-                        <img src={property.locationMapImage} alt="Location Map" className="w-full h-auto" />
+                        <img src={property.locationMapImage} alt="Location Map" className="max-w-full h-auto max-h-[600px] object-contain shadow-sm rounded" />
                      )}
                   </div>
                </section>
@@ -229,10 +228,33 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
 
           </div>
 
-          {/* RIGHT COLUMN (30%) - Inquiry Form */}
-          <div className="w-full lg:w-[30%]">
-             <div className="bg-white shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 p-8 lg:sticky lg:top-24">
-                <h3 className="text-xl font-bold text-gray-900 mb-6 uppercase tracking-wider text-center">Inquire</h3>
+          {/* RIGHT COLUMN (35%) - Info Cards + Inquiry Form */}
+          <div className="w-full lg:w-[35%] space-y-6">
+
+             {/* Info Cards */}
+             <div className="bg-white shadow-[0_4px_25px_rgba(0,0,0,0.06)] border border-gray-100 p-6 rounded-lg flex items-center gap-5">
+               <div className="bg-red-50 text-red-600 p-4 rounded-full">
+                 <MapPin size={24} />
+               </div>
+               <div>
+                 <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mb-1">Location</p>
+                 <p className="font-bold text-gray-900 text-lg leading-tight">{property.city || property.location || 'N/A'}</p>
+               </div>
+             </div>
+
+             <div className="bg-white shadow-[0_4px_25px_rgba(0,0,0,0.06)] border border-gray-100 p-6 rounded-lg flex items-center gap-5">
+               <div className="bg-red-50 text-red-600 p-4 rounded-full">
+                 <PhoneCall size={24} />
+               </div>
+               <div>
+                 <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mb-1">Hotline Numbers</p>
+                 <p className="font-bold text-gray-900 text-lg leading-tight">{property.hotlineNumber || '011 234 5678'}</p>
+               </div>
+             </div>
+
+             {/* Inquiry Form */}
+             <div className="bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-gray-100 p-8 rounded-lg lg:sticky lg:top-24 mt-6">
+                <h3 className="text-2xl font-extrabold text-gray-900 mb-8 uppercase tracking-wide border-b border-gray-100 pb-4">Inquire</h3>
                 <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert("Inquiry sent successfully!"); }}>
                    <div>
                       <input type="text" required placeholder="Name" className="w-full bg-gray-50 border border-gray-200 px-4 py-3 text-sm focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none transition-all placeholder:text-gray-400" />
