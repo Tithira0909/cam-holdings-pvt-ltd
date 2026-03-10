@@ -28,7 +28,7 @@ const HouseCard: React.FC<HouseCardProps> = ({ property, onClick }) => {
             </span>
           )}
           {property.isSoldOut && (
-            <span className="bg-red-500 text-white px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-md">
+            <span className="bg-luxury-gold text-white px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-md">
               Sold Out
             </span>
           )}

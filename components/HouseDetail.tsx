@@ -44,9 +44,9 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
 
         {/* Breadcrumb */}
         <div className="text-sm text-gray-500 mb-6 flex items-center gap-2 uppercase tracking-widest font-bold">
-          <span className="hover:text-[#b4904d] cursor-pointer" onClick={() => onNavigate('home')}>Home</span>
+          <span className="hover:text-luxury-gold cursor-pointer" onClick={() => onNavigate('home')}>Home</span>
           <span>&gt;</span>
-          <span className="hover:text-[#b4904d] cursor-pointer" onClick={() => onNavigate('houses')}>Houses</span>
+          <span className="hover:text-luxury-gold cursor-pointer" onClick={() => onNavigate('houses')}>Houses</span>
           <span>&gt;</span>
           <span className="text-black">{property.title}</span>
         </div>
@@ -59,7 +59,7 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
            <h1 className="text-3xl md:text-5xl font-serif text-[#111] font-bold uppercase tracking-tight mb-2">
              {property.title}
            </h1>
-           <div className="flex items-center gap-2 text-[#b4904d] uppercase font-bold tracking-widest text-sm">
+           <div className="flex items-center gap-2 text-luxury-gold uppercase font-bold tracking-widest text-sm">
              <MapPin size={16} />
              {property.locationLabel || property.location}
            </div>
@@ -81,7 +81,7 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
              {allImages.map((img, idx) => (
                <div
                  key={idx}
-                 className={`flex-shrink-0 w-24 h-24 md:w-full md:h-[135px] rounded-xl overflow-hidden cursor-pointer border-2 transition-all ${mainImage === img ? 'border-[#b4904d] opacity-100' : 'border-transparent opacity-70 hover:opacity-100'}`}
+                 className={`flex-shrink-0 w-24 h-24 md:w-full md:h-[135px] rounded-xl overflow-hidden cursor-pointer border-2 transition-all ${mainImage === img ? 'border-luxury-gold opacity-100' : 'border-transparent opacity-70 hover:opacity-100'}`}
                  onClick={() => setMainImage(img)}
                >
                  <img src={img} className="w-full h-full object-cover" alt={`Thumbnail ${idx}`} />
@@ -93,7 +93,7 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
         {/* Price & Info Cards Section */}
         <div className="mb-12">
            <div className="mb-8">
-             <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#b4904d]">
+             <h2 className="text-4xl md:text-5xl font-serif font-bold text-luxury-gold">
                {formatPrice(property.price)}
              </h2>
              <p className="text-gray-500 uppercase tracking-widest font-bold text-sm mt-2">
@@ -109,14 +109,14 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
              {property.hotlineNumber && (
                <div className="bg-white px-6 py-4 rounded-xl border border-gray-100 shadow-sm min-w-[200px]">
                  <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Hotline</p>
-                 <p className="font-bold text-[#b4904d]">{property.hotlineNumber}</p>
+                 <p className="font-bold text-luxury-gold">{property.hotlineNumber}</p>
                </div>
              )}
              {(property.bedrooms !== undefined || property.beds !== undefined) && (
                <div className="bg-white px-6 py-4 rounded-xl border border-gray-100 shadow-sm">
                  <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Bedrooms</p>
                  <p className="font-bold text-[#111] flex items-center gap-2">
-                   <BedDouble size={16} className="text-[#b4904d]" /> {property.bedrooms ?? property.beds}
+                   <BedDouble size={16} className="text-luxury-gold" /> {property.bedrooms ?? property.beds}
                  </p>
                </div>
              )}
@@ -124,7 +124,7 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
                <div className="bg-white px-6 py-4 rounded-xl border border-gray-100 shadow-sm">
                  <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Bathrooms</p>
                  <p className="font-bold text-[#111] flex items-center gap-2">
-                   <Bath size={16} className="text-[#b4904d]" /> {property.bathrooms ?? property.baths}
+                   <Bath size={16} className="text-luxury-gold" /> {property.bathrooms ?? property.baths}
                  </p>
                </div>
              )}
@@ -164,7 +164,7 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
                  <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
                    {highlights.map((item, idx) => (
                      <li key={idx} className="flex items-start gap-3 text-gray-700 font-medium">
-                       <span className="text-[#b4904d] text-lg mt-0.5">•</span>
+                       <span className="text-luxury-gold text-lg mt-0.5">•</span>
                        {item.label}
                      </li>
                    ))}
@@ -179,7 +179,7 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
                   {property.blockPlanImage && (
                     <button
                       onClick={() => setActiveTab('block')}
-                      className={`flex-1 py-4 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === 'block' ? 'bg-[#b4904d] text-white' : 'text-gray-500 hover:bg-gray-50'}`}
+                      className={`flex-1 py-4 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === 'block' ? 'bg-luxury-gold text-white' : 'text-gray-500 hover:bg-gray-50'}`}
                     >
                       Block Plan
                     </button>
@@ -187,7 +187,7 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
                   {property.roadMapImage && (
                     <button
                       onClick={() => setActiveTab('road')}
-                      className={`flex-1 py-4 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === 'road' ? 'bg-[#b4904d] text-white' : 'text-gray-500 hover:bg-gray-50'}`}
+                      className={`flex-1 py-4 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === 'road' ? 'bg-luxury-gold text-white' : 'text-gray-500 hover:bg-gray-50'}`}
                     >
                       Road Map
                     </button>
@@ -195,7 +195,7 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
                   {property.locationMapImage && (
                     <button
                       onClick={() => setActiveTab('location')}
-                      className={`flex-1 py-4 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === 'location' ? 'bg-[#b4904d] text-white' : 'text-gray-500 hover:bg-gray-50'}`}
+                      className={`flex-1 py-4 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === 'location' ? 'bg-luxury-gold text-white' : 'text-gray-500 hover:bg-gray-50'}`}
                     >
                       Location
                     </button>
@@ -225,7 +225,7 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
                      <button
                        key={idx}
                        onClick={() => setActiveFloorPlanIndex(idx)}
-                       className={`px-6 py-3 rounded-full text-sm font-bold tracking-widest uppercase transition-all ${activeFloorPlanIndex === idx ? 'bg-[#b4904d] text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                       className={`px-6 py-3 rounded-full text-sm font-bold tracking-widest uppercase transition-all ${activeFloorPlanIndex === idx ? 'bg-luxury-gold text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                      >
                        {fp.title || `Type ${idx + 1}`}
                      </button>
@@ -252,7 +252,7 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
             {property.videoUrl && (
               <div className="bg-white rounded-2xl p-8 md:p-12 shadow-sm border border-gray-100">
                  <h2 className="text-2xl font-serif font-bold text-[#111] uppercase tracking-wider mb-6 pb-4 border-b border-gray-100 flex items-center gap-3">
-                   <Play className="text-[#b4904d]" /> Video
+                   <Play className="text-luxury-gold" /> Video
                  </h2>
                  <div className="aspect-video w-full rounded-xl overflow-hidden shadow-md">
                    {/* Handle youtube links */}
@@ -280,18 +280,18 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
 
               <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert("Inquiry sent!"); }}>
                 <div>
-                  <input type="text" placeholder="Name" required className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-[#b4904d] focus:bg-white transition-colors" />
+                  <input type="text" placeholder="Name" required className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-luxury-gold focus:bg-white transition-colors" />
                 </div>
                 <div>
-                  <input type="tel" placeholder="Phone Number" required className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-[#b4904d] focus:bg-white transition-colors" />
+                  <input type="tel" placeholder="Phone Number" required className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-luxury-gold focus:bg-white transition-colors" />
                 </div>
                 <div>
-                  <input type="email" placeholder="Email Address" required className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-[#b4904d] focus:bg-white transition-colors" />
+                  <input type="email" placeholder="Email Address" required className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-luxury-gold focus:bg-white transition-colors" />
                 </div>
                 <div>
-                  <textarea rows={4} placeholder="Message" className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-[#b4904d] focus:bg-white transition-colors resize-none"></textarea>
+                  <textarea rows={4} placeholder="Message" className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-luxury-gold focus:bg-white transition-colors resize-none"></textarea>
                 </div>
-                <button type="submit" className="w-full bg-[#111] text-white font-bold uppercase tracking-widest py-4 rounded-lg hover:bg-[#b4904d] transition-colors mt-2 shadow-md">
+                <button type="submit" className="w-full bg-[#111] text-white font-bold uppercase tracking-widest py-4 rounded-lg hover:bg-luxury-gold transition-colors mt-2 shadow-md">
                   Submit
                 </button>
               </form>

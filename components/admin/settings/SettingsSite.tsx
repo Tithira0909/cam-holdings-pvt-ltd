@@ -162,7 +162,7 @@ export default function SettingsSite() {
                     <button
                       type="button"
                       onClick={handleRemoveHero}
-                      className="mt-4 px-4 py-2 text-red-600 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-red-50 transition-colors"
+                      className="mt-4 px-4 py-2 text-luxury-gold rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-red-50 transition-colors"
                     >
                       Remove
                     </button>
