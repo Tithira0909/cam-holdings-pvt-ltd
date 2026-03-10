@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mail, Phone, MapPin, Clock, ArrowRight } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, ArrowRight, ChevronRight } from 'lucide-react';
 
 interface ContactUsProps {
   onNavigate?: (page: string) => void;
@@ -7,37 +7,42 @@ interface ContactUsProps {
 
 const ContactUs: React.FC<ContactUsProps> = ({ onNavigate }) => {
   return (
-    <div className="animate-in fade-in duration-500 bg-[#f4f4f4] min-h-screen pb-24">
+    <div className="animate-in fade-in duration-500 bg-[#fcfcfc] min-h-screen pb-24 font-sans">
       {/* Hero Section */}
-      <div className="relative w-full h-[300px] md:h-[400px] bg-luxury-black overflow-hidden flex flex-col justify-end pb-12 pt-24">
+      <div className="relative w-full h-[350px] md:h-[450px] flex items-center justify-center overflow-hidden mb-12">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-luxury-black/70 z-10"></div>
           <img
             src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1920"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover scale-105"
             alt="Contact Us"
           />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/80"></div>
         </div>
 
-        <div className="relative z-20 max-w-7xl mx-auto px-6 md:px-12 lg:px-24 w-full">
+        <div className="relative z-10 w-full max-w-[1920px] mx-auto px-6 md:px-12 lg:px-24 flex flex-col items-center justify-center text-center mt-16">
           {/* Breadcrumb */}
-          <div className="flex items-center text-gray-300 text-sm mb-4 font-light tracking-wider uppercase">
-            <button
+          <div className="flex items-center justify-center gap-2 text-white/80 text-sm font-bold uppercase tracking-widest mb-6 bg-black/20 px-6 py-2 rounded-full backdrop-blur-sm border border-white/10">
+            <span
               onClick={() => onNavigate && onNavigate('home')}
-              className="hover:text-luxury-gold transition-colors"
+              className="cursor-pointer hover:text-luxury-gold transition-colors"
             >
               Home
-            </button>
-            <span className="mx-2">/</span>
-            <span className="text-luxury-gold font-medium">Contact Us</span>
+            </span>
+            <ChevronRight size={14} className="text-luxury-gold" />
+            <span className="text-luxury-gold">Contact Us</span>
           </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-white uppercase tracking-tight font-bold">
+
+          <h1 className="text-4xl md:text-6xl font-serif font-bold text-white uppercase tracking-tight drop-shadow-lg">
             Contact Us
           </h1>
+          <div className="w-24 h-1 bg-luxury-gold mt-6 mb-4 mx-auto rounded-full shadow-[0_0_10px_rgba(212,175,55,0.5)]"></div>
+          <p className="text-white/90 text-lg md:text-xl font-light max-w-2xl text-shadow-sm">
+            Get in touch with our team for expert real estate advice.
+          </p>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 mt-16 md:mt-24">
+      <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-24 py-16 md:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
 
           {/* Contact Information */}

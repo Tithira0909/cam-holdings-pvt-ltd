@@ -39,34 +39,42 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
   const floorPlans = property.floorPlans || [];
 
   return (
-    <div className="bg-[#f8f9fa] pb-32 pt-28 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 md:px-8">
+    <div className="bg-[#fcfcfc] pb-32 min-h-screen font-sans animate-in fade-in duration-500">
 
-        {/* Breadcrumb */}
-        <div className="text-sm text-gray-500 mb-6 flex items-center gap-2 uppercase tracking-widest font-bold">
-          <span className="hover:text-luxury-gold cursor-pointer" onClick={() => onNavigate('home')}>Home</span>
-          <span>&gt;</span>
-          <span className="hover:text-luxury-gold cursor-pointer" onClick={() => onNavigate('houses')}>Houses</span>
-          <span>&gt;</span>
-          <span className="text-black">{property.title}</span>
+      {/* 1. HERO WITH BREADCRUMB */}
+      <div className="relative w-full h-[350px] md:h-[450px] flex items-center justify-center overflow-hidden mb-12">
+        <div className="absolute inset-0 z-0">
+          <img src={mainImage} alt={property.title} className="w-full h-full object-cover scale-105" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/80"></div>
         </div>
+        <div className="relative z-10 w-full max-w-[1920px] mx-auto px-6 md:px-12 lg:px-24 flex flex-col items-center justify-center text-center mt-16">
+          <div className="flex items-center justify-center gap-2 text-white/80 text-sm font-bold uppercase tracking-widest mb-6 bg-black/20 px-6 py-2 rounded-full backdrop-blur-sm border border-white/10">
+            <span className="cursor-pointer hover:text-luxury-gold transition-colors" onClick={() => onNavigate('home')}>Home</span>
+            <span>&gt;</span>
+            <span className="cursor-pointer hover:text-luxury-gold transition-colors" onClick={() => onNavigate('houses')}>Houses</span>
+            <span>&gt;</span>
+            <span className="text-luxury-gold truncate max-w-[150px]">{property.title}</span>
+          </div>
 
-        {/* Title Section */}
-        <div className="mb-8">
-           {property.logoImage && (
-             <img src={property.logoImage} alt="Project Logo" className="h-16 mb-4 object-contain" />
-           )}
-           <h1 className="text-3xl md:text-5xl font-serif text-[#111] font-bold uppercase tracking-tight mb-2">
-             {property.title}
-           </h1>
-           <div className="flex items-center gap-2 text-luxury-gold uppercase font-bold tracking-widest text-sm">
-             <MapPin size={16} />
-             {property.locationLabel || property.location}
-           </div>
+          {property.logoImage && (
+            <img src={property.logoImage} alt="Project Logo" className="h-16 mb-4 object-contain brightness-0 invert opacity-90 mx-auto" />
+          )}
+
+          <h1 className="text-4xl md:text-6xl font-serif font-bold text-white uppercase tracking-tight drop-shadow-lg">
+            {property.title}
+          </h1>
+          <div className="w-24 h-1 bg-luxury-gold mt-6 mb-4 mx-auto rounded-full shadow-[0_0_10px_rgba(212,175,55,0.5)]"></div>
+          {property.location && (
+            <p className="text-white/90 text-lg md:text-xl font-light text-shadow-sm flex items-center justify-center gap-2">
+              <MapPin size={20} className="text-luxury-gold" /> {property.locationLabel || property.location}
+            </p>
+          )}
         </div>
+      </div>
 
+      <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-24">
         {/* Image Gallery - Right Vertical Thumbnails */}
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_200px] gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_200px] gap-4 mb-12 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
            {/* Main Image */}
            <div
              className="relative h-[400px] md:h-[600px] rounded-xl overflow-hidden cursor-pointer bg-gray-200"
