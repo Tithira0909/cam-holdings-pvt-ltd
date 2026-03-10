@@ -14,6 +14,7 @@ import HouseDetail from './components/HouseDetail';
 
 import ConsultationModal from './components/ConsultationModal';
 import Footer from './components/Footer';
+import ContactUs from './components/ContactUs';
 import Login from './components/admin/Login';
 import Dashboard from './components/admin/Dashboard';
 import { Property, PropertyType, Project } from './types';
@@ -709,6 +710,11 @@ const App: React.FC = () => {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Contact Us */}
+        {activePage === 'contact' && (
+          <ContactUs onNavigate={navigate} />
         )}
 
         {/* 7. Other Pages (Blogs, News etc.) */}
