@@ -178,7 +178,7 @@ export default function SettingsPermissions() {
                 className="w-full pl-10 pr-3 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none text-sm"
               />
             </div>
-            <button onClick={handleOpenAdd} className="bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-red-600dark transition-all flex items-center gap-2 shadow-sm whitespace-nowrap">
+            <button onClick={handleOpenAdd} className="bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-red-700 transition-all flex items-center gap-2 shadow-sm whitespace-nowrap">
               <Plus size={16} /> Add New Role
             </button>
           </div>
@@ -207,7 +207,7 @@ export default function SettingsPermissions() {
                           <span key={i} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded border border-gray-200">{acc}</span>
                         ))
                       ) : (
-                        <span className="px-2 py-1 bg-red-600/10 text-red-600dark text-xs font-bold rounded border border-red-600/20">{role.access_level}</span>
+                        <span className="px-2 py-1 bg-red-600/10 text-red-700 text-xs font-bold rounded border border-red-600/20">{role.access_level}</span>
                       )}
                     </div>
                   </td>
@@ -291,7 +291,7 @@ export default function SettingsPermissions() {
               <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-gray-600 font-bold hover:bg-gray-200 rounded-lg transition-colors">
                 Cancel
               </button>
-              <button form="roleForm" type="submit" className="px-6 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-600dark transition-colors shadow-sm">
+              <button form="roleForm" type="submit" className="px-6 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors shadow-sm">
                 Save Role
               </button>
             </div>

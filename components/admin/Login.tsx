@@ -66,7 +66,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
           <button
             type="submit"
-            className="w-full bg-red-600 text-white font-bold py-3 rounded-lg hover:bg-red-600dark transition-all transform active:scale-95 shadow-lg uppercase tracking-wider"
+            className="w-full bg-red-600 text-white font-bold py-3 rounded-lg hover:bg-red-700 transition-all transform active:scale-95 shadow-lg uppercase tracking-wider"
           >
             Sign In
           </button>

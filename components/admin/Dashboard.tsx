@@ -297,7 +297,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               <h2 className="text-xl font-serif font-bold text-luxury-black">Recent Properties</h2>
               <button
                 onClick={() => { setActiveView('properties'); setMobileMenuOpen(false); }}
-                className="text-sm text-red-600 font-bold uppercase tracking-wider hover:text-red-600dark"
+                className="text-sm text-red-600 font-bold uppercase tracking-wider hover:text-red-700"
               >
                 View All
               </button>

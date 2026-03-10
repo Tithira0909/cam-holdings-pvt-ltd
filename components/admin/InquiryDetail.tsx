@@ -179,7 +179,7 @@ const InquiryDetail: React.FC<InquiryDetailProps> = ({ inquiryId, onBack }) => {
                  <button
                    type="submit"
                    disabled={sending}
-                   className="w-full py-3 bg-red-600 text-white font-bold uppercase text-xs tracking-wider rounded shadow-gold-glow hover:bg-red-600dark transition-all disabled:opacity-50 flex justify-center items-center gap-2"
+                   className="w-full py-3 bg-red-600 text-white font-bold uppercase text-xs tracking-wider rounded shadow-gold-glow hover:bg-red-700 transition-all disabled:opacity-50 flex justify-center items-center gap-2"
                  >
                    {sending ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
                    {sending ? 'Sending...' : 'Send Email'}

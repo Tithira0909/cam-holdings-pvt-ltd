@@ -1,5 +1,6 @@
 import React from 'react';
 import ScrollAnimation from './ScrollAnimation';
+import CountUpNumber from './CountUpNumber';
 
 interface StatsProps {
   onNavigate: (page: any) => void;
@@ -15,31 +16,37 @@ const Stats: React.FC<StatsProps> = ({ onNavigate }) => {
         
         {/* Left Side: General Trust Metrics */}
         <div className="lg:col-span-5 space-y-12">
-          <ScrollAnimation delay={0.1} direction="right">
+          <ScrollAnimation delay={0.1}>
             <div className="flex items-center gap-6 group">
               <div className="w-1.5 h-16 bg-red-600 rounded-full shrink-0 group-hover:scale-y-110 transition-transform duration-500" />
               <div>
-                <div className="text-5xl font-serif font-black text-luxury-black mb-1">30</div>
+                <div className="text-5xl font-serif font-black text-luxury-black mb-1">
+                  <CountUpNumber end={30} />
+                </div>
                 <div className="text-lg text-luxury-gray font-medium tracking-wide">Years of Trust</div>
               </div>
             </div>
           </ScrollAnimation>
 
-          <ScrollAnimation delay={0.2} direction="right">
+          <ScrollAnimation delay={0.2}>
             <div className="flex items-center gap-6 group">
               <div className="w-1.5 h-16 bg-red-600 rounded-full shrink-0 group-hover:scale-y-110 transition-transform duration-500" />
               <div>
-                <div className="text-5xl font-serif font-black text-luxury-black mb-1">18</div>
+                <div className="text-5xl font-serif font-black text-luxury-black mb-1">
+                  <CountUpNumber end={18} />
+                </div>
                 <div className="text-lg text-luxury-gray font-medium tracking-wide">Districts Covered</div>
               </div>
             </div>
           </ScrollAnimation>
 
-          <ScrollAnimation delay={0.3} direction="right">
+          <ScrollAnimation delay={0.3}>
             <div className="flex items-center gap-6 group">
               <div className="w-1.5 h-16 bg-red-600 rounded-full shrink-0 group-hover:scale-y-110 transition-transform duration-500" />
               <div>
-                <div className="text-5xl font-serif font-black text-luxury-black mb-1">300+</div>
+                <div className="text-5xl font-serif font-black text-luxury-black mb-1">
+                  <CountUpNumber end={300} suffix="+" />
+                </div>
                 <div className="text-lg text-luxury-gray font-medium tracking-wide">Satisfied Customers</div>
               </div>
             </div>
@@ -64,11 +71,11 @@ const Stats: React.FC<StatsProps> = ({ onNavigate }) => {
               <h3 className="text-2xl font-serif font-bold text-white mb-6 uppercase tracking-brand">Houses</h3>
               <div className="space-y-4 text-left">
                 <div>
-                  <span className="text-3xl font-black text-red-600 block">5</span>
+                  <span className="text-3xl font-black text-red-600 block"><CountUpNumber end={5} /></span>
                   <span className="text-xs font-bold text-white/80 uppercase tracking-widest">On Going Projects</span>
                 </div>
                 <div>
-                  <span className="text-3xl font-black text-red-600 block">28</span>
+                  <span className="text-3xl font-black text-red-600 block"><CountUpNumber end={28} /></span>
                   <span className="text-xs font-bold text-white/80 uppercase tracking-widest">Completed Projects</span>
                 </div>
               </div>
@@ -92,11 +99,11 @@ const Stats: React.FC<StatsProps> = ({ onNavigate }) => {
               <h3 className="text-2xl font-serif font-bold text-white mb-6 uppercase tracking-brand">Lands</h3>
               <div className="space-y-4 text-left">
                 <div>
-                  <span className="text-3xl font-black text-red-600 block">11</span>
+                  <span className="text-3xl font-black text-red-600 block"><CountUpNumber end={11} /></span>
                   <span className="text-xs font-bold text-white/80 uppercase tracking-widest">On Going Projects</span>
                 </div>
                 <div>
-                  <span className="text-3xl font-black text-red-600 block">42</span>
+                  <span className="text-3xl font-black text-red-600 block"><CountUpNumber end={42} /></span>
                   <span className="text-xs font-bold text-white/80 uppercase tracking-widest">Completed Projects</span>
                 </div>
               </div>

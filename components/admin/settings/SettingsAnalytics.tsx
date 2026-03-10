@@ -118,7 +118,7 @@ export default function SettingsAnalytics() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="bg-red-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-red-600dark transition-all shadow-sm flex items-center gap-2 disabled:opacity-50"
+            className="bg-red-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-red-700 transition-all shadow-sm flex items-center gap-2 disabled:opacity-50"
           >
             {saving ? <Loader2 className="animate-spin" size={18} /> : null}
             {saving ? 'Saving...' : 'Update Analytics Changes'}

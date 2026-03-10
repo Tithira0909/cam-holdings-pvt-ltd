@@ -499,7 +499,7 @@ const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
             <button
               type="submit"
               disabled={loading}
-              className="px-8 py-3 bg-red-600 text-white rounded-lg font-bold uppercase tracking-wider hover:bg-red-600dark transition-all shadow-gold-glow disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-8 py-3 bg-red-600 text-white rounded-lg font-bold uppercase tracking-wider hover:bg-red-700 transition-all shadow-gold-glow disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {loading && <Loader2 size={18} className="animate-spin" />}
               {loading ? 'Saving House...' : 'Save House'}

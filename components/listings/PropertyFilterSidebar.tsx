@@ -175,7 +175,7 @@ export const PropertyFilterSidebar: React.FC<PropertyFilterSidebarProps> = ({
 
         <button
           onClick={onSearch}
-          className="w-full bg-red-600 text-white font-bold uppercase tracking-wider text-sm py-4 rounded-xl mt-8 hover:bg-red-600dark transition-all shadow-[0_4px_15px_rgba(212,175,55,0.3)] hover:shadow-[0_6px_20px_rgba(212,175,55,0.4)] transform hover:-translate-y-0.5"
+          className="w-full bg-red-600 text-white font-bold uppercase tracking-wider text-sm py-4 rounded-xl mt-8 hover:bg-red-700 transition-all shadow-[0_4px_15px_rgba(212,175,55,0.3)] hover:shadow-[0_6px_20px_rgba(212,175,55,0.4)] transform hover:-translate-y-0.5"
         >
           Search Properties
         </button>

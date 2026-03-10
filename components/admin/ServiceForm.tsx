@@ -224,7 +224,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({ serviceId, onSuccess, onCance
           <button
             type="submit"
             disabled={loading}
-            className="px-8 py-3 bg-red-600 text-white rounded-lg font-bold uppercase tracking-wider hover:bg-red-600dark transition-all shadow-gold-glow disabled:opacity-50 flex items-center gap-2"
+            className="px-8 py-3 bg-red-600 text-white rounded-lg font-bold uppercase tracking-wider hover:bg-red-700 transition-all shadow-gold-glow disabled:opacity-50 flex items-center gap-2"
           >
             {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
             Save Service

@@ -131,7 +131,7 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditPr
         <p className="font-serif text-lg">{error}</p>
         <button
           onClick={fetchProperties}
-          className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-600dark transition-colors"
+          className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
         >
           Retry
         </button>
@@ -145,7 +145,7 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditPr
         <h2 className="text-xl font-serif font-bold text-luxury-black">All Properties</h2>
         <button
           onClick={onAddProperty}
-          className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-bold text-sm uppercase tracking-wider hover:bg-red-600dark transition-all shadow-gold-glow"
+          className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-bold text-sm uppercase tracking-wider hover:bg-red-700 transition-all shadow-gold-glow"
         >
           <Plus size={16} />
           Add New Property

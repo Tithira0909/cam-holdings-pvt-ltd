@@ -32,7 +32,7 @@ const Newsletter: React.FC = () => {
           </div>
           <button 
             type="submit"
-            className="h-14 px-10 bg-red-600 text-white rounded-lg font-bold uppercase text-[12px] tracking-widest hover:bg-red-600dark transition-all shadow-gold-glow flex items-center justify-center gap-3 whitespace-nowrap active:scale-95"
+            className="h-14 px-10 bg-red-600 text-white rounded-lg font-bold uppercase text-[12px] tracking-widest hover:bg-red-700 transition-all shadow-gold-glow flex items-center justify-center gap-3 whitespace-nowrap active:scale-95"
           >
             Subscribe <Send size={16} />
           </button>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Property } from '../types';
 import { MapPin, PhoneCall, MessageSquare, Download, Share2, Map, Layout, Navigation, CheckCircle2 } from 'lucide-react';
 import LandCard from './LandCard';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface LandDetailProps {
   property: Property;
@@ -208,20 +209,22 @@ const LandDetail: React.FC<LandDetailProps> = ({ property, onNavigate, recommend
                      )}
                   </div>
 
-                  <div className="bg-gray-50/50 border border-gray-100 rounded-lg p-4 md:p-8 flex justify-center items-center cursor-pointer transition-all hover:bg-gray-50" onClick={() => {
+                  <div className="bg-gray-50/50 border border-gray-100 rounded-lg p-4 md:p-8 flex justify-center items-center cursor-pointer transition-all hover:bg-gray-50 overflow-hidden min-h-[300px]" onClick={() => {
                      if (activeTab === 'block' && property.blockPlanImage) setSelectedImage(property.blockPlanImage);
                      if (activeTab === 'road' && property.roadMapImage) setSelectedImage(property.roadMapImage);
                      if (activeTab === 'location' && property.locationMapImage) setSelectedImage(property.locationMapImage);
                   }}>
-                     {activeTab === 'block' && property.blockPlanImage && (
-                        <img src={property.blockPlanImage} alt="Block Plan" className="max-w-full h-auto max-h-[600px] object-contain shadow-sm rounded" />
-                     )}
-                     {activeTab === 'road' && property.roadMapImage && (
-                        <img src={property.roadMapImage} alt="Road Map" className="max-w-full h-auto max-h-[600px] object-contain shadow-sm rounded" />
-                     )}
-                     {activeTab === 'location' && property.locationMapImage && (
-                        <img src={property.locationMapImage} alt="Location Map" className="max-w-full h-auto max-h-[600px] object-contain shadow-sm rounded" />
-                     )}
+                     <AnimatePresence mode="wait">
+                       {activeTab === 'block' && property.blockPlanImage && (
+                          <motion.img key="block" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} src={property.blockPlanImage} alt="Block Plan" className="max-w-full h-auto max-h-[600px] object-contain shadow-sm rounded" />
+                       )}
+                       {activeTab === 'road' && property.roadMapImage && (
+                          <motion.img key="road" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} src={property.roadMapImage} alt="Road Map" className="max-w-full h-auto max-h-[600px] object-contain shadow-sm rounded" />
+                       )}
+                       {activeTab === 'location' && property.locationMapImage && (
+                          <motion.img key="location" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} src={property.locationMapImage} alt="Location Map" className="max-w-full h-auto max-h-[600px] object-contain shadow-sm rounded" />
+                       )}
+                     </AnimatePresence>
                   </div>
                </section>
              )}

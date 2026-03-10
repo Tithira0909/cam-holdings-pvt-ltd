@@ -228,7 +228,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onSuccess, onCance
           <button
             type="submit"
             disabled={loading}
-            className="flex items-center gap-2 px-6 py-2 bg-red-600 text-white rounded-lg font-bold uppercase tracking-wider hover:bg-red-600dark transition-colors shadow-gold-glow disabled:opacity-70"
+            className="flex items-center gap-2 px-6 py-2 bg-red-600 text-white rounded-lg font-bold uppercase tracking-wider hover:bg-red-700 transition-colors shadow-gold-glow disabled:opacity-70"
           >
             {loading ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
             {projectId ? 'Save Changes' : 'Create Project'}

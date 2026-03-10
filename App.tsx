@@ -299,7 +299,7 @@ const App: React.FC = () => {
       {/* Floating Speak to Us Button */}
       <button 
         onClick={() => setIsModalOpen(true)}
-        className="fixed bottom-5 left-5 z-[95] bg-red-600 text-white px-8 py-4 rounded-[50px] shadow-gold-glow flex items-center gap-3 font-bold uppercase text-[16px] tracking-widest hover:bg-red-600dark transition-all active:scale-95 border-none outline-none"
+        className="fixed bottom-5 left-5 z-[95] bg-red-600 text-white px-8 py-4 rounded-[50px] shadow-gold-glow flex items-center gap-3 font-bold uppercase text-[16px] tracking-widest hover:bg-red-700 transition-all active:scale-95 border-none outline-none"
       >
         <MessageSquare size={20} />
         <span>Speak to Us!</span>
@@ -443,7 +443,7 @@ const App: React.FC = () => {
                         {currentService.description}
                     </div>
                     <div className="mt-16 text-center">
-                        <button onClick={() => navigate('contact')} className="bg-red-600 text-white px-10 py-4 rounded-lg font-bold uppercase tracking-brand hover:bg-red-600dark transition-all">
+                        <button onClick={() => navigate('contact')} className="bg-red-600 text-white px-10 py-4 rounded-lg font-bold uppercase tracking-brand hover:bg-red-700 transition-all">
                             Enquire About This Service
                         </button>
                     </div>
@@ -621,7 +621,7 @@ const App: React.FC = () => {
                     <p className="text-[16px] text-[#777] mb-6">Year: {proj.year}</p>
                     <div className="mt-auto">
                       <button
-                        className="bg-red-600 text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-red-600dark"
+                        className="bg-red-600 text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-red-700"
                         onClick={(e) => {
                           e.stopPropagation();
                           navigate('portfolio-detail', proj.id);
@@ -680,7 +680,7 @@ const App: React.FC = () => {
                        <p className="text-[16px] text-[#777] mb-1">Location: {prop.location.split(',')[0]}</p>
                        <p className="text-[16px] text-[#777] mb-6 font-bold">Price: {prop.price}</p>
                        <div className="mt-auto">
-                         <button onClick={() => navigate('detail', prop._originalId || prop.id)} className="bg-red-600 text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-red-600dark">View Details</button>
+                         <button onClick={() => navigate('detail', prop._originalId || prop.id)} className="bg-red-600 text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-red-700">View Details</button>
                        </div>
                      </div>
                    </div>
@@ -710,7 +710,7 @@ const App: React.FC = () => {
               </div>
               <div className="text-center pt-8">
                 <p className="text-xl text-luxury-black mb-8 font-serif">Ready to visit in person? Join us for an exclusive site preview.</p>
-                <button onClick={() => navigate('contact')} className="bg-red-600 text-white px-12 py-5 rounded-lg font-bold uppercase tracking-brand shadow-gold-glow hover:bg-red-600dark transition-all">Schedule a Visit</button>
+                <button onClick={() => navigate('contact')} className="bg-red-600 text-white px-12 py-5 rounded-lg font-bold uppercase tracking-brand shadow-gold-glow hover:bg-red-700 transition-all">Schedule a Visit</button>
               </div>
             </div>
           </div>

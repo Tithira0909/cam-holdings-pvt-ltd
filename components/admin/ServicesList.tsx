@@ -56,7 +56,7 @@ const ServicesList: React.FC<ServicesListProps> = ({ onAddService, onEditService
         <h2 className="text-xl font-serif font-bold text-luxury-black">Services</h2>
         <button
           onClick={onAddService}
-          className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-bold text-sm uppercase tracking-wider hover:bg-red-600dark transition-all shadow-gold-glow"
+          className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-bold text-sm uppercase tracking-wider hover:bg-red-700 transition-all shadow-gold-glow"
         >
           <Plus size={16} />
           Add New Service
