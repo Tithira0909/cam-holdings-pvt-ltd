@@ -149,9 +149,14 @@ const App: React.FC = () => {
         fetch('/api/services')
       ]);
 
-      if (propsRes.ok) {
-        const propsData = await propsRes.json();
-        setProperties(propsData.map((p: any) => ({ ...p, id: String(p.id) })));
+      if (landsRes.ok) {
+        const landsData = await landsRes.json();
+        setLands(landsData.map((p: any) => ({ ...p, id: String(p.id) })));
+      }
+
+      if (housesRes.ok) {
+        const housesData = await housesRes.json();
+        setHouses(housesData.map((p: any) => ({ ...p, id: String(p.id) })));
       }
 
       if (projsRes.ok) {

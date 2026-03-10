@@ -173,7 +173,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
     if (!window.confirm('Are you sure you want to delete this gallery image?')) return;
     try {
       let url = `/api/admin/lands/images/${imageId}`;
-      if (formData.type === 'House' || formData.type === 'Apartment') {
+      if (type === 'House' || type === 'Apartment') {
         url = `/api/admin/houses/images/${imageId}`;
       }
       const res = await fetch(url, {
@@ -201,7 +201,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
 
     try {
       let url = `/api/admin/lands/${propertyId}/images`;
-      if (formData.type === 'House' || formData.type === 'Apartment') {
+      if (type === 'House' || type === 'Apartment') {
         url = `/api/admin/houses/${propertyId}/images`;
       }
       const res = await fetch(url, {
@@ -267,7 +267,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
       if (locationMapImage) formData.append('locationMapImage', locationMapImage);
 
       let url = `/api/lands/${propertyId}`;
-      if (formData.type === 'House' || formData.type === 'Apartment') {
+      if (type === 'House' || type === 'Apartment') {
         url = `/api/houses/${propertyId}`;
       }
       const response = await fetch(url, {
