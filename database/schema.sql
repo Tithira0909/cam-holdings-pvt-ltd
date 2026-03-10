@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS lands (
   floorPlans JSON,
   brochureFiles JSON,
   videoUrl VARCHAR(255),
+  projectPhilosophy TEXT,
   hotlineNumber VARCHAR(50),
   whatsappNumber VARCHAR(50),
   logoImage VARCHAR(255),
@@ -38,6 +39,21 @@ CREATE TABLE IF NOT EXISTS lands (
   sortOrder INT DEFAULT 0,
   shortDescription TEXT,
   fullDescription TEXT,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS email_settings (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  mailer VARCHAR(50) DEFAULT 'smtp',
+  host VARCHAR(255) NOT NULL,
+  port INT NOT NULL,
+  username VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  encryption VARCHAR(50) DEFAULT 'none',
+  from_address VARCHAR(255) NOT NULL,
+  from_name VARCHAR(255) NOT NULL,
+  status VARCHAR(50) DEFAULT 'Inactive',
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -66,6 +82,7 @@ CREATE TABLE IF NOT EXISTS houses (
   floorPlans JSON,
   brochureFiles JSON,
   videoUrl VARCHAR(255),
+  projectPhilosophy TEXT,
   hotlineNumber VARCHAR(50),
   whatsappNumber VARCHAR(50),
   logoImage VARCHAR(255),

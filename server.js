@@ -222,8 +222,6 @@ app.post('/api/settings/site/hero', upload.single('hero_image'), async (req, res
 
     // Also persist in DB as per requirement
     try {
-        // We use an upsert strategy depending on if it's sqlite or mysql.
-        // For simplicity, let's just delete the key and insert.
         await query('CREATE TABLE IF NOT EXISTS settings (setting_key VARCHAR(255) PRIMARY KEY, setting_value TEXT)');
         await query('DELETE FROM settings WHERE setting_key = "hero_image"');
         await query('INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)', ['hero_image', heroUrl]);
@@ -536,7 +534,7 @@ app.delete('/api/admin/lands/images/:imageId', async (req, res) => {
     // Note: To be fully complete, you might want to also delete the physical file from the /uploads folder using fs.unlinkSync.
     // For now we just remove the DB record.
 
-    if (result.affectedRows === 0 && result.changes === 0) { // changes for sqlite, affectedRows for mysql
+    if (result.affectedRows === 0) {
       return res.status(404).json({ error: 'Image not found' });
     }
     res.json({ message: 'Image deleted successfully' });
@@ -622,7 +620,7 @@ app.delete('/api/admin/houses/images/:imageId', async (req, res) => {
     // Note: To be fully complete, you might want to also delete the physical file from the /uploads folder using fs.unlinkSync.
     // For now we just remove the DB record.
 
-    if (result.affectedRows === 0 && result.changes === 0) { // changes for sqlite, affectedRows for mysql
+    if (result.affectedRows === 0) {
       return res.status(404).json({ error: 'Image not found' });
     }
     res.json({ message: 'Image deleted successfully' });
@@ -847,7 +845,7 @@ app.post('/api/lands', upload.fields([
         isFeatured, isSoldOut, hotlineNumber, sortOrder,
         shortDescription, fullDescription, amenities, floorPlans, brochureFiles,
         logoImage, blockPlanImage, roadMapImage, locationMapImage, projectStatusLabel, travelHighlights, inquiryEmail, relatedLands, metaTitle, metaDescription, ogImage, whatsappNumber
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       params
     );
 
@@ -985,8 +983,9 @@ app.put('/api/lands/:id', upload.fields([
       `UPDATE lands SET
         title = ?, slug = ?, location = ?, price = ?, type = ?, status = ?, description = ?, image = ?,
         category = ?, district = ?, city = ?, locationLabel = ?, priceLabel = ?, bedrooms = ?, bathrooms = ?,
-        isFeatured = ?, isSoldOut = ?, videoUrl = ?, hotlineNumber = ?, sortOrder = ?,
-        shortDescription = ?, fullDescription = ?, amenities = ?, locationHighlights = ?, floorPlans = ?, brochureFiles = ?,
+        videoUrl = ?, projectPhilosophy = ?, locationHighlights = ?,
+        isFeatured = ?, isSoldOut = ?, hotlineNumber = ?, sortOrder = ?,
+        shortDescription = ?, fullDescription = ?, amenities = ?, floorPlans = ?, brochureFiles = ?,
         logoImage = ?, blockPlanImage = ?, roadMapImage = ?, locationMapImage = ?, projectStatusLabel = ?, travelHighlights = ?, inquiryEmail = ?, relatedLands = ?, metaTitle = ?, metaDescription = ?, ogImage = ?, whatsappNumber = ?
       WHERE id = ?`,
       params
@@ -1217,7 +1216,7 @@ app.post('/api/houses', upload.fields([
         isFeatured, isSoldOut, hotlineNumber, sortOrder,
         shortDescription, fullDescription, amenities, floorPlans, brochureFiles,
         logoImage, blockPlanImage, roadMapImage, locationMapImage, projectStatusLabel, travelHighlights, inquiryEmail, relatedLands, metaTitle, metaDescription, ogImage, whatsappNumber
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       params
     );
 
@@ -1355,8 +1354,9 @@ app.put('/api/houses/:id', upload.fields([
       `UPDATE houses SET
         title = ?, slug = ?, location = ?, price = ?, type = ?, status = ?, description = ?, image = ?,
         category = ?, district = ?, city = ?, locationLabel = ?, priceLabel = ?, bedrooms = ?, bathrooms = ?,
-        isFeatured = ?, isSoldOut = ?, videoUrl = ?, hotlineNumber = ?, sortOrder = ?,
-        shortDescription = ?, fullDescription = ?, amenities = ?, locationHighlights = ?, floorPlans = ?, brochureFiles = ?,
+        videoUrl = ?, projectPhilosophy = ?, locationHighlights = ?,
+        isFeatured = ?, isSoldOut = ?, hotlineNumber = ?, sortOrder = ?,
+        shortDescription = ?, fullDescription = ?, amenities = ?, floorPlans = ?, brochureFiles = ?,
         logoImage = ?, blockPlanImage = ?, roadMapImage = ?, locationMapImage = ?, projectStatusLabel = ?, travelHighlights = ?, inquiryEmail = ?, relatedLands = ?, metaTitle = ?, metaDescription = ?, ogImage = ?, whatsappNumber = ?
       WHERE id = ?`,
       params
