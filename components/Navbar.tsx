@@ -40,18 +40,15 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
     { label: 'Contact Us', page: 'contact' },
   ];
 
-  const isHome = activePage === 'home';
-  // Homepage Top: White text. Scrolled or Other pages: Dark text.
-  const useWhiteText = isHome && !isScrolled;
-  const textColorClass = useWhiteText ? 'text-white nav-text-shadow' : 'text-luxury-black';
-  const logoColorClass = useWhiteText ? 'text-white nav-text-shadow' : 'text-luxury-black';
+  const textColorClass = 'text-luxury-black';
+  const logoColorClass = 'text-luxury-black';
   
-  // Background logic: Transparent on home top, semi-transparent white elsewhere when scrolled or internal.
-  const bgClass = useWhiteText ? 'bg-transparent h-24' : 'nav-blur h-20 shadow-sm';
+  // Background logic: Always white to prevent overlap issues and keep it clean and premium
+  const bgClass = 'bg-white h-20 shadow-sm';
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 w-full z-[100] transition-all duration-500 ${bgClass}`}>
+      <nav className={`sticky top-0 w-full z-[100] transition-all duration-500 ${bgClass}`}>
         <div className="max-w-7xl mx-auto w-full h-full px-mobile flex justify-between items-center">
           
           {/* Logo */}
