@@ -81,7 +81,7 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
              {allImages.map((img, idx) => (
                <div
                  key={idx}
-                 className={`flex-shrink-0 w-24 h-24 md:w-full md:h-[135px] rounded-xl overflow-hidden cursor-pointer border-2 transition-all ${mainImage === img ? 'border-[#b4904d] opacity-100' : 'border-transparent opacity-70 hover:opacity-100'}`}
+                 className={`flex-shrink-0 w-24 h-24 md:w-full md:h-[135px] rounded-xl overflow-hidden cursor-pointer border-2 transition-all ${mainImage === img ? 'border-luxury-gold opacity-100' : 'border-transparent opacity-70 hover:opacity-100'}`}
                  onClick={() => setMainImage(img)}
                >
                  <img src={img} className="w-full h-full object-cover" alt={`Thumbnail ${idx}`} />
@@ -179,7 +179,7 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
                   {property.blockPlanImage && (
                     <button
                       onClick={() => setActiveTab('block')}
-                      className={`flex-1 py-4 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === 'block' ? 'bg-[#b4904d] text-white' : 'text-gray-500 hover:bg-gray-50'}`}
+                      className={`flex-1 py-4 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === 'block' ? 'bg-luxury-gold text-white' : 'text-gray-500 hover:bg-gray-50'}`}
                     >
                       Block Plan
                     </button>
@@ -187,7 +187,7 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
                   {property.roadMapImage && (
                     <button
                       onClick={() => setActiveTab('road')}
-                      className={`flex-1 py-4 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === 'road' ? 'bg-[#b4904d] text-white' : 'text-gray-500 hover:bg-gray-50'}`}
+                      className={`flex-1 py-4 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === 'road' ? 'bg-luxury-gold text-white' : 'text-gray-500 hover:bg-gray-50'}`}
                     >
                       Road Map
                     </button>
@@ -195,7 +195,7 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
                   {property.locationMapImage && (
                     <button
                       onClick={() => setActiveTab('location')}
-                      className={`flex-1 py-4 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === 'location' ? 'bg-[#b4904d] text-white' : 'text-gray-500 hover:bg-gray-50'}`}
+                      className={`flex-1 py-4 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === 'location' ? 'bg-luxury-gold text-white' : 'text-gray-500 hover:bg-gray-50'}`}
                     >
                       Location
                     </button>
@@ -225,7 +225,7 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
                      <button
                        key={idx}
                        onClick={() => setActiveFloorPlanIndex(idx)}
-                       className={`px-6 py-3 rounded-full text-sm font-bold tracking-widest uppercase transition-all ${activeFloorPlanIndex === idx ? 'bg-[#b4904d] text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                       className={`px-6 py-3 rounded-full text-sm font-bold tracking-widest uppercase transition-all ${activeFloorPlanIndex === idx ? 'bg-luxury-gold text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                      >
                        {fp.title || `Type ${idx + 1}`}
                      </button>
@@ -280,18 +280,18 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
 
               <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert("Inquiry sent!"); }}>
                 <div>
-                  <input type="text" placeholder="Name" required className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-[#b4904d] focus:bg-white transition-colors" />
+                  <input type="text" placeholder="Name" required className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-luxury-gold focus:bg-white transition-colors" />
                 </div>
                 <div>
-                  <input type="tel" placeholder="Phone Number" required className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-[#b4904d] focus:bg-white transition-colors" />
+                  <input type="tel" placeholder="Phone Number" required className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-luxury-gold focus:bg-white transition-colors" />
                 </div>
                 <div>
-                  <input type="email" placeholder="Email Address" required className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-[#b4904d] focus:bg-white transition-colors" />
+                  <input type="email" placeholder="Email Address" required className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-luxury-gold focus:bg-white transition-colors" />
                 </div>
                 <div>
-                  <textarea rows={4} placeholder="Message" className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-[#b4904d] focus:bg-white transition-colors resize-none"></textarea>
+                  <textarea rows={4} placeholder="Message" className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-luxury-gold focus:bg-white transition-colors resize-none"></textarea>
                 </div>
-                <button type="submit" className="w-full bg-[#111] text-white font-bold uppercase tracking-widest py-4 rounded-lg hover:bg-[#b4904d] transition-colors mt-2 shadow-md">
+                <button type="submit" className="w-full bg-[#111] text-white font-bold uppercase tracking-widest py-4 rounded-lg hover:bg-luxury-gold transition-colors mt-2 shadow-md">
                   Submit
                 </button>
               </form>
