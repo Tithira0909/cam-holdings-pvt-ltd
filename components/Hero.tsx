@@ -40,7 +40,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
       <div className="absolute inset-0 z-[1] bg-black/40" />
       
       {/* Centered Hero Overlay Content */}
-      <div className="relative z-10 w-full px-mobile text-center max-w-4xl mx-auto flex flex-col items-center justify-center h-full">
+      <div className="relative z-10 w-full px-mobile text-center max-w-4xl mx-auto flex flex-col items-center justify-center h-full pt-24">
         <div className="animate-in fade-in slide-in-from-bottom-12 duration-1000 bg-transparent rounded-[15px] p-6 md:p-12">
           <h1 className="text-4xl md:text-[48px] font-serif font-bold text-white mb-5 leading-[1.2] uppercase tracking-tight nav-text-shadow">
             Find Your <br />
