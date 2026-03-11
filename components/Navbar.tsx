@@ -47,7 +47,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
   const logoColorClass = useWhiteText ? 'text-white nav-text-shadow' : 'text-luxury-black';
   
   // Background logic: Transparent on home top, semi-transparent white elsewhere when scrolled or internal.
-  const bgClass = useWhiteText ? 'bg-transparent h-24' : 'nav-blur h-20 shadow-sm';
+  const bgClass = useWhiteText ? 'bg-transparent h-24' : 'bg-white h-24 shadow-sm';
 
   return (
     <>
