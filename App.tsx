@@ -18,9 +18,9 @@ import Footer from './components/Footer';
 import Login from './components/admin/Login';
 import Dashboard from './components/admin/Dashboard';
 import { Property, PropertyType, Project } from './types';
-import { 
-  Search, 
-  ArrowRight, 
+import {
+  Search,
+  ArrowRight,
   ChevronDown,
   MapPin,
   Phone,
@@ -290,14 +290,14 @@ const App: React.FC = () => {
 
   return (
     <div className={`min-h-screen bg-white selection:bg-luxury-gold selection:text-white font-sans page-${activePage}`}>
-      <Navbar 
-        onOpenConsultation={() => setIsModalOpen(true)} 
-        onNavigate={navigate} 
+      <Navbar
+        onOpenConsultation={() => setIsModalOpen(true)}
+        onNavigate={navigate}
         activePage={activePage}
       />
-      
+
       {/* Floating Speak to Us Button */}
-      <button 
+      <button
         onClick={() => setIsModalOpen(true)}
         className="fixed bottom-5 left-5 z-[95] bg-luxury-gold text-white px-8 py-4 rounded-[50px] shadow-gold-glow flex items-center gap-3 font-bold uppercase text-[16px] tracking-widest hover:bg-luxury-golddark transition-all active:scale-95 border-none outline-none"
       >
@@ -329,9 +329,9 @@ const App: React.FC = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start bg-white p-8 md:p-16 rounded-xl shadow-sm">
                 <div className="space-y-8">
                   <div className="aspect-[4/5] rounded-lg overflow-hidden shadow-2xl relative group">
-                    <img 
-                      src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&q=80&w=1200" 
-                      alt="About CAM Holdings" 
+                    <img
+                      src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&q=80&w=1200"
+                      alt="About CAM Holdings"
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-luxury-black/20" />
