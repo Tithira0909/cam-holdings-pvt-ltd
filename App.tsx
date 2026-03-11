@@ -13,6 +13,7 @@ import LandDetail from './components/LandDetail';
 import HouseDetail from './components/HouseDetail';
 
 import Contact from './components/Contact';
+import { PageHero } from './components/PageHero';
 import ConsultationModal from './components/ConsultationModal';
 import Footer from './components/Footer';
 import Login from './components/admin/Login';
@@ -387,29 +388,45 @@ const App: React.FC = () => {
 
         {/* 2. Services Page */}
         {activePage === 'services' && (
-          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
-            <div className="max-w-7xl mx-auto text-center mb-16">
-              <h2 className="text-[36px] font-serif font-bold text-luxury-black mb-5 uppercase tracking-tight">Our Services</h2>
-              <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto">At CAM Holdings, we provide a range of real estate services tailored to meet your needs.</p>
-            </div>
+          <div className="bg-[#fcfcfc] min-h-screen pb-24 font-sans animate-in fade-in duration-500">
+            <PageHero
+              title="Our Services"
+              description="At CAM Holdings, we provide a range of real estate services tailored to meet your needs."
+              bgImage="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1920"
+              breadcrumbs={[
+                { label: 'Home', onClick: () => navigate('home') },
+                { label: 'Services' }
+              ]}
+            />
 
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-              {services.map((service, idx) => (
-                <div key={idx}
-                  onClick={() => navigate('service-detail', service.slug)}
-                  className="bg-white rounded-xl shadow-[0px_4px_10px_rgba(0,0,0,0.1)] p-10 text-center flex flex-col items-center group hover:shadow-xl transition-all border-b-4 border-transparent hover:border-luxury-gold cursor-pointer"
-                >
-                  <div className="w-20 h-20 bg-luxury-offwhite rounded-full flex items-center justify-center mb-6 group-hover:bg-luxury-gold/10 transition-colors overflow-hidden">
-                    {service.cover_image ? (
-                        <img src={service.cover_image} alt={service.title} className="w-full h-full object-cover" />
-                    ) : (
-                        <div className="text-luxury-gold">{renderIcon(service.icon)}</div>
-                    )}
+            <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-24 py-16 md:py-24">
+              <div className="mb-12 text-center max-w-2xl mx-auto">
+                <h2 className="text-3xl md:text-5xl font-serif text-luxury-black mb-4">
+                  Explore Our Services
+                </h2>
+                <p className="text-gray-500 font-light text-lg">
+                  Discover tailored real estate solutions designed for your needs.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {services.map((service, idx) => (
+                  <div key={idx}
+                    onClick={() => navigate('service-detail', service.slug)}
+                    className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col cursor-pointer transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0px_8px_20px_rgba(212,175,55,0.2)] p-10 text-center items-center"
+                  >
+                    <div className="w-20 h-20 bg-luxury-offwhite rounded-full flex items-center justify-center mb-6 group-hover:bg-luxury-gold/10 transition-colors overflow-hidden">
+                      {service.cover_image ? (
+                          <img src={service.cover_image} alt={service.title} className="w-full h-full object-cover" />
+                      ) : (
+                          <div className="text-luxury-gold">{renderIcon(service.icon)}</div>
+                      )}
+                    </div>
+                    <h3 className="text-[22px] font-serif font-bold text-luxury-black mb-4">{service.title}</h3>
+                    <p className="text-[16px] text-gray-500 leading-relaxed font-light line-clamp-3">{service.short_desc}</p>
                   </div>
-                  <h3 className="text-[22px] font-serif font-bold text-luxury-black mb-4">{service.title}</h3>
-                  <p className="text-[16px] text-[#777] leading-relaxed font-light line-clamp-3">{service.short_desc}</p>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -583,52 +600,76 @@ const App: React.FC = () => {
 
         {/* 3. Portfolio Page */}
         {activePage === 'portfolio' && (
-          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
-            <div className="max-w-7xl mx-auto text-center mb-12">
-              <h2 className="text-[36px] font-serif font-bold text-luxury-black mb-5 uppercase tracking-tight">Our Portfolio</h2>
-              <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto">Take a look at some of our completed projects.</p>
-            </div>
+          <div className="bg-[#fcfcfc] min-h-screen pb-24 font-sans animate-in fade-in duration-500">
+            <PageHero
+              title="Our Portfolio"
+              description="Take a look at some of our completed premium projects."
+              bgImage="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1920"
+              breadcrumbs={[
+                { label: 'Home', onClick: () => navigate('home') },
+                { label: 'Portfolio Properties' }
+              ]}
+            />
 
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px]">
-              {projects.map(proj => (
-                <div
-                  key={proj.id}
-                  className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col cursor-pointer transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0px_8px_20px_rgba(212,175,55,0.2)]"
-                  onClick={() => navigate('portfolio-detail', proj.id)}
-                >
-                  <div className="relative aspect-[16/10] overflow-hidden">
-                    <img src={proj.image} alt={proj.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
-                    {proj.category && (
-                      <div className="absolute top-4 left-4 bg-luxury-black/60 backdrop-blur-md text-white text-[8px] uppercase tracking-widest px-3 py-1.5 font-bold rounded-lg">
-                        {proj.category}
+            <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-24 py-16 md:py-24">
+              <div className="mb-12 text-center max-w-2xl mx-auto">
+                <h2 className="text-3xl md:text-5xl font-serif text-luxury-black mb-4">
+                  Completed Projects
+                </h2>
+                <p className="text-gray-500 font-light text-lg">
+                  Explore our portfolio of delivered excellence.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                {projects.map(proj => (
+                  <div
+                    key={proj.id}
+                    className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col cursor-pointer transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0px_8px_20px_rgba(212,175,55,0.2)]"
+                    onClick={() => navigate('portfolio-detail', proj.id)}
+                  >
+                    <div className="relative aspect-[16/10] overflow-hidden">
+                      <img src={proj.image} alt={proj.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
+                      {proj.category && (
+                        <div className="absolute top-4 left-4 bg-luxury-black/60 backdrop-blur-md text-white text-[8px] uppercase tracking-widest px-3 py-1.5 font-bold rounded-lg shadow-md">
+                          {proj.category}
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-[20px] text-left flex flex-col flex-grow">
+                      <h3 className="text-[22px] font-serif font-bold text-luxury-black mb-2">{proj.title}</h3>
+
+                      {proj.description && (
+                        <p className="text-sm text-gray-500 line-clamp-3 md:line-clamp-2 mb-4">
+                          {proj.description}
+                        </p>
+                      )}
+
+                      <div className="flex items-center gap-2 text-gray-500 text-sm mb-2">
+                        <MapPin size={16} className="text-luxury-gold" />
+                        <span>{proj.location}</span>
                       </div>
-                    )}
-                  </div>
-                  <div className="p-[20px] text-left flex flex-col flex-grow">
-                    <h3 className={`text-[22px] font-serif font-bold text-[#333] ${proj.description ? 'mb-2' : 'mb-2'}`}>{proj.title}</h3>
 
-                    {proj.description && (
-                      <p className="text-sm text-luxury-gray line-clamp-3 md:line-clamp-2 mb-4">
-                        {proj.description}
-                      </p>
-                    )}
+                      <div className="flex items-center gap-2 text-gray-500 text-sm mb-6">
+                        <Calendar size={16} className="text-luxury-gold" />
+                        <span>Completed in {proj.year}</span>
+                      </div>
 
-                    <p className="text-[16px] text-[#777] mb-1">Location: {proj.location}</p>
-                    <p className="text-[16px] text-[#777] mb-6">Year: {proj.year}</p>
-                    <div className="mt-auto">
-                      <button
-                        className="bg-luxury-gold text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-luxury-golddark"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate('portfolio-detail', proj.id);
-                        }}
-                      >
-                        View Project
-                      </button>
+                      <div className="mt-auto pt-4 border-t border-gray-100 flex justify-end">
+                        <button
+                          className="text-luxury-gold font-bold text-sm uppercase tracking-widest hover:text-luxury-golddark transition-colors flex items-center gap-2"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate('portfolio-detail', proj.id);
+                          }}
+                        >
+                          View Project <ArrowRight size={16} />
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -643,40 +684,49 @@ const App: React.FC = () => {
         )}
 
         {(activePage === 'properties' || activePage === 'projects') && (
-          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pb-24">
-             <div className="bg-luxury-black py-24 px-mobile text-center relative overflow-hidden mb-16">
-                <div className="absolute inset-0 z-0">
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/80 to-black/90 z-10"></div>
-                  <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=1920" className="w-full h-full object-cover opacity-50" alt="Properties Hero" />
-                </div>
-                <h1 className="text-4xl md:text-6xl font-serif font-bold text-white mb-6 relative z-10">
-                  Our Portfolio
-                </h1>
-                <p className="text-white/80 max-w-2xl mx-auto font-light text-lg relative z-10">
-                  Explore our complete portfolio of premium properties, including exclusive lands and luxurious homes.
-                </p>
-              </div>
+          <div className="bg-[#fcfcfc] min-h-screen pb-24 font-sans animate-in fade-in duration-500">
+            <PageHero
+              title="All Properties"
+              description="Explore our complete portfolio of premium properties, including exclusive lands and luxurious homes."
+              bgImage="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=1920"
+              breadcrumbs={[
+                { label: 'Home', onClick: () => navigate('home') },
+                { label: 'Properties' }
+              ]}
+            />
 
-            <div className="max-w-7xl mx-auto px-mobile">
+            <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-24 py-16 md:py-24">
               <div className="flex items-center gap-4 mb-8">
-                 <h2 className="text-2xl font-serif font-bold text-luxury-black">
-                   All Properties
+                 <h2 className="text-3xl font-serif font-bold text-luxury-black">
+                   Featured Offerings
                  </h2>
                  <div className="flex-1 h-px bg-gray-200"></div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 {[...lands.map(l => ({...l, _originalId: l.id, id: "land-"+l.id})), ...houses.map(h => ({...h, _originalId: h.id, id: "house-"+h.id}))].sort((a, b) => (b.sortOrder || 0) - (a.sortOrder || 0)).map(prop => (
-                   <div key={prop.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
+                   <div key={prop.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0px_8px_20px_rgba(212,175,55,0.2)] cursor-pointer" onClick={() => navigate('detail', prop._originalId || prop.id)}>
                      <div className="relative aspect-[16/10] overflow-hidden">
                        <img src={prop.image} alt={prop.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
+                       {prop.type && (
+                         <div className="absolute top-4 left-4 bg-luxury-black/60 backdrop-blur-md text-white text-[10px] uppercase tracking-widest px-3 py-1 font-bold rounded shadow-md">
+                           {prop.type}
+                         </div>
+                       )}
                      </div>
                      <div className="p-[20px] text-left flex flex-col flex-grow">
-                       <h3 className="text-[22px] font-serif font-bold text-[#333] mb-2">{prop.title}</h3>
-                       <p className="text-[16px] text-[#777] mb-1">Location: {prop.location.split(',')[0]}</p>
-                       <p className="text-[16px] text-[#777] mb-6 font-bold">Price: {prop.price}</p>
-                       <div className="mt-auto">
-                         <button onClick={() => navigate('detail', prop._originalId || prop.id)} className="bg-luxury-gold text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-luxury-golddark">View Details</button>
+                       <h3 className="text-[20px] font-serif font-bold text-luxury-black mb-2 line-clamp-2">{prop.title}</h3>
+
+                       <div className="flex items-center gap-2 text-gray-500 text-sm mb-3">
+                         <MapPin size={16} className="text-luxury-gold" />
+                         <span className="truncate">{prop.location.split(',')[0]}</span>
+                       </div>
+
+                       <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
+                         <span className="text-lg font-serif font-bold text-luxury-black">{formatPrice(prop.price)}</span>
+                         <span className="text-luxury-gold group-hover:text-luxury-golddark transition-colors">
+                           <ArrowRight size={20} />
+                         </span>
                        </div>
                      </div>
                    </div>
