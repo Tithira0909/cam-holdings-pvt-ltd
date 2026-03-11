@@ -40,13 +40,16 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
     { label: 'Contact Us', page: 'contact' },
   ];
 
-  const isHome = activePage === 'home';
-  // Homepage Top: White text. Scrolled or Other pages: Dark text.
-  const useWhiteText = isHome && !isScrolled;
+  // Pages with a dark hero banner (transparent navbar at the top)
+  const heroPages = ['home', 'services', 'lands', 'houses', 'portfolio', 'contact', 'properties', 'projects'];
+  const hasHeroBanner = heroPages.includes(activePage);
+
+  // All pages with hero banners have white text on top, dark text on scroll.
+  const useWhiteText = hasHeroBanner && !isScrolled;
   const textColorClass = useWhiteText ? 'text-white nav-text-shadow' : 'text-luxury-black';
   const logoColorClass = useWhiteText ? 'text-white nav-text-shadow' : 'text-luxury-black';
   
-  // Background logic: Transparent on home top, semi-transparent white elsewhere when scrolled or internal.
+  // Background logic: Transparent on top for pages with banners, solid white otherwise/on scroll.
   const bgClass = useWhiteText ? 'bg-transparent h-24' : 'bg-white h-24 shadow-sm';
 
   return (
