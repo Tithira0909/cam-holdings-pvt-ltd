@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   LayoutDashboard,
   Building,
@@ -6,7 +6,12 @@ import {
   Users,
   Settings,
   LogOut,
-  MapPin
+  MapPin,
+  Shield,
+  BarChart,
+  Globe,
+  Mail,
+  ChevronDown
 } from 'lucide-react';
 import { PROPERTIES, PROJECTS } from '../../constants';
 import PropertiesList from './PropertiesList';
@@ -16,18 +21,44 @@ import InquiriesList from './InquiriesList';
 import InquiryDetail from './InquiryDetail';
 import ServicesList from './ServicesList';
 import ServiceForm from './ServiceForm';
+import ProjectsList from './ProjectsList';
+import ProjectForm from './ProjectForm';
+import SettingsPermissions from './settings/SettingsPermissions';
+import SettingsAnalytics from './settings/SettingsAnalytics';
+import SettingsSite from './settings/SettingsSite';
+import SettingsEmail from './settings/SettingsEmail';
 
 interface DashboardProps {
   onLogout: () => void;
 }
 
-type ViewState = 'dashboard' | 'properties' | 'add-property' | 'edit-property' | 'inquiries' | 'inquiry-detail' | 'services' | 'add-service' | 'edit-service';
+type ViewState = 'dashboard' | 'properties' | 'add-property' | 'edit-property' | 'inquiries' | 'inquiry-detail' | 'services' | 'add-service' | 'edit-service' | 'projects' | 'add-project' | 'edit-project' | 'settings-permissions' | 'settings-analytics' | 'settings-site' | 'settings-email';
 
 const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [activeView, setActiveView] = useState<ViewState>('dashboard');
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [editingPropertyId, setEditingPropertyId] = useState<string | null>(null);
+  const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
   const [viewingInquiryId, setViewingInquiryId] = useState<string | null>(null);
   const [editingServiceId, setEditingServiceId] = useState<string | null>(null);
+  const [activeProjectsCount, setActiveProjectsCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch('/api/projects')
+      .then(res => res.json())
+      .then(data => {
+        const activeCount = data.filter((p: any) => p.status === 'Active' || p.status === 'active' || !p.status).length;
+        setActiveProjectsCount(activeCount);
+      })
+      .catch(err => console.error('Error fetching projects count:', err));
+  }, [activeView]); // Re-fetch when view changes so we get updated count after editing
+
+  const handleSettingsClick = () => {
+    setIsSettingsOpen(!isSettingsOpen);
+    if (!isSettingsOpen && !activeView.startsWith('settings-')) {
+      setActiveView('settings-site');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#f4f4f4] flex">
@@ -63,7 +94,14 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             <Building size={18} />
             Properties
           </button>
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-white/60 hover:bg-white/5 hover:text-white rounded-lg font-medium text-sm transition-all">
+          <button
+            onClick={() => setActiveView('projects')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
+              activeView === 'projects' || activeView === 'add-project' || activeView === 'edit-project'
+                ? 'bg-white/10 text-luxury-gold'
+                : 'text-white/60 hover:bg-white/5 hover:text-white'
+            }`}
+          >
             <FolderOpen size={18} />
             Projects
           </button>
@@ -89,10 +127,42 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             <Users size={18} />
             Inquiries
           </button>
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-white/60 hover:bg-white/5 hover:text-white rounded-lg font-medium text-sm transition-all">
-            <Settings size={18} />
-            Settings
-          </button>
+          <div>
+            <button
+              onClick={handleSettingsClick}
+              className={`w-full flex items-center justify-between px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
+                activeView.startsWith('settings-')
+                  ? 'bg-white/10 text-luxury-gold'
+                  : 'text-white/60 hover:bg-white/5 hover:text-white'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Settings size={18} />
+                Settings
+              </div>
+              <ChevronDown size={16} className={`transform transition-transform ${isSettingsOpen || activeView.startsWith('settings-') ? 'rotate-180' : ''}`} />
+            </button>
+            {(isSettingsOpen || activeView.startsWith('settings-')) && (
+              <div className="pl-4 mt-2 space-y-1">
+                <button onClick={() => setActiveView('settings-permissions')} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-permissions' ? 'text-luxury-gold bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
+                  <Shield size={14} />
+                  Permission Settings
+                </button>
+                <button onClick={() => setActiveView('settings-analytics')} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-analytics' ? 'text-luxury-gold bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
+                  <BarChart size={14} />
+                  Analytics Settings
+                </button>
+                <button onClick={() => setActiveView('settings-site')} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-site' ? 'text-luxury-gold bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
+                  <Globe size={14} />
+                  Site Settings
+                </button>
+                <button onClick={() => setActiveView('settings-email')} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-email' ? 'text-luxury-gold bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
+                  <Mail size={14} />
+                  Email Settings
+                </button>
+              </div>
+            )}
+          </div>
         </nav>
 
         <div className="p-4 border-t border-white/10">
@@ -139,7 +209,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             <div className="flex justify-between items-start mb-4">
               <div>
                 <p className="text-sm text-luxury-gray font-medium uppercase tracking-wider">Active Projects</p>
-                <h3 className="text-3xl font-bold text-luxury-black mt-1">{PROJECTS.length}</h3>
+                <h3 className="text-3xl font-bold text-luxury-black mt-1">
+                  {activeProjectsCount !== null ? activeProjectsCount : PROJECTS.length}
+                </h3>
               </div>
               <div className="p-3 bg-luxury-offwhite rounded-lg text-luxury-black">
                 <FolderOpen size={24} />
@@ -294,6 +366,47 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             onSuccess={() => setActiveView('services')}
             onCancel={() => setActiveView('services')}
           />
+        )}
+
+        {activeView === 'projects' && (
+          <ProjectsList
+            onAddProject={() => setActiveView('add-project')}
+            onEditProject={(id) => {
+              setEditingProjectId(id);
+              setActiveView('edit-project');
+            }}
+          />
+        )}
+
+        {activeView === 'add-project' && (
+          <ProjectForm
+            onSuccess={() => setActiveView('projects')}
+            onCancel={() => setActiveView('projects')}
+          />
+        )}
+
+        {activeView === 'edit-project' && editingProjectId && (
+          <ProjectForm
+            projectId={editingProjectId}
+            onSuccess={() => setActiveView('projects')}
+            onCancel={() => setActiveView('projects')}
+          />
+        )}
+
+        {activeView === 'settings-permissions' && (
+          <SettingsPermissions />
+        )}
+
+        {activeView === 'settings-analytics' && (
+          <SettingsAnalytics />
+        )}
+
+        {activeView === 'settings-site' && (
+          <SettingsSite />
+        )}
+
+        {activeView === 'settings-email' && (
+          <SettingsEmail />
         )}
       </main>
     </div>
