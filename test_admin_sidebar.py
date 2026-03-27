@@ -26,10 +26,10 @@ def test():
 
         # Test the click handler goes to dashboard view
         # First navigate away from dashboard view
-        page.locator('button >> text="Properties"').click()
+        page.locator('button:has-text("Lands")').click()
         time.sleep(1)
         # Verify we changed view
-        page.wait_for_selector('text="Property Management"', timeout=5000)
+        page.wait_for_selector('text="All Properties"', timeout=5000)
 
         # Click the logo div
         page.locator('img[alt="CAM Admin Panel"]').locator('..').click()

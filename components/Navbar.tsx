@@ -34,9 +34,9 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
   const navLinks = [
     { label: 'Home', page: 'home' },
     { label: 'Services', page: 'services' },
-    { label: 'Projects', page: 'portfolio' },
-    { label: 'Properties', page: 'dropdown', dropdownItems: [{label: 'Lands', page: 'lands'}, {label: 'Houses', page: 'houses'}] },
-    { label: 'About Us', page: 'about' },
+    { label: 'Lands', page: 'lands' },
+    { label: 'Houses', page: 'houses' },
+    { label: 'Portfolio Properties', page: 'portfolio' },
     { label: 'Contact Us', page: 'contact' },
   ];
 
@@ -132,17 +132,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
             ))}
           </div>
 
-          {/* Language / Social Section */}
-          <div className="hidden xl:flex items-center gap-6 ml-10">
-            <div className={`flex items-center gap-2 ${textColorClass} hover:text-luxury-gold cursor-pointer`}>
-              <Globe size={18} />
-              <select className="bg-transparent text-[14px] font-bold uppercase tracking-widest outline-none border-none cursor-pointer">
-                <option value="en" className="text-black">EN</option>
-                <option value="si" className="text-black">SI</option>
-                <option value="ta" className="text-black">TA</option>
-              </select>
-            </div>
-          </div>
+          {/* Spacer to push menu items slightly to left if needed, or remove completely */}
 
           {/* Mobile Toggle */}
           <div className="flex lg:hidden items-center gap-4">

@@ -28,6 +28,8 @@ const AddProperty: React.FC<AddPropertyProps> = ({ onSuccess, onCancel, forcedTy
   const [locationLabel, setLocationLabel] = useState('');
   const [priceLabel, setPriceLabel] = useState('');
   const [projectStatusLabel, setProjectStatusLabel] = useState('');
+  const [bedrooms, setBedrooms] = useState<number | ''>('');
+  const [bathrooms, setBathrooms] = useState<number | ''>('');
   const [isFeatured, setIsFeatured] = useState(false);
   const [sortOrder, setSortOrder] = useState<number>(0);
   const [shortDescription, setShortDescription] = useState('');
@@ -106,10 +108,11 @@ const AddProperty: React.FC<AddPropertyProps> = ({ onSuccess, onCancel, forcedTy
       formData.append('locationLabel', locationLabel);
       formData.append('priceLabel', priceLabel);
       formData.append('projectStatusLabel', projectStatusLabel);
+      formData.append('bedrooms', String(bedrooms || ''));
+      formData.append('bathrooms', String(bathrooms || ''));
       formData.append('isFeatured', String(isFeatured));
       formData.append('sortOrder', String(sortOrder));
       formData.append('shortDescription', shortDescription);
-      formData.append('isFeatured', String(isFeatured));
       formData.append('isSoldOut', String(isSoldOut));
       formData.append('hotlineNumber', hotlineNumber);
       formData.append('whatsappNumber', whatsappNumber);
@@ -217,6 +220,32 @@ const AddProperty: React.FC<AddPropertyProps> = ({ onSuccess, onCancel, forcedTy
                     />
                   </div>
                 </div>
+                {type === PropertyType.HOUSE || type === PropertyType.APARTMENT ? (
+                  <div className="grid grid-cols-2 gap-4 mt-4">
+                    <div>
+                      <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Bedrooms</label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={bedrooms}
+                        onChange={(e) => setBedrooms(e.target.value ? Number(e.target.value) : '')}
+                        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                        placeholder="e.g. 4"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Bathrooms</label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={bathrooms}
+                        onChange={(e) => setBathrooms(e.target.value ? Number(e.target.value) : '')}
+                        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                        placeholder="e.g. 3"
+                      />
+                    </div>
+                  </div>
+                ) : null}
               </div>
               <div className="space-y-4">
                  <div>
@@ -229,7 +258,17 @@ const AddProperty: React.FC<AddPropertyProps> = ({ onSuccess, onCancel, forcedTy
                       placeholder="e.g. Ongoing / Live / Sold Out"
                     />
                  </div>
-                 <div className="grid grid-cols-3 gap-4 pt-6">
+                 <div>
+                    <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Sort Order</label>
+                    <input
+                      type="number"
+                      value={sortOrder}
+                      onChange={(e) => setSortOrder(Number(e.target.value))}
+                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                      placeholder="e.g. 10"
+                    />
+                 </div>
+                 <div className="grid grid-cols-3 gap-4 pt-4">
                     <label className="flex items-center gap-2 cursor-pointer bg-gray-50 p-3 rounded-lg border border-gray-200 text-sm font-bold text-luxury-gray">
                        <input type="checkbox" checked={isFeatured} onChange={e => setIsFeatured(e.target.checked)} className="accent-luxury-gold w-4 h-4" />
                        Featured

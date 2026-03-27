@@ -175,7 +175,7 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditPr
                 <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Property</th>
                 <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Category</th>
                 <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Location</th>
-                <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Type</th>
+                <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Type / Details</th>
                 <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Price</th>
                 <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Status</th>
                 <th className="px-6 py-4 text-xs font-bold text-luxury-gray uppercase tracking-wider">Actions</th>
@@ -211,26 +211,35 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditPr
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="px-3 py-1 bg-luxury-offwhite text-luxury-black text-xs font-bold rounded-full border border-luxury-border">
-                      {prop.type}
-                    </span>
+                    <div className="flex flex-col gap-1 items-start">
+                      <span className="px-3 py-1 bg-luxury-offwhite text-luxury-black text-xs font-bold rounded-full border border-luxury-border">
+                        {prop.type}
+                      </span>
+                      {(prop.type === 'House' || prop.type === 'Apartment') && (
+                         <span className="text-xs text-luxury-gray whitespace-nowrap mt-1 font-medium">
+                           {prop.bedrooms ?? prop.beds ?? '-'} Beds, {prop.bathrooms ?? prop.baths ?? '-'} Baths
+                         </span>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-4 text-sm font-bold text-luxury-black">
                     {prop.price}
                   </td>
-                  <td className="px-6 py-4 flex flex-col items-start gap-1">
-                    <span className={`px-2 py-1 text-xs font-bold rounded-full ${
-                      prop.isSoldOut || prop.status === 'Sold'
-                        ? 'bg-red-100 text-red-700'
-                        : 'bg-green-100 text-green-700'
-                    }`}>
-                      {prop.isSoldOut ? 'Sold Out' : prop.status || 'Active'}
-                    </span>
-                    {prop.isFeatured && (
-                      <span className="px-2 py-1 bg-luxury-gold/10 text-luxury-gold text-xs font-bold rounded-full">
-                        Featured
-                      </span>
-                    )}
+                  <td className="px-6 py-4">
+                     <div className="flex flex-col items-start gap-1">
+                        <span className={`px-2 py-1 text-xs font-bold rounded-full ${
+                        prop.isSoldOut || prop.status === 'Sold'
+                           ? 'bg-red-100 text-red-700'
+                           : 'bg-green-100 text-green-700'
+                        }`}>
+                        {prop.isSoldOut ? 'Sold Out' : prop.status || 'Active'}
+                        </span>
+                        {prop.isFeatured && (
+                        <span className="px-2 py-1 bg-luxury-gold/10 text-luxury-gold text-[10px] font-bold rounded border border-luxury-gold/20 tracking-wider">
+                           Featured (Order: {prop.sortOrder ?? 0})
+                        </span>
+                        )}
+                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">

@@ -10,13 +10,22 @@ def test():
 
         # Go to homepage
         page.goto('http://localhost:3000')
-        page.wait_for_selector('text="Properties"', timeout=5000)
+        page.wait_for_selector('div.hidden.lg\\:flex button:has-text("Lands")', timeout=5000)
 
-        # Just use UI to log in since state-based routing might be hard to hack via window
-        # Wait, there's no visible admin link in the normal footer. I should just trigger it.
-        # Looking at App.tsx, they might handle popstate? Let me check App.tsx routing
         page.evaluate("""() => {
-           window.dispatchEvent(new CustomEvent('navigate', { detail: 'admin' }))
+           const footerLoginBtn = document.querySelector('button.text-luxury-gray.hover\\\\:text-white.text-sm');
+           if (footerLoginBtn && footerLoginBtn.textContent.includes('Admin Login')) {
+               footerLoginBtn.click();
+           } else {
+               // Fallback if not found, simulate clicking the hidden trigger
+               const nav = document.querySelector('nav');
+               if (nav) {
+                 // The app uses state for routing, not easily dispatchable from outside without the react component
+                 // But we know there's a footer link for Admin Login
+                 document.body.innerHTML += '<button id="hack-nav" onclick="document.querySelector(\\'button.text-luxury-gray.hover\\\\\\\\:text-white.text-sm\\').click()">hack</button>';
+                 document.getElementById('hack-nav').click();
+               }
+           }
         }""")
 
         time.sleep(1)
@@ -38,7 +47,7 @@ def test():
 
         # Test the click handler goes to dashboard view
         # First navigate away from dashboard view
-        page.locator('button >> text="Properties"').click()
+        page.locator('button:has-text("Lands")').click() # Click a sidebar item to navigate away from dashboard
         time.sleep(1)
 
         # Click the logo div
