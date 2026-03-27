@@ -85,7 +85,8 @@ const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => localStorage.getItem('isAdmin') === 'true');
 
   // Data State
-  const [properties, setProperties] = useState<Property[]>([]);
+  const [lands, setLands] = useState<Property[]>([]);
+  const [houses, setHouses] = useState<Property[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [currentService, setCurrentService] = useState<Service | null>(null);
@@ -141,15 +142,21 @@ const App: React.FC = () => {
   const fetchData = async () => {
     try {
       const queryParam = '';
-      const [propsRes, projsRes, svcsRes] = await Promise.all([
-        fetch(`/api/properties${queryParam}`),
+      const [landsRes, housesRes, projsRes, svcsRes] = await Promise.all([
+        fetch(`/api/lands${queryParam}`),
+        fetch(`/api/houses${queryParam}`),
         fetch('/api/projects'),
         fetch('/api/services')
       ]);
 
-      if (propsRes.ok) {
-        const propsData = await propsRes.json();
-        setProperties(propsData.map((p: any) => ({ ...p, id: String(p.id) })));
+      if (landsRes.ok) {
+        const landsData = await landsRes.json();
+        setLands(landsData.map((p: any) => ({ ...p, id: String(p.id) })));
+      }
+
+      if (housesRes.ok) {
+        const housesData = await housesRes.json();
+        setHouses(housesData.map((p: any) => ({ ...p, id: String(p.id) })));
       }
 
       if (projsRes.ok) {
@@ -202,7 +209,10 @@ const App: React.FC = () => {
     if (activePage === 'detail' && selectedProjectId) {
       const fetchPropertyDetail = async () => {
         try {
-          const res = await fetch(`/api/properties/${selectedProjectId}`);
+          let res = await fetch(`/api/lands/${selectedProjectId}`);
+          if (!res.ok) {
+            res = await fetch(`/api/houses/${selectedProjectId}`);
+          }
           if (res.ok) {
             const data = await res.json();
             setCurrentProperty(data);
@@ -624,11 +634,11 @@ const App: React.FC = () => {
 
         {/* 4. Properties Page */}
         {activePage === 'houses' && (
-          <HousesListing properties={properties} onNavigate={navigate} />
+          <HousesListing properties={houses} onNavigate={navigate} />
         )}
 
         {activePage === 'lands' && (
-          <LandsListing properties={properties} onNavigate={navigate} />
+          <LandsListing properties={lands} onNavigate={navigate} />
         )}
 
         {(activePage === 'properties' || activePage === 'projects') && (
@@ -655,7 +665,7 @@ const App: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                {properties.map(prop => (
+                {[...lands.map(l => ({...l, _originalId: l.id, id: "land-"+l.id})), ...houses.map(h => ({...h, _originalId: h.id, id: "house-"+h.id}))].sort((a, b) => (b.sortOrder || 0) - (a.sortOrder || 0)).map(prop => (
                    <div key={prop.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
                      <div className="relative aspect-[16/10] overflow-hidden">
                        <img src={prop.image} alt={prop.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
@@ -665,7 +675,7 @@ const App: React.FC = () => {
                        <p className="text-[16px] text-[#777] mb-1">Location: {prop.location.split(',')[0]}</p>
                        <p className="text-[16px] text-[#777] mb-6 font-bold">Price: {prop.price}</p>
                        <div className="mt-auto">
-                         <button onClick={() => navigate('detail', prop.id)} className="bg-luxury-gold text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-luxury-golddark">View Details</button>
+                         <button onClick={() => navigate('detail', prop._originalId || prop.id)} className="bg-luxury-gold text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-luxury-golddark">View Details</button>
                        </div>
                      </div>
                    </div>
@@ -727,7 +737,7 @@ const App: React.FC = () => {
                  <LandDetail
                     property={currentProperty}
                     onNavigate={navigate}
-                    recommendedLands={properties.filter(p => p.id !== currentProperty.id && (p.type?.toLowerCase() === 'land' || p.type?.toLowerCase() === 'lands')).slice(0, 3)}
+                    recommendedLands={lands.filter(p => p.id !== currentProperty.id).slice(0, 3)}
                     onOpenConsultation={() => setIsModalOpen(true)}
                     setSelectedImage={setSelectedImage}
                  />
@@ -735,7 +745,7 @@ const App: React.FC = () => {
                  <HouseDetail
                     property={currentProperty}
                     onNavigate={navigate}
-                    recommendedHouses={properties.filter(p => p.id !== currentProperty.id && (p.type?.toLowerCase() === 'house' || p.type?.toLowerCase() === 'apartment' || p.type?.toLowerCase() === 'houses')).slice(0, 3)}
+                    recommendedHouses={houses.filter(p => p.id !== currentProperty.id).slice(0, 3)}
                     onOpenConsultation={() => setIsModalOpen(true)}
                     setSelectedImage={setSelectedImage}
                  />

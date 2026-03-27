@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS properties (
+CREATE TABLE IF NOT EXISTS lands (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   title TEXT NOT NULL,
   slug TEXT NOT NULL UNIQUE,
@@ -38,8 +38,52 @@ CREATE TABLE IF NOT EXISTS properties (
   sortOrder INTEGER DEFAULT 0,
   shortDescription TEXT,
   fullDescription TEXT,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS houses (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  slug TEXT NOT NULL UNIQUE,
+  location TEXT NOT NULL,
+  price TEXT NOT NULL,
+  type TEXT NOT NULL,
+  status TEXT DEFAULT 'Active',
+  description TEXT,
+  image TEXT,
+  category TEXT,
+  district TEXT,
+  city TEXT,
+  locationLabel TEXT,
+  priceLabel TEXT,
+  bedrooms INTEGER,
+  bathrooms INTEGER,
+  isFeatured BOOLEAN DEFAULT 0,
+  isSoldOut BOOLEAN DEFAULT 0,
+  amenities TEXT,
+  locationHighlights TEXT,
+  floorPlans TEXT,
+  brochureFiles TEXT,
+  videoUrl TEXT,
+  hotlineNumber TEXT,
+  whatsappNumber TEXT,
+  logoImage TEXT,
+  blockPlanImage TEXT,
+  roadMapImage TEXT,
+  locationMapImage TEXT,
+  projectStatusLabel TEXT,
+  travelHighlights TEXT,
+  inquiryEmail TEXT,
+  relatedLands TEXT,
+  metaTitle TEXT,
+  metaDescription TEXT,
+  ogImage TEXT,
+  sortOrder INTEGER DEFAULT 0,
+  shortDescription TEXT,
+  fullDescription TEXT,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS services (
@@ -52,8 +96,8 @@ CREATE TABLE IF NOT EXISTS services (
   icon TEXT,
   sort_order INTEGER DEFAULT 0,
   status TEXT DEFAULT 'active',
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS projects (
@@ -65,18 +109,27 @@ CREATE TABLE IF NOT EXISTS projects (
   description TEXT,
   image TEXT,
   service_id INTEGER,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE SET NULL
 );
 
-CREATE TABLE IF NOT EXISTS property_images (
+CREATE TABLE IF NOT EXISTS land_images (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  property_id INTEGER NOT NULL,
+  land_id INTEGER NOT NULL,
   image_url TEXT NOT NULL,
   is_main BOOLEAN DEFAULT 0,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE CASCADE
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (land_id) REFERENCES lands(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS house_images (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  house_id INTEGER NOT NULL,
+  image_url TEXT NOT NULL,
+  is_main BOOLEAN DEFAULT 0,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (house_id) REFERENCES houses(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS inquiries (
@@ -88,7 +141,7 @@ CREATE TABLE IF NOT EXISTS inquiries (
   service TEXT,
   message TEXT,
   status TEXT DEFAULT 'new',
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS inquiry_replies (
@@ -112,6 +165,6 @@ CREATE TABLE IF NOT EXISTS roles (
   custom_modules TEXT,
   status TEXT DEFAULT 'Active',
   users_count INTEGER DEFAULT 0,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

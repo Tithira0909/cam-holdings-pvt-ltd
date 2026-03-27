@@ -2,13 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Upload, X, Loader2, Image as ImageIcon, ArrowLeft, Plus } from 'lucide-react';
 import { PropertyType, Property } from '../../types';
 
-interface EditPropertyProps {
+interface EditHouseProps {
   propertyId: string;
   onSuccess: () => void;
   onCancel: () => void;
 }
 
-const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCancel }) => {
+const EditHouse: React.FC<EditHouseProps> = ({ propertyId, onSuccess, onCancel }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [initialLoading, setInitialLoading] = useState(true);
@@ -18,7 +18,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
   const [slug, setSlug] = useState('');
   const [location, setLocation] = useState('');
   const [price, setPrice] = useState('');
-  const [type, setType] = useState<PropertyType>(PropertyType.LAND);
+  const [type, setType] = useState<PropertyType>(PropertyType.HOUSE);
   const [status, setStatus] = useState('Active');
   const [description, setDescription] = useState('');
   const [fullDescription, setFullDescription] = useState('');
@@ -80,11 +80,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
 
   const fetchPropertyDetails = async () => {
     try {
-      let res = await fetch(`/api/lands/${propertyId}`);
-      if (!res.ok) {
-        res = await fetch(`/api/houses/${propertyId}`);
-      }
-      const response = res;
+      const response = await fetch(`/api/houses/${propertyId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch property details');
       }
@@ -172,10 +168,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
   const handleDeleteExistingImage = async (imageId: number) => {
     if (!window.confirm('Are you sure you want to delete this gallery image?')) return;
     try {
-      let url = `/api/admin/lands/images/${imageId}`;
-      if (type === 'House' || type === 'Apartment') {
-        url = `/api/admin/houses/images/${imageId}`;
-      }
+      const url = `/api/admin/houses/images/${imageId}`;
       const res = await fetch(url, {
         method: 'DELETE',
       });
@@ -200,10 +193,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
     });
 
     try {
-      let url = `/api/admin/lands/${propertyId}/images`;
-      if (type === 'House' || type === 'Apartment') {
-        url = `/api/admin/houses/${propertyId}/images`;
-      }
+      const url = `/api/admin/houses/${propertyId}/images`;
       const res = await fetch(url, {
         method: 'POST',
         body: formData,
@@ -266,10 +256,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
       if (roadMapImage) formData.append('roadMapImage', roadMapImage);
       if (locationMapImage) formData.append('locationMapImage', locationMapImage);
 
-      let url = `/api/lands/${propertyId}`;
-      if (type === 'House' || type === 'Apartment') {
-        url = `/api/houses/${propertyId}`;
-      }
+      const url = `/api/houses/${propertyId}`;
       const response = await fetch(url, {
         method: 'PUT',
         body: formData,
@@ -303,7 +290,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
           <button onClick={onCancel} className="p-2 hover:bg-gray-200 rounded-full transition-colors bg-white shadow-sm">
             <ArrowLeft size={20} className="text-luxury-gray" />
           </button>
-          <h2 className="text-xl font-serif font-bold text-luxury-black">Edit Property / Land</h2>
+          <h2 className="text-xl font-serif font-bold text-luxury-black">Edit House</h2>
         </div>
       </div>
 
@@ -345,18 +332,6 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Property Type *</label>
-                    <select
-                      value={type}
-                      onChange={(e) => setType(e.target.value as PropertyType)}
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
-                    >
-                      {Object.values(PropertyType).map(t => (
-                        <option key={t} value={t}>{t}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
                     <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Category</label>
                     <input
                       type="text"
@@ -366,30 +341,28 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                     />
                   </div>
                 </div>
-                {type === PropertyType.HOUSE || type === PropertyType.APARTMENT ? (
-                  <div className="grid grid-cols-2 gap-4 mt-4">
-                    <div>
-                      <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Bedrooms</label>
-                      <input
-                        type="number"
-                        min="0"
-                        value={bedrooms}
-                        onChange={(e) => setBedrooms(e.target.value ? Number(e.target.value) : '')}
-                        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Bathrooms</label>
-                      <input
-                        type="number"
-                        min="0"
-                        value={bathrooms}
-                        onChange={(e) => setBathrooms(e.target.value ? Number(e.target.value) : '')}
-                        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
-                      />
-                    </div>
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                  <div>
+                    <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Bedrooms</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={bedrooms}
+                      onChange={(e) => setBedrooms(e.target.value ? Number(e.target.value) : '')}
+                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                    />
                   </div>
-                ) : null}
+                  <div>
+                    <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Bathrooms</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={bathrooms}
+                      onChange={(e) => setBathrooms(e.target.value ? Number(e.target.value) : '')}
+                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                    />
+                  </div>
+                </div>
               </div>
               <div className="space-y-4">
                  <div>
@@ -724,7 +697,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
               className="px-8 py-3 bg-luxury-gold text-white rounded-lg font-bold uppercase tracking-wider hover:bg-luxury-golddark transition-all shadow-gold-glow disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {loading && <Loader2 size={18} className="animate-spin" />}
-              {loading ? 'Updating Property...' : 'Update Property'}
+              {loading ? 'Updating House...' : 'Update House'}
             </button>
           </div>
         </form>
@@ -733,4 +706,4 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
   );
 };
 
-export default EditProperty;
+export default EditHouse;

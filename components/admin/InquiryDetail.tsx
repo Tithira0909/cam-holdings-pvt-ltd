@@ -23,7 +23,7 @@ interface Inquiry {
   service: string;
   message: string;
   status: 'new' | 'replied' | 'closed';
-  created_at: string;
+  createdAt: string;
   replies: Reply[];
 }
 
@@ -115,7 +115,7 @@ const InquiryDetail: React.FC<InquiryDetailProps> = ({ inquiryId, onBack }) => {
                </div>
                <div>
                  <span className="block font-bold uppercase text-[10px] tracking-wider text-luxury-gray">Date</span>
-                 <span className="text-luxury-black font-medium">{new Date(inquiry.created_at).toLocaleString()}</span>
+                 <span className="text-luxury-black font-medium">{new Date(inquiry.createdAt).toLocaleString()}</span>
                </div>
                {inquiry.phone && (
                  <div>

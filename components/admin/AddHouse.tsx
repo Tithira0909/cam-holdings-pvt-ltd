@@ -1,27 +1,24 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Upload, X, Loader2, Image as ImageIcon, ArrowLeft, Plus } from 'lucide-react';
-import { PropertyType, Property } from '../../types';
+import { PropertyType } from '../../types';
 
-interface EditPropertyProps {
-  propertyId: string;
+interface AddHouseProps {
   onSuccess: () => void;
   onCancel: () => void;
 }
 
-const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCancel }) => {
+const AddHouse: React.FC<AddHouseProps> = ({ onSuccess, onCancel }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [initialLoading, setInitialLoading] = useState(true);
 
   // Form State
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
   const [location, setLocation] = useState('');
   const [price, setPrice] = useState('');
-  const [type, setType] = useState<PropertyType>(PropertyType.LAND);
+  const [type, setType] = useState<PropertyType>(PropertyType.HOUSE);
   const [status, setStatus] = useState('Active');
   const [description, setDescription] = useState('');
-  const [fullDescription, setFullDescription] = useState('');
 
   // New Fields
   const [category, setCategory] = useState('');
@@ -34,6 +31,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
   const [bathrooms, setBathrooms] = useState<number | ''>('');
   const [isFeatured, setIsFeatured] = useState(false);
   const [sortOrder, setSortOrder] = useState<number>(0);
+  const [shortDescription, setShortDescription] = useState('');
   const [isSoldOut, setIsSoldOut] = useState(false);
   const [hotlineNumber, setHotlineNumber] = useState('');
   const [whatsappNumber, setWhatsappNumber] = useState('');
@@ -61,80 +59,12 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
   const [locationMapImage, setLocationMapImage] = useState<File | null>(null);
   const [locationMapImagePreview, setLocationMapImagePreview] = useState<string | null>(null);
 
-  // Gallery
-  const [galleryImages, setGalleryImages] = useState<File[]>([]);
-  const [galleryPreviews, setGalleryPreviews] = useState<string[]>([]);
-  const [existingGallery, setExistingGallery] = useState<any[]>([]);
-  const [uploadingGallery, setUploadingGallery] = useState(false);
 
   const mainImageInputRef = useRef<HTMLInputElement>(null);
   const logoImageInputRef = useRef<HTMLInputElement>(null);
   const blockPlanImageInputRef = useRef<HTMLInputElement>(null);
   const roadMapImageInputRef = useRef<HTMLInputElement>(null);
   const locationMapImageInputRef = useRef<HTMLInputElement>(null);
-  const galleryInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    fetchPropertyDetails();
-  }, [propertyId]);
-
-  const fetchPropertyDetails = async () => {
-    try {
-      let res = await fetch(`/api/lands/${propertyId}`);
-      if (!res.ok) {
-        res = await fetch(`/api/houses/${propertyId}`);
-      }
-      const response = res;
-      if (!response.ok) {
-        throw new Error('Failed to fetch property details');
-      }
-      const data: Property = await response.json();
-
-      setTitle(data.title || '');
-      setSlug(data.slug || '');
-      setLocation(data.location || '');
-      setPrice(data.price || '');
-      setType((data.type as PropertyType) || PropertyType.LAND);
-      setStatus(data.status || 'Active');
-      setDescription(data.description || '');
-      setFullDescription(data.fullDescription || '');
-
-      setCategory(data.category || '');
-      setDistrict(data.district || '');
-      setCity(data.city || '');
-      setLocationLabel(data.locationLabel || '');
-      setPriceLabel(data.priceLabel || '');
-      setProjectStatusLabel(data.projectStatusLabel || '');
-      setBedrooms(data.bedrooms ?? data.beds ?? '');
-      setBathrooms(data.bathrooms ?? data.baths ?? '');
-      setIsFeatured(!!data.isFeatured);
-      setSortOrder(data.sortOrder ?? 0);
-      setIsSoldOut(!!data.isSoldOut);
-      setHotlineNumber(data.hotlineNumber || '');
-      setWhatsappNumber(data.whatsappNumber || '');
-      setInquiryEmail(data.inquiryEmail || '');
-      setMetaTitle(data.metaTitle || '');
-      setMetaDescription(data.metaDescription || '');
-
-      setAmenities(data.amenities || []);
-
-      if (data.image) setMainImagePreview(data.image);
-      if (data.logoImage) setLogoImagePreview(data.logoImage);
-      if (data.blockPlanImage) setBlockPlanImagePreview(data.blockPlanImage);
-      if (data.roadMapImage) setRoadMapImagePreview(data.roadMapImage);
-      if (data.locationMapImage) setLocationMapImagePreview(data.locationMapImage);
-
-      if (data.images && data.images.length > 0) {
-        setExistingGallery(data.images);
-      }
-
-    } catch (err) {
-      console.error(err);
-      setError('Failed to load property details.');
-    } finally {
-      setInitialLoading(false);
-    }
-  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, setFile: any, setPreview: any) => {
     if (e.target.files && e.target.files[0]) {
@@ -146,80 +76,13 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
 
   const addFacility = () => {
      if (newFacility.trim()) {
-        setAmenities([...amenities, { id: Date.now().toString(), label: newFacility.trim(), icon: '' }]);
+        setAmenities([...amenities, { id: Date.now().toString(), label: newFacility.trim() }]);
         setNewFacility('');
      }
   };
 
   const removeFacility = (id: string) => {
      setAmenities(amenities.filter(a => a.id !== id));
-  };
-
-  const handleGalleryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const files = Array.from(e.target.files);
-      setGalleryImages(prev => [...prev, ...files]);
-      const newPreviews = files.map((file: File) => URL.createObjectURL(file));
-      setGalleryPreviews(prev => [...prev, ...newPreviews]);
-    }
-  };
-
-  const removeGalleryImage = (index: number) => {
-    setGalleryImages(prev => prev.filter((_, i) => i !== index));
-    setGalleryPreviews(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const handleDeleteExistingImage = async (imageId: number) => {
-    if (!window.confirm('Are you sure you want to delete this gallery image?')) return;
-    try {
-      let url = `/api/admin/lands/images/${imageId}`;
-      if (type === 'House' || type === 'Apartment') {
-        url = `/api/admin/houses/images/${imageId}`;
-      }
-      const res = await fetch(url, {
-        method: 'DELETE',
-      });
-      if (res.ok) {
-        setExistingGallery(prev => prev.filter(img => img.id !== imageId));
-      } else {
-        throw new Error('Failed to delete');
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Error deleting image');
-    }
-  };
-
-  const handleUploadNewImages = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) return;
-
-    setUploadingGallery(true);
-    const formData = new FormData();
-    Array.from(e.target.files).forEach((file: File) => {
-      formData.append('images', file);
-    });
-
-    try {
-      let url = `/api/admin/lands/${propertyId}/images`;
-      if (type === 'House' || type === 'Apartment') {
-        url = `/api/admin/houses/${propertyId}/images`;
-      }
-      const res = await fetch(url, {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!res.ok) throw new Error('Failed to upload');
-
-      const uploadedImages = await res.json();
-      setExistingGallery(prev => [...prev, ...uploadedImages]);
-    } catch (err) {
-      console.error(err);
-      alert('Error uploading images');
-    } finally {
-      setUploadingGallery(false);
-      if (galleryInputRef.current) galleryInputRef.current.value = '';
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -236,7 +99,6 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
       formData.append('type', type);
       formData.append('status', status);
       formData.append('description', description);
-      formData.append('fullDescription', fullDescription || description);
 
       // New text fields
       formData.append('category', category);
@@ -249,6 +111,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
       formData.append('bathrooms', String(bathrooms || ''));
       formData.append('isFeatured', String(isFeatured));
       formData.append('sortOrder', String(sortOrder));
+      formData.append('shortDescription', shortDescription);
       formData.append('isSoldOut', String(isSoldOut));
       formData.append('hotlineNumber', hotlineNumber);
       formData.append('whatsappNumber', whatsappNumber);
@@ -266,17 +129,14 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
       if (roadMapImage) formData.append('roadMapImage', roadMapImage);
       if (locationMapImage) formData.append('locationMapImage', locationMapImage);
 
-      let url = `/api/lands/${propertyId}`;
-      if (type === 'House' || type === 'Apartment') {
-        url = `/api/houses/${propertyId}`;
-      }
+      const url = '/api/houses';
       const response = await fetch(url, {
-        method: 'PUT',
+        method: 'POST',
         body: formData,
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update property');
+        throw new Error('Failed to save property');
       }
 
       onSuccess();
@@ -287,15 +147,6 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
     }
   };
 
-  if (initialLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center h-64 text-luxury-gold">
-        <Loader2 size={48} className="animate-spin mb-4" />
-        <p className="font-serif text-lg">Loading property details...</p>
-      </div>
-    );
-  }
-
   return (
     <div className="bg-white rounded-xl shadow-sm overflow-hidden animate-in fade-in duration-300">
       <div className="p-6 border-b border-luxury-border flex justify-between items-center bg-gray-50">
@@ -303,7 +154,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
           <button onClick={onCancel} className="p-2 hover:bg-gray-200 rounded-full transition-colors bg-white shadow-sm">
             <ArrowLeft size={20} className="text-luxury-gray" />
           </button>
-          <h2 className="text-xl font-serif font-bold text-luxury-black">Edit Property / Land</h2>
+          <h2 className="text-xl font-serif font-bold text-luxury-black">Add New House</h2>
         </div>
       </div>
 
@@ -331,6 +182,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                     }}
                     required
                     className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                    placeholder="e.g. LUXE Thalahena"
                   />
                 </div>
                 <div>
@@ -341,21 +193,10 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                     onChange={(e) => setSlug(e.target.value)}
                     required
                     className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                    placeholder="e.g. luxe-thalahena"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Property Type *</label>
-                    <select
-                      value={type}
-                      onChange={(e) => setType(e.target.value as PropertyType)}
-                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
-                    >
-                      {Object.values(PropertyType).map(t => (
-                        <option key={t} value={t}>{t}</option>
-                      ))}
-                    </select>
-                  </div>
                   <div>
                     <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Category</label>
                     <input
@@ -363,33 +204,34 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                       value={category}
                       onChange={(e) => setCategory(e.target.value)}
                       className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                      placeholder="e.g. Luxury Villa"
                     />
                   </div>
                 </div>
-                {type === PropertyType.HOUSE || type === PropertyType.APARTMENT ? (
-                  <div className="grid grid-cols-2 gap-4 mt-4">
-                    <div>
-                      <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Bedrooms</label>
-                      <input
-                        type="number"
-                        min="0"
-                        value={bedrooms}
-                        onChange={(e) => setBedrooms(e.target.value ? Number(e.target.value) : '')}
-                        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Bathrooms</label>
-                      <input
-                        type="number"
-                        min="0"
-                        value={bathrooms}
-                        onChange={(e) => setBathrooms(e.target.value ? Number(e.target.value) : '')}
-                        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
-                      />
-                    </div>
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                  <div>
+                    <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Bedrooms</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={bedrooms}
+                      onChange={(e) => setBedrooms(e.target.value ? Number(e.target.value) : '')}
+                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                      placeholder="e.g. 4"
+                    />
                   </div>
-                ) : null}
+                  <div>
+                    <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Bathrooms</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={bathrooms}
+                      onChange={(e) => setBathrooms(e.target.value ? Number(e.target.value) : '')}
+                      className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                      placeholder="e.g. 3"
+                    />
+                  </div>
+                </div>
               </div>
               <div className="space-y-4">
                  <div>
@@ -399,6 +241,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                       value={projectStatusLabel}
                       onChange={(e) => setProjectStatusLabel(e.target.value)}
                       className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                      placeholder="e.g. Ongoing / Live / Sold Out"
                     />
                  </div>
                  <div>
@@ -408,6 +251,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                       value={sortOrder}
                       onChange={(e) => setSortOrder(Number(e.target.value))}
                       className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                      placeholder="e.g. 10"
                     />
                  </div>
                  <div className="grid grid-cols-3 gap-4 pt-4">
@@ -426,25 +270,15 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                  </div>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-              <div>
-                <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Short Description</label>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={4}
-                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm resize-none"
-                ></textarea>
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Full Detailed Description</label>
-                <textarea
-                  value={fullDescription}
-                  onChange={(e) => setFullDescription(e.target.value)}
-                  rows={4}
-                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm resize-none"
-                ></textarea>
-              </div>
+            <div className="mt-4">
+              <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Description</label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={4}
+                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm resize-none"
+                placeholder="Detailed property description..."
+              ></textarea>
             </div>
           </section>
 
@@ -461,6 +295,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                       onChange={(e) => setPrice(e.target.value)}
                       required
                       className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm font-bold text-luxury-black"
+                      placeholder="e.g. 1500000 (Numeric value preferred)"
                     />
                  </div>
                  <div>
@@ -470,6 +305,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                       value={priceLabel}
                       onChange={(e) => setPriceLabel(e.target.value)}
                       className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                      placeholder="e.g. LKR per perch upwards"
                     />
                  </div>
               </div>
@@ -482,6 +318,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                          value={district}
                          onChange={(e) => setDistrict(e.target.value)}
                          className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                         placeholder="e.g. Colombo"
                        />
                     </div>
                     <div>
@@ -491,16 +328,18 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                          value={city}
                          onChange={(e) => setCity(e.target.value)}
                          className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                         placeholder="e.g. Malabe"
                        />
                     </div>
                  </div>
                  <div>
-                    <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Exact Location Label</label>
+                    <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Exact Location Label (Optional)</label>
                     <input
                       type="text"
                       value={locationLabel}
                       onChange={(e) => setLocationLabel(e.target.value)}
                       className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none transition-all text-sm"
+                      placeholder="e.g. 1.5km to Malabe town"
                     />
                  </div>
               </div>
@@ -529,7 +368,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                     ) : (
                       <>
                         <ImageIcon size={32} className="text-gray-300 mb-2" />
-                        <p className="text-gray-500 font-medium text-xs">Upload Cover</p>
+                        <p className="text-gray-500 font-medium text-xs">Upload Cover (16:9)</p>
                       </>
                     )}
                     <input type="file" ref={mainImageInputRef} onChange={(e) => handleImageChange(e, setMainImage, setMainImagePreview)} accept="image/*" className="hidden" />
@@ -544,12 +383,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                     className={`border-2 border-dashed border-gray-300 rounded-xl aspect-square flex flex-col items-center justify-center cursor-pointer hover:border-luxury-gold transition-colors bg-gray-50`}
                   >
                     {logoImagePreview ? (
-                       <div className="relative w-full h-full group p-4">
-                         <img src={logoImagePreview} alt="Logo Preview" className="w-full h-full object-contain" />
-                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-                            <p className="text-white font-bold text-xs">Change</p>
-                         </div>
-                       </div>
+                      <img src={logoImagePreview} alt="Logo Preview" className="w-3/4 h-3/4 object-contain" />
                     ) : (
                       <>
                         <ImageIcon size={24} className="text-gray-300 mb-2" />
@@ -590,64 +424,8 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                </div>
             </div>
 
-          </section>
-
-          {/* --- SECTION 3.5: Gallery Section --- */}
-          <section className="pt-8 border-t border-gray-100">
-            <h3 className="text-xl font-serif font-bold text-luxury-black mb-6">Gallery Images</h3>
-
-            <div className="bg-gray-50 p-6 rounded-lg border border-gray-100">
-              {/* Existing Images */}
-              {existingGallery.length > 0 ? (
-                <div className="mb-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {existingGallery.map((img) => (
-                    <div key={img.id} className="relative aspect-[4/3] rounded-lg overflow-hidden group shadow-sm">
-                      <img src={img.image_url} alt="Gallery" className="w-full h-full object-cover" />
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteExistingImage(img.id)}
-                        className="absolute top-2 right-2 bg-red-500/80 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-md backdrop-blur-sm"
-                        title="Remove image"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 mb-6 bg-white rounded-lg border border-dashed border-gray-200">
-                   <p className="text-luxury-gray italic">No gallery images yet.</p>
-                </div>
-              )}
-
-              {/* Upload New Images */}
-              <div>
-                <label className="block text-sm font-bold text-luxury-black mb-2">Add More Images</label>
-                <div
-                  className={`border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:bg-gray-50 transition-colors cursor-pointer ${uploadingGallery ? 'opacity-50 pointer-events-none' : ''}`}
-                  onClick={() => galleryInputRef.current?.click()}
-                >
-                  <div className="flex flex-col items-center justify-center gap-3">
-                    {uploadingGallery ? (
-                      <Loader2 size={32} className="text-luxury-gold animate-spin" />
-                    ) : (
-                      <Upload size={32} className="text-luxury-gray" />
-                    )}
-                    <div>
-                      <p className="font-medium text-luxury-black">{uploadingGallery ? 'Uploading...' : 'Click to select additional images'}</p>
-                      <p className="text-xs text-luxury-gray mt-1">PNG, JPG up to 5MB each. You can select multiple.</p>
-                    </div>
-                  </div>
-                </div>
-                <input
-                  type="file"
-                  ref={galleryInputRef}
-                  onChange={handleUploadNewImages}
-                  accept="image/*"
-                  multiple
-                  className="hidden"
-                />
-              </div>
+            <div className="mt-8 bg-blue-50/50 p-4 rounded-lg border border-blue-100 text-center text-sm text-blue-800">
+               <p><strong>Note:</strong> Multiple gallery images can be added via the Edit view after saving this property initially.</p>
             </div>
           </section>
 
@@ -689,21 +467,21 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
                <div className="space-y-4">
                   <div>
                     <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">Hotline Number</label>
-                    <input type="text" value={hotlineNumber} onChange={e => setHotlineNumber(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none" />
+                    <input type="text" value={hotlineNumber} onChange={e => setHotlineNumber(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none" placeholder="+94 77 xxx xxxx" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">WhatsApp Number</label>
-                    <input type="text" value={whatsappNumber} onChange={e => setWhatsappNumber(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none" />
+                    <input type="text" value={whatsappNumber} onChange={e => setWhatsappNumber(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none" placeholder="+9477xxxxxxx" />
                   </div>
                </div>
                <div className="space-y-4">
                   <div>
                     <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">SEO Title</label>
-                    <input type="text" value={metaTitle} onChange={e => setMetaTitle(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none" />
+                    <input type="text" value={metaTitle} onChange={e => setMetaTitle(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none" placeholder="Meta Title" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-luxury-gray mb-2 uppercase tracking-wider">SEO Description</label>
-                    <textarea value={metaDescription} onChange={e => setMetaDescription(e.target.value)} rows={2} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none resize-none"></textarea>
+                    <textarea value={metaDescription} onChange={e => setMetaDescription(e.target.value)} rows={2} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none resize-none" placeholder="Meta description..."></textarea>
                   </div>
                </div>
             </div>
@@ -724,7 +502,7 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
               className="px-8 py-3 bg-luxury-gold text-white rounded-lg font-bold uppercase tracking-wider hover:bg-luxury-golddark transition-all shadow-gold-glow disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {loading && <Loader2 size={18} className="animate-spin" />}
-              {loading ? 'Updating Property...' : 'Update Property'}
+              {loading ? 'Saving House...' : 'Save House'}
             </button>
           </div>
         </form>
@@ -733,4 +511,4 @@ const EditProperty: React.FC<EditPropertyProps> = ({ propertyId, onSuccess, onCa
   );
 };
 
-export default EditProperty;
+export default AddHouse;
