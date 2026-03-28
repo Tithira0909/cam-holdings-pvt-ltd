@@ -1,5 +1,6 @@
 import React from 'react';
 import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react';
+import { PageHero } from './PageHero';
 
 interface ContactProps {
   onNavigate: (page: string) => void;
@@ -7,30 +8,18 @@ interface ContactProps {
 
 const Contact: React.FC<ContactProps> = ({ onNavigate }) => {
   return (
-    <div className="animate-in fade-in duration-500 bg-[#f4f4f4] min-h-screen pb-24">
-      {/* Hero Section */}
-      <div className="w-full bg-luxury-black relative pt-32 pb-20 px-mobile overflow-hidden">
-        <div className="absolute inset-0 z-0 opacity-40">
-          <img
-            src="https://images.unsplash.com/photo-1577412647305-991150c7d163?auto=format&fit=crop&q=80&w=1920"
-            alt="Contact Us Banner"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/80"></div>
-        </div>
-        <div className="max-w-7xl mx-auto relative z-10 text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white uppercase tracking-tight mb-4">
-            Contact Us
-          </h1>
-          <div className="flex items-center justify-center gap-2 text-sm md:text-base font-bold tracking-widest uppercase">
-            <button onClick={() => onNavigate('home')} className="text-white/70 hover:text-luxury-gold transition-colors">Home</button>
-            <span className="text-luxury-gold">/</span>
-            <span className="text-white">Contact Us</span>
-          </div>
-        </div>
-      </div>
+    <div className="bg-[#fcfcfc] min-h-screen pb-24 font-sans animate-in fade-in duration-500">
+      <PageHero
+        title="Contact Us"
+        description="We are here to assist you with your premium real estate needs."
+        bgImage="https://images.unsplash.com/photo-1577412647305-991150c7d163?auto=format&fit=crop&q=80&w=1920"
+        breadcrumbs={[
+          { label: 'Home', onClick: () => onNavigate('home') },
+          { label: 'Contact Us' }
+        ]}
+      />
 
-      <div className="max-w-7xl mx-auto px-mobile -mt-10 relative z-20">
+      <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-24 py-16 md:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
           {/* Contact Information Cards */}
