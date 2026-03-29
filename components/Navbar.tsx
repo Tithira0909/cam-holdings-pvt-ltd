@@ -85,9 +85,9 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
               >
                 {link.page === 'dropdown' ? (
                   <div
-                    className={`text-[14px] uppercase tracking-luxury font-bold transition-all relative flex items-center gap-1 cursor-pointer group hover:text-luxury-gold py-4 ${
+                    className={`text-[14px] uppercase tracking-luxury font-bold transition-all relative flex items-center gap-1 cursor-pointer group hover:text-red-600 py-4 ${
                       activePage === 'properties' || activePage === 'lands' || activePage === 'houses'
-                        ? 'text-luxury-gold'
+                        ? 'text-red-600'
                         : textColorClass
                     }`}
                     onClick={() => onNavigate('properties' as any)}
@@ -98,14 +98,14 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
                 ) : (
                   <button
                     onClick={() => onNavigate(link.page as any)}
-                    className={`text-[14px] uppercase tracking-luxury font-bold transition-all relative group hover:text-luxury-gold py-4 ${
+                    className={`text-[14px] uppercase tracking-luxury font-bold transition-all relative group hover:text-red-600 py-4 ${
                       activePage === link.page
-                        ? 'text-luxury-gold'
+                        ? 'text-red-600'
                         : textColorClass
                     }`}
                   >
                     {link.label}
-                    <span className={`absolute bottom-3 left-0 w-0 h-0.5 bg-luxury-gold transition-all group-hover:w-full ${activePage === link.page ? 'w-full' : ''}`}></span>
+                    <span className={`absolute bottom-3 left-0 w-0 h-0.5 bg-red-600 transition-all group-hover:w-full ${activePage === link.page ? 'w-full' : ''}`}></span>
                   </button>
                 )}
 
@@ -120,7 +120,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
                           setIsPropertiesDropdownOpen(false);
                         }}
                         className={`block w-full text-left px-4 py-3 text-sm font-bold uppercase tracking-wider transition-colors ${
-                          activePage === item.page ? 'text-luxury-gold bg-luxury-offwhite' : 'text-luxury-black hover:text-luxury-gold hover:bg-luxury-offwhite'
+                          activePage === item.page ? 'text-red-600 bg-luxury-offwhite' : 'text-luxury-black hover:text-red-600 hover:bg-luxury-offwhite'
                         }`}
                       >
                         {item.label}
@@ -151,8 +151,8 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
         <div className={`absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-500 ${isDrawerOpen ? 'opacity-100' : 'opacity-0'}`} onClick={() => setIsDrawerOpen(false)} />
         <div className={`absolute top-0 right-0 h-full bg-white shadow-2xl transition-transform duration-300 ease-in-out ${isDrawerOpen ? 'translate-x-0' : 'translate-x-full'} w-[80%] flex flex-col`}>
           <div className="h-24 flex items-center justify-between px-10 border-b border-luxury-border">
-            <div className="font-serif text-2xl font-bold text-luxury-black tracking-widest uppercase"><span className="text-luxury-gold">C</span>AM</div>
-            <button onClick={() => setIsDrawerOpen(false)} className="text-luxury-gold"><X size={36} /></button>
+            <div className="font-serif text-2xl font-bold text-luxury-black tracking-widest uppercase"><span className="text-red-600">C</span>AM</div>
+            <button onClick={() => setIsDrawerOpen(false)} className="text-red-600"><X size={36} /></button>
           </div>
           <div className="flex-grow overflow-y-auto py-12 text-center">
             <ul className="space-y-8 px-10">
@@ -160,14 +160,14 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
                 <li key={idx} className="flex flex-col items-center">
                   {link.page === 'dropdown' ? (
                      <>
-                        <button onClick={() => setIsPropertiesDropdownOpen(!isPropertiesDropdownOpen)} className="text-2xl font-bold uppercase tracking-brand text-luxury-black hover:text-luxury-gold transition-colors flex items-center gap-2">
+                        <button onClick={() => setIsPropertiesDropdownOpen(!isPropertiesDropdownOpen)} className="text-2xl font-bold uppercase tracking-brand text-luxury-black hover:text-red-600 transition-colors flex items-center gap-2">
                            {link.label} <ChevronDown size={24} className={`transition-transform duration-300 ${isPropertiesDropdownOpen ? 'rotate-180' : ''}`} />
                         </button>
                         {isPropertiesDropdownOpen && (
                           <ul className="mt-4 space-y-4">
                              {link.dropdownItems?.map((item, itemIdx) => (
                                <li key={itemIdx}>
-                                 <button onClick={() => { setIsDrawerOpen(false); onNavigate(item.page as any); setIsPropertiesDropdownOpen(false); }} className="text-lg font-bold uppercase tracking-wider text-luxury-gray hover:text-luxury-gold transition-colors">
+                                 <button onClick={() => { setIsDrawerOpen(false); onNavigate(item.page as any); setIsPropertiesDropdownOpen(false); }} className="text-lg font-bold uppercase tracking-wider text-luxury-gray hover:text-red-600 transition-colors">
                                    - {item.label}
                                  </button>
                                </li>
@@ -176,7 +176,7 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
                         )}
                      </>
                   ) : (
-                    <button onClick={() => { setIsDrawerOpen(false); onNavigate(link.page as any); }} className="text-2xl font-bold uppercase tracking-brand text-luxury-black hover:text-luxury-gold transition-colors block w-full">
+                    <button onClick={() => { setIsDrawerOpen(false); onNavigate(link.page as any); }} className="text-2xl font-bold uppercase tracking-brand text-luxury-black hover:text-red-600 transition-colors block w-full">
                       {link.label}
                     </button>
                   )}

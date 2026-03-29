@@ -839,6 +839,9 @@ app.post('/api/lands', upload.fields([
 
     console.log('Inserting land. Params length:', params.length);
 
+    // Ensure no arrays are passed directly to prevent mysql2 from expanding them
+    const safeParams = params.map(p => Array.isArray(p) ? JSON.stringify(p) : p);
+
     // Insert land
     const result = await query(
       `INSERT INTO lands (
@@ -848,7 +851,7 @@ app.post('/api/lands', upload.fields([
         shortDescription, fullDescription, amenities, floorPlans, brochureFiles,
         logoImage, blockPlanImage, roadMapImage, locationMapImage, projectStatusLabel, travelHighlights, inquiryEmail, relatedLands, metaTitle, metaDescription, ogImage, whatsappNumber
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      params
+      safeParams
     );
 
     const landId = result.insertId;
@@ -981,6 +984,9 @@ app.put('/api/lands/:id', upload.fields([
 
     console.log('SQL Params:', params);
 
+    // Ensure no arrays are passed directly to prevent mysql2 from expanding them
+    const safeParams = params.map(p => Array.isArray(p) ? JSON.stringify(p) : p);
+
     await query(
       `UPDATE lands SET
         title = ?, slug = ?, location = ?, price = ?, type = ?, status = ?, description = ?, image = ?,
@@ -990,7 +996,7 @@ app.put('/api/lands/:id', upload.fields([
         shortDescription = ?, fullDescription = ?, amenities = ?, floorPlans = ?, brochureFiles = ?,
         logoImage = ?, blockPlanImage = ?, roadMapImage = ?, locationMapImage = ?, projectStatusLabel = ?, travelHighlights = ?, inquiryEmail = ?, relatedLands = ?, metaTitle = ?, metaDescription = ?, ogImage = ?, whatsappNumber = ?
       WHERE id = ?`,
-      params
+      safeParams
     );
 
     if (req.files['gallery']) {
@@ -1210,19 +1216,40 @@ app.post('/api/houses', upload.fields([
 
     console.log('SQL Params:', params);
 
-    console.log('Inserting house. Params length:', params.length);
+    const insertQuery = `
+      INSERT INTO houses (
+        title, slug, location, price,
+        type, status, description, image,
+        category, district, city, locationLabel,
+        priceLabel, bedrooms, bathrooms, videoUrl,
+        projectPhilosophy, locationHighlights, isFeatured, isSoldOut,
+        hotlineNumber, sortOrder, shortDescription, fullDescription,
+        amenities, floorPlans, brochureFiles, logoImage,
+        blockPlanImage, roadMapImage, locationMapImage, projectStatusLabel,
+        travelHighlights, inquiryEmail, relatedLands, metaTitle,
+        metaDescription, ogImage, whatsappNumber
+      ) VALUES (
+        ?, ?, ?, ?,
+        ?, ?, ?, ?,
+        ?, ?, ?, ?,
+        ?, ?, ?, ?,
+        ?, ?, ?, ?,
+        ?, ?, ?, ?,
+        ?, ?, ?, ?,
+        ?, ?, ?, ?,
+        ?, ?, ?, ?,
+        ?, ?, ?
+      )
+    `;
+
+    console.log('Inserting house. Number of columns: 39');
+    console.log('Params length:', params.length);
+
+    // Ensure no arrays are passed directly to prevent mysql2 from expanding them
+    const safeParams = params.map(p => Array.isArray(p) ? JSON.stringify(p) : p);
 
     // Insert house
-    const result = await query(
-      `INSERT INTO houses (
-        title, slug, location, price, type, status, description, image,
-        category, district, city, locationLabel, priceLabel, bedrooms, bathrooms, videoUrl, projectPhilosophy, locationHighlights,
-        isFeatured, isSoldOut, hotlineNumber, sortOrder,
-        shortDescription, fullDescription, amenities, floorPlans, brochureFiles,
-        logoImage, blockPlanImage, roadMapImage, locationMapImage, projectStatusLabel, travelHighlights, inquiryEmail, relatedLands, metaTitle, metaDescription, ogImage, whatsappNumber
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      params
-    );
+    const result = await query(insertQuery, safeParams);
 
     const houseId = result.insertId;
 
@@ -1354,6 +1381,9 @@ app.put('/api/houses/:id', upload.fields([
 
     console.log('SQL Params:', params);
 
+    // Ensure no arrays are passed directly to prevent mysql2 from expanding them
+    const safeParams = params.map(p => Array.isArray(p) ? JSON.stringify(p) : p);
+
     await query(
       `UPDATE houses SET
         title = ?, slug = ?, location = ?, price = ?, type = ?, status = ?, description = ?, image = ?,
@@ -1363,7 +1393,7 @@ app.put('/api/houses/:id', upload.fields([
         shortDescription = ?, fullDescription = ?, amenities = ?, floorPlans = ?, brochureFiles = ?,
         logoImage = ?, blockPlanImage = ?, roadMapImage = ?, locationMapImage = ?, projectStatusLabel = ?, travelHighlights = ?, inquiryEmail = ?, relatedLands = ?, metaTitle = ?, metaDescription = ?, ogImage = ?, whatsappNumber = ?
       WHERE id = ?`,
-      params
+      safeParams
     );
 
     if (req.files['gallery']) {

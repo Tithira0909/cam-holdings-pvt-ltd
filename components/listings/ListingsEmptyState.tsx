@@ -17,7 +17,7 @@ export const ListingsEmptyState: React.FC<ListingsEmptyStateProps> = ({ onReset 
       </p>
       <button
         onClick={onReset}
-        className="flex items-center gap-2 px-8 py-3 bg-luxury-black text-white rounded-xl font-bold uppercase tracking-wider text-sm hover:bg-luxury-gold transition-colors shadow-md"
+        className="flex items-center gap-2 px-8 py-3 bg-luxury-black text-white rounded-xl font-bold uppercase tracking-wider text-sm hover:bg-red-600 transition-colors shadow-md"
       >
         <RotateCcw size={16} />
         Clear Filters

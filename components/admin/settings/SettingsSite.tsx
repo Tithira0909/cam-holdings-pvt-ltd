@@ -112,7 +112,7 @@ export default function SettingsSite() {
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64"><Loader2 className="animate-spin text-luxury-gold" size={32} /></div>;
+    return <div className="flex items-center justify-center h-64"><Loader2 className="animate-spin text-red-600" size={32} /></div>;
   }
 
   return (
@@ -131,7 +131,7 @@ export default function SettingsSite() {
 
       <div className="bg-white rounded-xl shadow-sm border border-luxury-border overflow-hidden">
         <div className="p-6 border-b border-luxury-border flex items-center gap-3">
-          <Globe className="text-luxury-gold" size={24} />
+          <Globe className="text-red-600" size={24} />
           <h2 className="text-xl font-bold text-luxury-black">General Information</h2>
         </div>
 
@@ -191,7 +191,7 @@ export default function SettingsSite() {
                   required
                   value={formData.site_name}
                   onChange={e => setFormData({...formData, site_name: e.target.value})}
-                  className="w-full px-4 py-3 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none"
+                  className="w-full px-4 py-3 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none"
                   placeholder="e.g. CAM Holdings"
                 />
               </div>
@@ -202,7 +202,7 @@ export default function SettingsSite() {
                   type="email"
                   value={formData.contact_email}
                   onChange={e => setFormData({...formData, contact_email: e.target.value})}
-                  className="w-full px-4 py-3 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none"
+                  className="w-full px-4 py-3 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none"
                   placeholder="e.g. support@example.com"
                 />
               </div>
@@ -213,7 +213,7 @@ export default function SettingsSite() {
                   type="text"
                   value={formData.contact_phone}
                   onChange={e => setFormData({...formData, contact_phone: e.target.value})}
-                  className="w-full px-4 py-3 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none"
+                  className="w-full px-4 py-3 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none"
                   placeholder="e.g. +94 11 234 5678"
                 />
               </div>
@@ -224,7 +224,7 @@ export default function SettingsSite() {
                   rows={3}
                   value={formData.address}
                   onChange={e => setFormData({...formData, address: e.target.value})}
-                  className="w-full px-4 py-3 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none resize-none"
+                  className="w-full px-4 py-3 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none resize-none"
                   placeholder="Enter physical address..."
                 />
               </div>
@@ -238,7 +238,7 @@ export default function SettingsSite() {
             type="submit"
             form="siteForm"
             disabled={saving}
-            className="bg-luxury-gold text-white px-8 py-3 rounded-lg font-bold hover:bg-luxury-golddark transition-all shadow-sm flex items-center gap-2 disabled:opacity-50"
+            className="bg-red-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-red-700 transition-all shadow-sm flex items-center gap-2 disabled:opacity-50"
           >
             {saving ? <Loader2 className="animate-spin" size={18} /> : null}
             {saving ? 'Saving...' : 'Save Changes'}

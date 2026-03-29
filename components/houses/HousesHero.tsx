@@ -11,7 +11,7 @@ export const HousesHero: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10 w-full">
         {/* Breadcrumb */}
         <div className="flex items-center text-sm text-gray-300 mb-6 uppercase tracking-wider font-medium font-sans">
-          <a href="/" className="hover:text-luxury-gold transition-colors">Home</a>
+          <a href="/" className="hover:text-red-600 transition-colors">Home</a>
           <ChevronRight size={14} className="mx-2" />
           <span className="text-white">Houses</span>
         </div>

@@ -55,7 +55,7 @@ export default function SettingsAnalytics() {
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64"><Loader2 className="animate-spin text-luxury-gold" size={32} /></div>;
+    return <div className="flex items-center justify-center h-64"><Loader2 className="animate-spin text-red-600" size={32} /></div>;
   }
 
   return (
@@ -74,7 +74,7 @@ export default function SettingsAnalytics() {
 
       <div className="bg-white rounded-xl shadow-sm border border-luxury-border overflow-hidden">
         <div className="p-6 border-b border-luxury-border flex items-center gap-3">
-          <BarChart className="text-luxury-gold" size={24} />
+          <BarChart className="text-red-600" size={24} />
           <h2 className="text-xl font-bold text-luxury-black">Tracking Codes</h2>
         </div>
 
@@ -89,7 +89,7 @@ export default function SettingsAnalytics() {
                 value={googleTag}
                 onChange={(e) => setGoogleTag(e.target.value)}
                 rows={8}
-                className="w-full p-4 bg-gray-50 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none font-mono text-sm text-gray-700 placeholder-gray-400"
+                className="w-full p-4 bg-gray-50 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none font-mono text-sm text-gray-700 placeholder-gray-400"
                 placeholder="<!-- Google Analytics Code -->&#10;<script>&#10;  window.dataLayer = window.dataLayer || [];&#10;  function gtag(){dataLayer.push(arguments);}&#10;  gtag('js', new Date());&#10;  gtag('config', 'G-XXXXXXX');&#10;</script>"
               />
               <Code className="absolute top-4 right-4 text-gray-300 pointer-events-none" size={20} />
@@ -106,7 +106,7 @@ export default function SettingsAnalytics() {
                 value={fbTag}
                 onChange={(e) => setFbTag(e.target.value)}
                 rows={6}
-                className="w-full p-4 bg-gray-50 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none font-mono text-sm text-gray-700 placeholder-gray-400"
+                className="w-full p-4 bg-gray-50 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none font-mono text-sm text-gray-700 placeholder-gray-400"
                 placeholder="<!-- Facebook Pixel Code -->&#10;<script>&#10;...&#10;</script>"
               />
               <Code className="absolute top-4 right-4 text-gray-300 pointer-events-none" size={20} />
@@ -118,7 +118,7 @@ export default function SettingsAnalytics() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="bg-luxury-gold text-white px-8 py-3 rounded-lg font-bold hover:bg-luxury-golddark transition-all shadow-sm flex items-center gap-2 disabled:opacity-50"
+            className="bg-red-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-red-700 transition-all shadow-sm flex items-center gap-2 disabled:opacity-50"
           >
             {saving ? <Loader2 className="animate-spin" size={18} /> : null}
             {saving ? 'Saving...' : 'Update Analytics Changes'}

@@ -49,7 +49,7 @@ export const QuickLinksSection: React.FC<QuickLinksSectionProps> = ({ type, prop
             <button
               key={district}
               onClick={() => onSelectLink('district', district)}
-              className="px-4 py-2 bg-gray-50 border border-gray-100 rounded-lg text-sm font-medium text-gray-600 hover:text-luxury-gold hover:border-luxury-gold/50 hover:bg-luxury-gold/5 transition-all shadow-sm"
+              className="px-4 py-2 bg-gray-50 border border-gray-100 rounded-lg text-sm font-medium text-gray-600 hover:text-red-600 hover:border-red-600/50 hover:bg-red-600/5 transition-all shadow-sm"
             >
               {district} <span className="text-gray-400 text-xs ml-1 font-normal">({count})</span>
             </button>
@@ -65,7 +65,7 @@ export const QuickLinksSection: React.FC<QuickLinksSectionProps> = ({ type, prop
             <button
               key={city}
               onClick={() => onSelectLink('city', city)}
-              className="px-4 py-2 bg-gray-50 border border-gray-100 rounded-lg text-sm font-medium text-gray-600 hover:text-luxury-gold hover:border-luxury-gold/50 hover:bg-luxury-gold/5 transition-all shadow-sm"
+              className="px-4 py-2 bg-gray-50 border border-gray-100 rounded-lg text-sm font-medium text-gray-600 hover:text-red-600 hover:border-red-600/50 hover:bg-red-600/5 transition-all shadow-sm"
             >
               {city} <span className="text-gray-400 text-xs ml-1 font-normal">({count})</span>
             </button>
@@ -82,7 +82,7 @@ export const QuickLinksSection: React.FC<QuickLinksSectionProps> = ({ type, prop
               <button
                 key={category}
                 onClick={() => onSelectLink('category', category)}
-                className="px-4 py-2 bg-gray-50 border border-gray-100 rounded-lg text-sm font-medium text-gray-600 hover:text-luxury-gold hover:border-luxury-gold/50 hover:bg-luxury-gold/5 transition-all shadow-sm"
+                className="px-4 py-2 bg-gray-50 border border-gray-100 rounded-lg text-sm font-medium text-gray-600 hover:text-red-600 hover:border-red-600/50 hover:bg-red-600/5 transition-all shadow-sm"
               >
                 {category} <span className="text-gray-400 text-xs ml-1 font-normal">({count})</span>
               </button>

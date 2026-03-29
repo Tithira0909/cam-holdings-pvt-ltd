@@ -20,10 +20,10 @@ export const FeaturedPropertiesSection: React.FC<FeaturedPropertiesSectionProps>
 
         {/* Section Header */}
         <div className="mb-16 text-center max-w-2xl mx-auto">
-          <div className="inline-flex items-center justify-center gap-2 text-luxury-gold text-xs font-bold uppercase tracking-[0.2em] mb-4">
-            <span className="w-8 h-px bg-luxury-gold/50"></span>
+          <div className="inline-flex items-center justify-center gap-2 text-red-600 text-xs font-bold uppercase tracking-[0.2em] mb-4">
+            <span className="w-8 h-px bg-red-600/50"></span>
             Exclusive Selection
-            <span className="w-8 h-px bg-luxury-gold/50"></span>
+            <span className="w-8 h-px bg-red-600/50"></span>
           </div>
           <h2 className="text-3xl md:text-5xl font-serif text-luxury-black mb-6">
             Featured {type}

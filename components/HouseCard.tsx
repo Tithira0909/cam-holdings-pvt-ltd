@@ -23,7 +23,7 @@ const HouseCard: React.FC<HouseCardProps> = ({ property, onClick }) => {
         {/* Badges */}
         <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
           {property.isFeatured && (
-            <span className="bg-luxury-gold text-white px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-md">
+            <span className="bg-red-600 text-white px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-md">
               Featured
             </span>
           )}
@@ -37,14 +37,14 @@ const HouseCard: React.FC<HouseCardProps> = ({ property, onClick }) => {
         {/* Location Overlay */}
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 pt-12">
            <div className="flex items-center text-white/90 text-sm font-medium">
-             <MapPin size={16} className="mr-1.5 text-luxury-gold" />
+             <MapPin size={16} className="mr-1.5 text-red-600" />
              {property.city || property.location}
            </div>
         </div>
       </div>
 
       <div className="p-6 flex flex-col flex-1">
-        <h3 className="text-xl font-serif text-luxury-black mb-3 line-clamp-2 group-hover:text-luxury-gold transition-colors duration-300">
+        <h3 className="text-xl font-serif text-luxury-black mb-3 line-clamp-2 group-hover:text-red-600 transition-colors duration-300">
           {property.title}
         </h3>
 
@@ -56,11 +56,11 @@ const HouseCard: React.FC<HouseCardProps> = ({ property, onClick }) => {
 
         <div className="flex flex-wrap items-center gap-5 text-sm text-gray-600 mb-6 pt-4 border-t border-gray-100">
           <div className="flex items-center gap-2 group-hover:text-luxury-black transition-colors">
-            <BedDouble size={18} className="text-luxury-gold/70" />
+            <BedDouble size={18} className="text-red-600/70" />
             <span className="font-medium">{property.bedrooms ?? property.beds ?? '-'} Beds</span>
           </div>
           <div className="flex items-center gap-2 group-hover:text-luxury-black transition-colors">
-            <Bath size={18} className="text-luxury-gold/70" />
+            <Bath size={18} className="text-red-600/70" />
             <span className="font-medium">{property.bathrooms ?? property.baths ?? '-'} Baths</span>
           </div>
         </div>
@@ -76,7 +76,7 @@ const HouseCard: React.FC<HouseCardProps> = ({ property, onClick }) => {
            </div>
 
            <button
-              className="bg-transparent text-luxury-black border-2 border-luxury-gold px-5 py-2.5 text-[13px] font-bold uppercase tracking-wider rounded-xl transition-all duration-300 group-hover:bg-luxury-gold group-hover:text-white"
+              className="bg-transparent text-luxury-black border-2 border-red-600 px-5 py-2.5 text-[13px] font-bold uppercase tracking-wider rounded-xl transition-all duration-300 group-hover:bg-red-600 group-hover:text-white"
               onClick={(e) => {
                  e.stopPropagation();
                  onClick();

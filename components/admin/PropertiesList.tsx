@@ -117,7 +117,7 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditPr
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 text-luxury-gold">
+      <div className="flex flex-col items-center justify-center h-64 text-red-600">
         <Loader2 size={48} className="animate-spin mb-4" />
         <p className="font-serif text-lg">Loading properties...</p>
       </div>
@@ -131,7 +131,7 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditPr
         <p className="font-serif text-lg">{error}</p>
         <button
           onClick={fetchProperties}
-          className="mt-4 px-4 py-2 bg-luxury-gold text-white rounded-lg hover:bg-luxury-golddark transition-colors"
+          className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
         >
           Retry
         </button>
@@ -145,7 +145,7 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditPr
         <h2 className="text-xl font-serif font-bold text-luxury-black">All Properties</h2>
         <button
           onClick={onAddProperty}
-          className="flex items-center gap-2 px-4 py-2 bg-luxury-gold text-white rounded-lg font-bold text-sm uppercase tracking-wider hover:bg-luxury-golddark transition-all shadow-gold-glow"
+          className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-bold text-sm uppercase tracking-wider hover:bg-red-700 transition-all shadow-gold-glow"
         >
           <Plus size={16} />
           Add New Property
@@ -162,7 +162,7 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditPr
                   placeholder="Search properties..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-luxury-gold outline-none transition-all"
+                  className="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-red-600 outline-none transition-all"
                />
             </div>
          </div>
@@ -174,7 +174,7 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditPr
           <p className="text-lg mb-4">No properties found.</p>
           <button
             onClick={onAddProperty}
-            className="text-luxury-gold hover:underline font-bold"
+            className="text-red-600 hover:underline font-bold"
           >
             Add your first property
           </button>
@@ -219,7 +219,7 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditPr
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600">
                     <div className="flex items-center gap-2">
-                      <MapPin size={14} className="text-luxury-gold shrink-0" />
+                      <MapPin size={14} className="text-red-600 shrink-0" />
                       <span className="line-clamp-1">{prop.city || prop.district || prop.location?.split(',')[0]}</span>
                     </div>
                   </td>
@@ -248,7 +248,7 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditPr
                         {prop.isSoldOut ? 'Sold Out' : prop.status || 'Active'}
                         </span>
                         {prop.isFeatured && (
-                        <span className="px-2 py-1 bg-luxury-gold/10 text-luxury-gold text-[10px] font-bold rounded border border-luxury-gold/20 tracking-wider">
+                        <span className="px-2 py-1 bg-red-600/10 text-red-600 text-[10px] font-bold rounded border border-red-600/20 tracking-wider">
                            Featured (Order: {prop.sortOrder ?? 0})
                         </span>
                         )}
@@ -258,7 +258,7 @@ const PropertiesList: React.FC<PropertiesListProps> = ({ onAddProperty, onEditPr
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => onEditProperty(prop.id)}
-                        className="p-2 text-luxury-gray hover:text-luxury-gold transition-colors rounded-full hover:bg-luxury-offwhite"
+                        className="p-2 text-luxury-gray hover:text-red-600 transition-colors rounded-full hover:bg-luxury-offwhite"
                       >
                         <Edit size={16} />
                       </button>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Property, FloorPlan } from '../types';
 import { MapPin, PhoneCall, MessageSquare, Download, Share2, BedDouble, Bath, Square, Play, Image as ImageIcon } from 'lucide-react';
 import PropertyCard from './PropertyCard';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface HouseDetailProps {
   property: Property;
@@ -179,38 +180,49 @@ const HouseDetail: React.FC<HouseDetailProps> = ({ property, onNavigate, recomme
                   {property.blockPlanImage && (
                     <button
                       onClick={() => setActiveTab('block')}
-                      className={`flex-1 py-4 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === 'block' ? 'bg-[#b4904d] text-white' : 'text-gray-500 hover:bg-gray-50'}`}
+                      className={`flex-1 py-4 text-sm font-bold uppercase tracking-widest transition-colors relative ${activeTab === 'block' ? 'text-red-600' : 'text-gray-500 hover:text-gray-900'}`}
                     >
                       Block Plan
+                      {activeTab === 'block' && (
+                        <div className="absolute bottom-0 left-0 w-full h-1 bg-red-600"></div>
+                      )}
                     </button>
                   )}
                   {property.roadMapImage && (
                     <button
                       onClick={() => setActiveTab('road')}
-                      className={`flex-1 py-4 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === 'road' ? 'bg-[#b4904d] text-white' : 'text-gray-500 hover:bg-gray-50'}`}
+                      className={`flex-1 py-4 text-sm font-bold uppercase tracking-widest transition-colors relative ${activeTab === 'road' ? 'text-red-600' : 'text-gray-500 hover:text-gray-900'}`}
                     >
                       Road Map
+                      {activeTab === 'road' && (
+                        <div className="absolute bottom-0 left-0 w-full h-1 bg-red-600"></div>
+                      )}
                     </button>
                   )}
                   {property.locationMapImage && (
                     <button
                       onClick={() => setActiveTab('location')}
-                      className={`flex-1 py-4 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === 'location' ? 'bg-[#b4904d] text-white' : 'text-gray-500 hover:bg-gray-50'}`}
+                      className={`flex-1 py-4 text-sm font-bold uppercase tracking-widest transition-colors relative ${activeTab === 'location' ? 'text-red-600' : 'text-gray-500 hover:text-gray-900'}`}
                     >
                       Location
+                      {activeTab === 'location' && (
+                        <div className="absolute bottom-0 left-0 w-full h-1 bg-red-600"></div>
+                      )}
                     </button>
                   )}
                 </div>
-                <div className="p-8">
-                  {activeTab === 'block' && property.blockPlanImage && (
-                    <img src={property.blockPlanImage} alt="Block Plan" className="w-full h-auto rounded-lg cursor-pointer hover:opacity-90 transition-opacity" onClick={() => setSelectedImage(property.blockPlanImage!)} />
-                  )}
-                  {activeTab === 'road' && property.roadMapImage && (
-                    <img src={property.roadMapImage} alt="Road Map" className="w-full h-auto rounded-lg cursor-pointer hover:opacity-90 transition-opacity" onClick={() => setSelectedImage(property.roadMapImage!)} />
-                  )}
-                  {activeTab === 'location' && property.locationMapImage && (
-                    <img src={property.locationMapImage} alt="Location Map" className="w-full h-auto rounded-lg cursor-pointer hover:opacity-90 transition-opacity" onClick={() => setSelectedImage(property.locationMapImage!)} />
-                  )}
+                <div className="p-8 min-h-[300px]">
+                  <AnimatePresence mode="wait">
+                    {activeTab === 'block' && property.blockPlanImage && (
+                      <motion.img key="block" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} src={property.blockPlanImage} alt="Block Plan" className="w-full h-auto rounded-lg cursor-pointer hover:opacity-90 transition-opacity" onClick={() => setSelectedImage(property.blockPlanImage!)} />
+                    )}
+                    {activeTab === 'road' && property.roadMapImage && (
+                      <motion.img key="road" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} src={property.roadMapImage} alt="Road Map" className="w-full h-auto rounded-lg cursor-pointer hover:opacity-90 transition-opacity" onClick={() => setSelectedImage(property.roadMapImage!)} />
+                    )}
+                    {activeTab === 'location' && property.locationMapImage && (
+                      <motion.img key="location" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} src={property.locationMapImage} alt="Location Map" className="w-full h-auto rounded-lg cursor-pointer hover:opacity-90 transition-opacity" onClick={() => setSelectedImage(property.locationMapImage!)} />
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
             )}

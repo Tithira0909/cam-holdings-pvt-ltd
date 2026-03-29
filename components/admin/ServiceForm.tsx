@@ -94,7 +94,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({ serviceId, onSuccess, onCance
     }
   };
 
-  if (fetching) return <div className="flex justify-center p-12 text-luxury-gold"><Loader2 className="animate-spin" size={32} /></div>;
+  if (fetching) return <div className="flex justify-center p-12 text-red-600"><Loader2 className="animate-spin" size={32} /></div>;
 
   return (
     <div className="bg-white rounded-xl shadow-sm overflow-hidden animate-in fade-in duration-300">
@@ -120,7 +120,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({ serviceId, onSuccess, onCance
                     setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''));
                   }
                 }}
-                className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-luxury-gold outline-none"
+                className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-600 outline-none"
                 required
               />
             </div>
@@ -131,7 +131,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({ serviceId, onSuccess, onCance
                 type="text"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
-                className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-luxury-gold outline-none"
+                className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-600 outline-none"
                 required
               />
             </div>
@@ -142,7 +142,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({ serviceId, onSuccess, onCance
                 type="text"
                 value={icon}
                 onChange={(e) => setIcon(e.target.value)}
-                className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-luxury-gold outline-none"
+                className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-600 outline-none"
                 placeholder="e.g. Building, Users, Settings"
               />
             </div>
@@ -155,7 +155,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({ serviceId, onSuccess, onCance
                 id="status"
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-luxury-gold outline-none"
+                className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-600 outline-none"
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -168,7 +168,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({ serviceId, onSuccess, onCance
                 type="number"
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value)}
-                className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-luxury-gold outline-none"
+                className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-600 outline-none"
               />
             </div>
           </div>
@@ -181,7 +181,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({ serviceId, onSuccess, onCance
             type="text"
             value={shortDesc}
             onChange={(e) => setShortDesc(e.target.value)}
-            className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-luxury-gold outline-none"
+            className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-600 outline-none"
           />
         </div>
 
@@ -192,7 +192,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({ serviceId, onSuccess, onCance
             rows={6}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-luxury-gold outline-none resize-none"
+            className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-600 outline-none resize-none"
           />
         </div>
 
@@ -200,7 +200,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({ serviceId, onSuccess, onCance
           <label className="block text-xs font-bold text-luxury-gray uppercase tracking-wider mb-2">Cover Image</label>
           <div
             onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-gray-300 rounded-xl p-4 cursor-pointer hover:border-luxury-gold transition-colors flex flex-col items-center justify-center min-h-[200px]"
+            className="border-2 border-dashed border-gray-300 rounded-xl p-4 cursor-pointer hover:border-red-600 transition-colors flex flex-col items-center justify-center min-h-[200px]"
           >
             {coverPreview ? (
               <img src={coverPreview} alt="Cover" className="h-48 object-cover rounded-lg" />
@@ -224,7 +224,7 @@ const ServiceForm: React.FC<ServiceFormProps> = ({ serviceId, onSuccess, onCance
           <button
             type="submit"
             disabled={loading}
-            className="px-8 py-3 bg-luxury-gold text-white rounded-lg font-bold uppercase tracking-wider hover:bg-luxury-golddark transition-all shadow-gold-glow disabled:opacity-50 flex items-center gap-2"
+            className="px-8 py-3 bg-red-600 text-white rounded-lg font-bold uppercase tracking-wider hover:bg-red-700 transition-all shadow-gold-glow disabled:opacity-50 flex items-center gap-2"
           >
             {loading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
             Save Service

@@ -17,7 +17,7 @@ export const ListingsPagination: React.FC<ListingsPaginationProps> = ({ currentP
       <button
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
-        className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:border-luxury-gold hover:text-luxury-gold disabled:opacity-50 disabled:cursor-not-allowed transition-colors bg-white shadow-sm"
+        className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:border-red-600 hover:text-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors bg-white shadow-sm"
       >
         <ChevronLeft size={18} />
       </button>
@@ -28,8 +28,8 @@ export const ListingsPagination: React.FC<ListingsPaginationProps> = ({ currentP
           onClick={() => onPageChange(page)}
           className={`w-10 h-10 flex items-center justify-center rounded-lg text-sm font-bold transition-all shadow-sm ${
             currentPage === page
-              ? 'bg-luxury-gold text-white border border-luxury-gold shadow-md transform -translate-y-0.5'
-              : 'bg-white text-gray-600 border border-gray-200 hover:border-luxury-gold hover:text-luxury-gold'
+              ? 'bg-red-600 text-white border border-red-600 shadow-md transform -translate-y-0.5'
+              : 'bg-white text-gray-600 border border-gray-200 hover:border-red-600 hover:text-red-600'
           }`}
         >
           {page}
@@ -39,7 +39,7 @@ export const ListingsPagination: React.FC<ListingsPaginationProps> = ({ currentP
       <button
         onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
         disabled={currentPage === totalPages}
-        className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:border-luxury-gold hover:text-luxury-gold disabled:opacity-50 disabled:cursor-not-allowed transition-colors bg-white shadow-sm"
+        className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:border-red-600 hover:text-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors bg-white shadow-sm"
       >
         <ChevronRight size={18} />
       </button>

@@ -90,7 +90,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onSuccess, onCance
 
   if (initialLoading) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 text-luxury-gold">
+      <div className="flex flex-col items-center justify-center h-64 text-red-600">
         <Loader2 size={48} className="animate-spin mb-4" />
         <p className="font-serif text-lg">Loading project details...</p>
       </div>
@@ -120,7 +120,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onSuccess, onCance
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none"
+                className="w-full px-4 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none"
                 placeholder="E.g., Skyview Tower"
                 required
               />
@@ -132,7 +132,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onSuccess, onCance
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="w-full px-4 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none"
+                className="w-full px-4 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none"
                 placeholder="E.g., Colombo 03"
                 required
               />
@@ -144,7 +144,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onSuccess, onCance
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-4 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none bg-white"
+                  className="w-full px-4 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none bg-white"
                   required
                 >
                   <option value="Real Estate">Real Estate</option>
@@ -158,7 +158,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onSuccess, onCance
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
-                  className="w-full px-4 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none bg-white"
+                  className="w-full px-4 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none bg-white"
                 >
                   <option value="Active">Active</option>
                   <option value="Pending">Pending</option>
@@ -173,7 +173,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onSuccess, onCance
                 type="text"
                 value={budget}
                 onChange={(e) => setBudget(e.target.value)}
-                className="w-full px-4 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none"
+                className="w-full px-4 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none"
                 placeholder="E.g., 50M LKR"
               />
             </div>
@@ -210,7 +210,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onSuccess, onCance
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={4}
-                className="w-full px-4 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-luxury-gold outline-none resize-none"
+                className="w-full px-4 py-2 border border-luxury-border rounded-lg focus:ring-1 focus:ring-red-600 outline-none resize-none"
                 placeholder="Brief description of the project..."
               />
             </div>
@@ -228,7 +228,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ projectId, onSuccess, onCance
           <button
             type="submit"
             disabled={loading}
-            className="flex items-center gap-2 px-6 py-2 bg-luxury-gold text-white rounded-lg font-bold uppercase tracking-wider hover:bg-luxury-golddark transition-colors shadow-gold-glow disabled:opacity-70"
+            className="flex items-center gap-2 px-6 py-2 bg-red-600 text-white rounded-lg font-bold uppercase tracking-wider hover:bg-red-700 transition-colors shadow-gold-glow disabled:opacity-70"
           >
             {loading ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
             {projectId ? 'Save Changes' : 'Create Project'}

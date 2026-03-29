@@ -22,18 +22,18 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onClick }) => {
         <div className="absolute top-4 left-4 bg-luxury-black/60 backdrop-blur-md text-white text-[8px] uppercase tracking-widest px-3 py-1.5 font-bold rounded-lg">
           {property.type}
         </div>
-        <div className="absolute top-4 right-4 bg-luxury-gold text-luxury-black text-[8px] uppercase tracking-widest px-3 py-1.5 font-bold rounded-lg shadow-gold-glow">
+        <div className="absolute top-4 right-4 bg-red-600 text-luxury-black text-[8px] uppercase tracking-widest px-3 py-1.5 font-bold rounded-lg shadow-gold-glow">
           {property.featured ? 'Ongoing' : 'Delivered'}
         </div>
       </div>
       
       <div className="p-6">
-        <div className="flex items-center gap-2 text-luxury-gold mb-3">
+        <div className="flex items-center gap-2 text-red-600 mb-3">
           <MapPin size={12} />
           <span className="text-[9px] uppercase tracking-widest font-bold">{property.location}</span>
         </div>
         
-        <h4 className={`text-xl font-serif font-bold text-luxury-black leading-snug group-hover:text-luxury-gold transition-colors duration-300 ${property.description ? 'mb-2' : 'mb-6'}`}>
+        <h4 className={`text-xl font-serif font-bold text-luxury-black leading-snug group-hover:text-red-600 transition-colors duration-300 ${property.description ? 'mb-2' : 'mb-6'}`}>
           {property.title}
         </h4>
 
@@ -47,7 +47,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onClick }) => {
           <span className="text-sm font-bold text-luxury-black tracking-widest">
             {property.price.includes('per') ? property.price.split(' ')[1] : property.price}
           </span>
-          <span className="text-[9px] uppercase tracking-widest font-bold text-luxury-gold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+          <span className="text-[9px] uppercase tracking-widest font-bold text-red-600 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
             Details <ChevronRight size={14} />
           </span>
         </div>

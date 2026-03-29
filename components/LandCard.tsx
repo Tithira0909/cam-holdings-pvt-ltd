@@ -33,7 +33,7 @@ const LandCard: React.FC<LandCardProps> = ({ property, onClick }) => {
         {/* Badges */}
         <div className="absolute top-5 left-5 flex flex-col gap-2 z-20">
           {property.isFeatured && (
-            <div className="bg-luxury-gold text-white text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-lg shadow-[0_4px_10px_rgba(212,175,55,0.4)]">
+            <div className="bg-red-600 text-white text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-lg shadow-[0_4px_10px_rgba(212,175,55,0.4)]">
               Featured
             </div>
           )}
@@ -52,7 +52,7 @@ const LandCard: React.FC<LandCardProps> = ({ property, onClick }) => {
 
       <div className="p-7 text-left flex flex-col flex-grow bg-white">
         <div className="flex items-center gap-2 mb-3">
-          <span className="text-[11px] font-bold uppercase tracking-widest text-luxury-gold bg-luxury-gold/10 px-2 py-1 rounded">
+          <span className="text-[11px] font-bold uppercase tracking-widest text-red-600 bg-red-600/10 px-2 py-1 rounded">
             {property.district || 'Land'}
           </span>
           {property.category && (
@@ -62,12 +62,12 @@ const LandCard: React.FC<LandCardProps> = ({ property, onClick }) => {
           )}
         </div>
 
-        <h3 className="text-[22px] font-serif font-bold text-luxury-black line-clamp-2 leading-tight mb-4 group-hover:text-luxury-gold transition-colors duration-300">
+        <h3 className="text-[22px] font-serif font-bold text-luxury-black line-clamp-2 leading-tight mb-4 group-hover:text-red-600 transition-colors duration-300">
           {property.title}
         </h3>
 
         <div className="flex items-start gap-2 text-luxury-gray mb-6">
-          <MapPin size={18} className="text-luxury-gold shrink-0 mt-0.5" />
+          <MapPin size={18} className="text-red-600 shrink-0 mt-0.5" />
           <p className="text-[15px] leading-relaxed line-clamp-2">{property.location}</p>
         </div>
 
@@ -82,7 +82,7 @@ const LandCard: React.FC<LandCardProps> = ({ property, onClick }) => {
            </div>
 
            <button
-              className="bg-transparent text-luxury-black border-2 border-luxury-gold px-5 py-2.5 text-[13px] font-bold uppercase tracking-wider rounded-xl transition-all duration-300 group-hover:bg-luxury-gold group-hover:text-white"
+              className="bg-transparent text-luxury-black border-2 border-red-600 px-5 py-2.5 text-[13px] font-bold uppercase tracking-wider rounded-xl transition-all duration-300 group-hover:bg-red-600 group-hover:text-white"
               onClick={(e) => {
                  e.stopPropagation();
                  onClick();

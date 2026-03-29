@@ -11,6 +11,7 @@ import { LandsListing } from './components/listings/LandsListing';
 import LandCard from './components/LandCard';
 import LandDetail from './components/LandDetail';
 import HouseDetail from './components/HouseDetail';
+import ContactUs from './components/ContactUs';
 
 import ConsultationModal from './components/ConsultationModal';
 import Footer from './components/Footer';
@@ -281,14 +282,14 @@ const App: React.FC = () => {
 
   if (loading) {
      return (
-       <div className="min-h-screen bg-white flex items-center justify-center text-luxury-gold">
+       <div className="min-h-screen bg-white flex items-center justify-center text-red-600">
          <Loader2 size={48} className="animate-spin" />
        </div>
      );
   }
 
   return (
-    <div className={`min-h-screen bg-white selection:bg-luxury-gold selection:text-white font-sans page-${activePage}`}>
+    <div className={`min-h-screen bg-white selection:bg-red-600 selection:text-white font-sans page-${activePage}`}>
       <Navbar 
         onOpenConsultation={() => setIsModalOpen(true)} 
         onNavigate={navigate} 
@@ -298,7 +299,7 @@ const App: React.FC = () => {
       {/* Floating Speak to Us Button */}
       <button 
         onClick={() => setIsModalOpen(true)}
-        className="fixed bottom-5 left-5 z-[95] bg-luxury-gold text-white px-8 py-4 rounded-[50px] shadow-gold-glow flex items-center gap-3 font-bold uppercase text-[16px] tracking-widest hover:bg-luxury-golddark transition-all active:scale-95 border-none outline-none"
+        className="fixed bottom-5 left-5 z-[95] bg-red-600 text-white px-8 py-4 rounded-[50px] shadow-gold-glow flex items-center gap-3 font-bold uppercase text-[16px] tracking-widest hover:bg-red-700 transition-all active:scale-95 border-none outline-none"
       >
         <MessageSquare size={20} />
         <span>Speak to Us!</span>
@@ -315,6 +316,10 @@ const App: React.FC = () => {
 
 
         {/* 1. About Us Page */}
+        {activePage === 'contact' && (
+          <ContactUs />
+        )}
+
         {activePage === 'about' && (
           <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
             <div className="max-w-7xl mx-auto">
@@ -334,7 +339,7 @@ const App: React.FC = () => {
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-luxury-black/20" />
-                    <div className="absolute bottom-8 left-8 right-8 p-6 bg-white/90 backdrop-blur-md border-l-4 border-luxury-gold">
+                    <div className="absolute bottom-8 left-8 right-8 p-6 bg-white/90 backdrop-blur-md border-l-4 border-red-600">
                       <p className="text-luxury-black font-serif italic text-lg">"Excellence is not an act, but a habit in every blueprint we create."</p>
                     </div>
                   </div>
@@ -343,7 +348,7 @@ const App: React.FC = () => {
                 <div className="space-y-12">
                   <section>
                     <h3 className="text-2xl font-serif font-bold text-luxury-black mb-4 flex items-center gap-3">
-                      <History className="text-luxury-gold" /> Our Story
+                      <History className="text-red-600" /> Our Story
                     </h3>
                     <p className="text-[#777] leading-relaxed text-[16px]">
                       CAM Holdings was founded with the vision of creating premium properties that stand the test of time. With decades of experience in the industry, our team brings unmatched expertise and a commitment to quality. We believe in delivering not just properties, but lifestyles that define elegance and comfort in the heart of Sri Lanka.
@@ -352,7 +357,7 @@ const App: React.FC = () => {
 
                   <section>
                     <h3 className="text-2xl font-serif font-bold text-luxury-black mb-4 flex items-center gap-3">
-                      <Target className="text-luxury-gold" /> Our Mission
+                      <Target className="text-red-600" /> Our Mission
                     </h3>
                     <p className="text-[#777] leading-relaxed text-[16px]">
                       Our mission is to build premium spaces that meet the highest standards of quality and sustainability. We are dedicated to providing our clients with the best real estate solutions, guided by transparency, integrity, and innovation. We strive to be the standard-bearer for architectural luxury across South Asia.
@@ -361,7 +366,7 @@ const App: React.FC = () => {
 
                   <section>
                     <h3 className="text-2xl font-serif font-bold text-luxury-black mb-4 flex items-center gap-3">
-                      <Award className="text-luxury-gold" /> Our Values
+                      <Award className="text-red-600" /> Our Values
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {[
@@ -371,8 +376,8 @@ const App: React.FC = () => {
                         'Environmental Sustainability',
                         'Customer Satisfaction Above All'
                       ].map((value, idx) => (
-                        <div key={idx} className="flex items-center gap-3 p-4 bg-luxury-offwhite border-l-2 border-luxury-gold">
-                          <CheckCircle size={16} className="text-luxury-gold shrink-0" />
+                        <div key={idx} className="flex items-center gap-3 p-4 bg-luxury-offwhite border-l-2 border-red-600">
+                          <CheckCircle size={16} className="text-red-600 shrink-0" />
                           <span className="text-sm font-bold text-luxury-black uppercase tracking-wider">{value}</span>
                         </div>
                       ))}
@@ -396,13 +401,13 @@ const App: React.FC = () => {
               {services.map((service, idx) => (
                 <div key={idx}
                   onClick={() => navigate('service-detail', service.slug)}
-                  className="bg-white rounded-xl shadow-[0px_4px_10px_rgba(0,0,0,0.1)] p-10 text-center flex flex-col items-center group hover:shadow-xl transition-all border-b-4 border-transparent hover:border-luxury-gold cursor-pointer"
+                  className="bg-white rounded-xl shadow-[0px_4px_10px_rgba(0,0,0,0.1)] p-10 text-center flex flex-col items-center group hover:shadow-xl transition-all border-b-4 border-transparent hover:border-red-600 cursor-pointer"
                 >
-                  <div className="w-20 h-20 bg-luxury-offwhite rounded-full flex items-center justify-center mb-6 group-hover:bg-luxury-gold/10 transition-colors overflow-hidden">
+                  <div className="w-20 h-20 bg-luxury-offwhite rounded-full flex items-center justify-center mb-6 group-hover:bg-red-600/10 transition-colors overflow-hidden">
                     {service.cover_image ? (
                         <img src={service.cover_image} alt={service.title} className="w-full h-full object-cover" />
                     ) : (
-                        <div className="text-luxury-gold">{renderIcon(service.icon)}</div>
+                        <div className="text-red-600">{renderIcon(service.icon)}</div>
                     )}
                   </div>
                   <h3 className="text-[22px] font-serif font-bold text-luxury-black mb-4">{service.title}</h3>
@@ -438,14 +443,14 @@ const App: React.FC = () => {
                         {currentService.description}
                     </div>
                     <div className="mt-16 text-center">
-                        <button onClick={() => navigate('contact')} className="bg-luxury-gold text-white px-10 py-4 rounded-lg font-bold uppercase tracking-brand hover:bg-luxury-golddark transition-all">
+                        <button onClick={() => navigate('contact')} className="bg-red-600 text-white px-10 py-4 rounded-lg font-bold uppercase tracking-brand hover:bg-red-700 transition-all">
                             Enquire About This Service
                         </button>
                     </div>
                  </div>
                </>
              ) : (
-               <div className="h-screen flex items-center justify-center text-luxury-gold">
+               <div className="h-screen flex items-center justify-center text-red-600">
                    <Loader2 size={48} className="animate-spin" />
                </div>
              )}
@@ -474,7 +479,7 @@ const App: React.FC = () => {
                   {currentPortfolio.images && currentPortfolio.images.length > 0 && (
                     <div className="max-w-7xl mx-auto px-mobile py-4 flex gap-4 overflow-x-auto container-overflow-fix snap-x">
                       <div
-                        className="flex-shrink-0 w-24 h-16 md:w-32 md:h-24 rounded-md overflow-hidden cursor-pointer border-2 border-luxury-gold shadow-md snap-start"
+                        className="flex-shrink-0 w-24 h-16 md:w-32 md:h-24 rounded-md overflow-hidden cursor-pointer border-2 border-red-600 shadow-md snap-start"
                         onClick={() => setSelectedImage(currentPortfolio.image)}
                       >
                          <img src={currentPortfolio.image} className="w-full h-full object-cover" alt="Cover" />
@@ -482,7 +487,7 @@ const App: React.FC = () => {
                       {currentPortfolio.images.map((img: any) => (
                         <div
                           key={img.id}
-                          className="flex-shrink-0 w-24 h-16 md:w-32 md:h-24 rounded-md overflow-hidden cursor-pointer border-2 border-transparent hover:border-luxury-gold/50 transition-colors shadow-md snap-start"
+                          className="flex-shrink-0 w-24 h-16 md:w-32 md:h-24 rounded-md overflow-hidden cursor-pointer border-2 border-transparent hover:border-red-600/50 transition-colors shadow-md snap-start"
                           onClick={() => setSelectedImage(img.image_url)}
                         >
                           <img src={img.image_url} className="w-full h-full object-cover" alt="Gallery" />
@@ -501,14 +506,14 @@ const App: React.FC = () => {
                       <div className="flex flex-wrap items-center gap-4 mb-4">
                         <h1 className="text-3xl md:text-5xl font-serif text-luxury-black font-bold uppercase tracking-tight">{currentPortfolio.title}</h1>
                         {currentPortfolio.category && (
-                          <span className="px-4 py-1.5 bg-luxury-gold text-white text-xs font-bold uppercase tracking-widest rounded-full">
+                          <span className="px-4 py-1.5 bg-red-600 text-white text-xs font-bold uppercase tracking-widest rounded-full">
                             {currentPortfolio.category}
                           </span>
                         )}
                       </div>
 
                       <div className="flex items-center gap-2 text-luxury-gray mb-10">
-                        <MapPin size={20} className="text-luxury-gold" />
+                        <MapPin size={20} className="text-red-600" />
                         <span className="text-lg uppercase tracking-wider">{currentPortfolio.location || 'Location Not Specified'}</span>
                       </div>
 
@@ -548,21 +553,21 @@ const App: React.FC = () => {
                         <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert("Inquiry sent successfully!"); }}>
                           <div>
                             <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Your Name</label>
-                            <input type="text" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors" placeholder="John Doe" />
+                            <input type="text" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-red-600 transition-colors" placeholder="John Doe" />
                           </div>
                           <div>
                             <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Email Address</label>
-                            <input type="email" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors" placeholder="john@example.com" />
+                            <input type="email" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-red-600 transition-colors" placeholder="john@example.com" />
                           </div>
                           <div>
                             <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Phone Number</label>
-                            <input type="tel" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors" placeholder="+94 77 XXX XXXX" />
+                            <input type="tel" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-red-600 transition-colors" placeholder="+94 77 XXX XXXX" />
                           </div>
                           <div>
                             <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Message</label>
-                            <textarea rows={3} className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors resize-none" placeholder={`I'm interested in ${currentPortfolio.title}...`}></textarea>
+                            <textarea rows={3} className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-red-600 transition-colors resize-none" placeholder={`I'm interested in ${currentPortfolio.title}...`}></textarea>
                           </div>
-                          <button type="submit" className="w-full bg-luxury-gold text-white font-bold uppercase tracking-widest py-4 rounded-lg hover:bg-white hover:text-luxury-black transition-colors mt-4">
+                          <button type="submit" className="w-full bg-red-600 text-white font-bold uppercase tracking-widest py-4 rounded-lg hover:bg-white hover:text-luxury-black transition-colors mt-4">
                             Send Inquiry
                           </button>
                         </form>
@@ -573,7 +578,7 @@ const App: React.FC = () => {
                 </div>
                </>
              ) : (
-               <div className="h-[60vh] flex items-center justify-center text-luxury-gold">
+               <div className="h-[60vh] flex items-center justify-center text-red-600">
                    <Loader2 size={48} className="animate-spin" />
                </div>
              )}
@@ -596,7 +601,7 @@ const App: React.FC = () => {
                   onClick={() => navigate('portfolio-detail', proj.id)}
                 >
                   <div className="relative aspect-[16/10] overflow-hidden">
-                    <img src={proj.image} alt={proj.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
+                    <img src={proj.image} alt={proj.title} className="w-full h-full object-cover border-b-2 border-red-600 transition-transform duration-500 group-hover:scale-105" />
                     {proj.category && (
                       <div className="absolute top-4 left-4 bg-luxury-black/60 backdrop-blur-md text-white text-[8px] uppercase tracking-widest px-3 py-1.5 font-bold rounded-lg">
                         {proj.category}
@@ -616,7 +621,7 @@ const App: React.FC = () => {
                     <p className="text-[16px] text-[#777] mb-6">Year: {proj.year}</p>
                     <div className="mt-auto">
                       <button
-                        className="bg-luxury-gold text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-luxury-golddark"
+                        className="bg-red-600 text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-red-700"
                         onClick={(e) => {
                           e.stopPropagation();
                           navigate('portfolio-detail', proj.id);
@@ -668,14 +673,14 @@ const App: React.FC = () => {
                 {[...lands.map(l => ({...l, _originalId: l.id, id: "land-"+l.id})), ...houses.map(h => ({...h, _originalId: h.id, id: "house-"+h.id}))].sort((a, b) => (b.sortOrder || 0) - (a.sortOrder || 0)).map(prop => (
                    <div key={prop.id} className="bg-white rounded-[10px] overflow-hidden shadow-[0px_4px_10px_rgba(0,0,0,0.1)] group flex flex-col">
                      <div className="relative aspect-[16/10] overflow-hidden">
-                       <img src={prop.image} alt={prop.title} className="w-full h-full object-cover border-b-2 border-luxury-gold transition-transform duration-500 group-hover:scale-105" />
+                       <img src={prop.image} alt={prop.title} className="w-full h-full object-cover border-b-2 border-red-600 transition-transform duration-500 group-hover:scale-105" />
                      </div>
                      <div className="p-[20px] text-left flex flex-col flex-grow">
                        <h3 className="text-[22px] font-serif font-bold text-[#333] mb-2">{prop.title}</h3>
                        <p className="text-[16px] text-[#777] mb-1">Location: {prop.location.split(',')[0]}</p>
                        <p className="text-[16px] text-[#777] mb-6 font-bold">Price: {prop.price}</p>
                        <div className="mt-auto">
-                         <button onClick={() => navigate('detail', prop._originalId || prop.id)} className="bg-luxury-gold text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-luxury-golddark">View Details</button>
+                         <button onClick={() => navigate('detail', prop._originalId || prop.id)} className="bg-red-600 text-white px-[20px] py-[10px] text-[14px] font-bold rounded-[8px] cursor-pointer transition-all duration-300 hover:bg-red-700">View Details</button>
                        </div>
                      </div>
                    </div>
@@ -695,7 +700,7 @@ const App: React.FC = () => {
               </div>
               <div className="aspect-[16/9] w-full bg-black rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.2)] relative group border border-gray-800">
                 <div className="absolute inset-0 flex items-center justify-center z-10 cursor-pointer">
-                  <div className="w-24 h-24 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 group-hover:bg-luxury-gold group-hover:border-luxury-gold transition-all duration-500 hover:scale-110 shadow-lg">
+                  <div className="w-24 h-24 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 group-hover:bg-red-600 group-hover:border-red-600 transition-all duration-500 hover:scale-110 shadow-lg">
                     <Play size={40} className="text-white ml-2" />
                   </div>
                 </div>
@@ -705,7 +710,7 @@ const App: React.FC = () => {
               </div>
               <div className="text-center pt-8">
                 <p className="text-xl text-luxury-black mb-8 font-serif">Ready to visit in person? Join us for an exclusive site preview.</p>
-                <button onClick={() => navigate('contact')} className="bg-luxury-gold text-white px-12 py-5 rounded-lg font-bold uppercase tracking-brand shadow-gold-glow hover:bg-luxury-golddark transition-all">Schedule a Visit</button>
+                <button onClick={() => navigate('contact')} className="bg-red-600 text-white px-12 py-5 rounded-lg font-bold uppercase tracking-brand shadow-gold-glow hover:bg-red-700 transition-all">Schedule a Visit</button>
               </div>
             </div>
           </div>
@@ -726,10 +731,10 @@ const App: React.FC = () => {
             {propertyError ? (
               <div className="h-[60vh] flex flex-col items-center justify-center text-center">
                 <p className="text-xl text-red-500 font-serif mb-4">{propertyError}</p>
-                <button onClick={() => navigate('properties')} className="px-6 py-2 bg-luxury-gold text-white rounded hover:bg-opacity-90 transition shadow-md">Back to Properties</button>
+                <button onClick={() => navigate('properties')} className="px-6 py-2 bg-red-600 text-white rounded hover:bg-opacity-90 transition shadow-md">Back to Properties</button>
               </div>
             ) : !currentProperty ? (
-              <div className="h-[60vh] flex items-center justify-center text-luxury-gold">
+              <div className="h-[60vh] flex items-center justify-center text-red-600">
                 <Loader2 size={48} className="animate-spin" />
               </div>
             ) : (
@@ -767,7 +772,7 @@ const App: React.FC = () => {
                     {currentProperty.images && currentProperty.images.length > 0 && (
                       <div className="max-w-7xl mx-auto px-mobile py-4 flex gap-4 overflow-x-auto container-overflow-fix snap-x">
                         <div
-                          className="flex-shrink-0 w-24 h-16 md:w-32 md:h-24 rounded-md overflow-hidden cursor-pointer border-2 border-luxury-gold shadow-md snap-start"
+                          className="flex-shrink-0 w-24 h-16 md:w-32 md:h-24 rounded-md overflow-hidden cursor-pointer border-2 border-red-600 shadow-md snap-start"
                           onClick={() => setSelectedImage(currentProperty.image)}
                         >
                            <img src={currentProperty.image} className="w-full h-full object-cover" alt="Cover" />
@@ -775,7 +780,7 @@ const App: React.FC = () => {
                         {currentProperty.images.map((img) => (
                           <div
                             key={img.id}
-                            className="flex-shrink-0 w-24 h-16 md:w-32 md:h-24 rounded-md overflow-hidden cursor-pointer border-2 border-transparent hover:border-luxury-gold/50 transition-colors shadow-md snap-start"
+                            className="flex-shrink-0 w-24 h-16 md:w-32 md:h-24 rounded-md overflow-hidden cursor-pointer border-2 border-transparent hover:border-red-600/50 transition-colors shadow-md snap-start"
                             onClick={() => setSelectedImage(img.image_url)}
                           >
                             <img src={img.image_url} className="w-full h-full object-cover" alt="Gallery" />
@@ -794,14 +799,14 @@ const App: React.FC = () => {
                         <div className="flex flex-wrap items-center gap-4 mb-4">
                           <h1 className="text-3xl md:text-5xl font-serif text-luxury-black font-bold uppercase tracking-tight">{currentProperty.title}</h1>
                           {currentProperty.status && (
-                            <span className="px-4 py-1.5 bg-luxury-gold text-white text-xs font-bold uppercase tracking-widest rounded-full shadow-md">
+                            <span className="px-4 py-1.5 bg-red-600 text-white text-xs font-bold uppercase tracking-widest rounded-full shadow-md">
                               {currentProperty.status}
                             </span>
                           )}
                         </div>
 
                         <div className="flex items-center gap-2 text-luxury-gray mb-8">
-                          <MapPin size={20} className="text-luxury-gold" />
+                          <MapPin size={20} className="text-red-600" />
                           <span className="text-lg uppercase tracking-wider">{currentProperty.location}</span>
                         </div>
 
@@ -861,21 +866,21 @@ const App: React.FC = () => {
                           <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert("Inquiry sent successfully!"); }}>
                             <div>
                               <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Your Name</label>
-                              <input type="text" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors" placeholder="John Doe" />
+                              <input type="text" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-red-600 transition-colors" placeholder="John Doe" />
                             </div>
                             <div>
                               <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Email Address</label>
-                              <input type="email" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors" placeholder="john@example.com" />
+                              <input type="email" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-red-600 transition-colors" placeholder="john@example.com" />
                             </div>
                             <div>
                               <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Phone Number</label>
-                              <input type="tel" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors" placeholder="+94 77 XXX XXXX" />
+                              <input type="tel" required className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-red-600 transition-colors" placeholder="+94 77 XXX XXXX" />
                             </div>
                             <div>
                               <label className="block text-xs font-bold uppercase tracking-wider text-white/60 mb-2">Message</label>
-                              <textarea rows={3} className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-luxury-gold transition-colors resize-none" placeholder={`I'm interested in ${currentProperty.title}...`}></textarea>
+                              <textarea rows={3} className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-red-600 transition-colors resize-none" placeholder={`I'm interested in ${currentProperty.title}...`}></textarea>
                             </div>
-                            <button type="submit" className="w-full bg-luxury-gold text-white font-bold uppercase tracking-widest py-4 rounded-lg hover:bg-white hover:text-luxury-black transition-colors mt-4 shadow-md">
+                            <button type="submit" className="w-full bg-red-600 text-white font-bold uppercase tracking-widest py-4 rounded-lg hover:bg-white hover:text-luxury-black transition-colors mt-4 shadow-md">
                               Send Inquiry
                             </button>
                           </form>

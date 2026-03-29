@@ -84,7 +84,7 @@ const InquiryDetail: React.FC<InquiryDetailProps> = ({ inquiryId, onBack }) => {
     }
   };
 
-  if (loading) return <div className="flex justify-center p-12 text-luxury-gold"><Loader2 className="animate-spin" size={32} /></div>;
+  if (loading) return <div className="flex justify-center p-12 text-red-600"><Loader2 className="animate-spin" size={32} /></div>;
   if (!inquiry) return <div className="p-12 text-center text-red-500">Inquiry not found.</div>;
 
   return (
@@ -134,7 +134,7 @@ const InquiryDetail: React.FC<InquiryDetailProps> = ({ inquiryId, onBack }) => {
                 <Clock size={16} /> Reply History
               </h4>
               <div className="space-y-4">
-                <div className="pl-6 border-l-2 border-luxury-gold py-2">
+                <div className="pl-6 border-l-2 border-red-600 py-2">
                   <div className="flex justify-between items-center mb-2">
                     <span className="font-bold text-luxury-black text-sm">Admin <span className="font-normal text-gray-500">replied:</span></span>
                     <span className="text-xs text-gray-400">{new Date(inquiry.replied_at || '').toLocaleString()}</span>
@@ -152,7 +152,7 @@ const InquiryDetail: React.FC<InquiryDetailProps> = ({ inquiryId, onBack }) => {
           <div className="space-y-6">
              <div className="bg-white border border-gray-200 shadow-lg rounded-xl p-6 sticky top-8">
                <h3 className="text-lg font-bold text-luxury-black mb-4 flex items-center gap-2">
-                 <Send size={18} className="text-luxury-gold" /> Send Reply
+                 <Send size={18} className="text-red-600" /> Send Reply
                </h3>
                <form onSubmit={handleSendReply} className="space-y-4">
                <div>
@@ -161,7 +161,7 @@ const InquiryDetail: React.FC<InquiryDetailProps> = ({ inquiryId, onBack }) => {
                    type="text"
                    value={replySubject}
                    onChange={(e) => setReplySubject(e.target.value)}
-                   className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-luxury-gold outline-none"
+                   className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-red-600 outline-none"
                    required
                  />
                </div>
@@ -171,7 +171,7 @@ const InquiryDetail: React.FC<InquiryDetailProps> = ({ inquiryId, onBack }) => {
                    rows={6}
                    value={replyMessage}
                    onChange={(e) => setReplyMessage(e.target.value)}
-                   className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-luxury-gold outline-none resize-none"
+                   className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-red-600 outline-none resize-none"
                    placeholder="Type your reply here..."
                    required
                  />
@@ -179,7 +179,7 @@ const InquiryDetail: React.FC<InquiryDetailProps> = ({ inquiryId, onBack }) => {
                  <button
                    type="submit"
                    disabled={sending}
-                   className="w-full py-3 bg-luxury-gold text-white font-bold uppercase text-xs tracking-wider rounded shadow-gold-glow hover:bg-luxury-golddark transition-all disabled:opacity-50 flex justify-center items-center gap-2"
+                   className="w-full py-3 bg-red-600 text-white font-bold uppercase text-xs tracking-wider rounded shadow-gold-glow hover:bg-red-700 transition-all disabled:opacity-50 flex justify-center items-center gap-2"
                  >
                    {sending ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
                    {sending ? 'Sending...' : 'Send Email'}

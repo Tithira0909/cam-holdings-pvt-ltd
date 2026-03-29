@@ -102,7 +102,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             onClick={() => { setActiveView('dashboard'); setMobileMenuOpen(false); }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
               activeView === 'dashboard'
-                ? 'bg-white/10 text-luxury-gold'
+                ? 'bg-white/10 text-red-600'
                 : 'text-white/60 hover:bg-white/5 hover:text-white'
             }`}
           >
@@ -113,7 +113,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             onClick={() => { setActiveView('properties'); setMobileMenuOpen(false); }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
               activeView === 'properties' || activeView === 'add-property' || activeView === 'edit-property'
-                ? 'bg-white/10 text-luxury-gold'
+                ? 'bg-white/10 text-red-600'
                 : 'text-white/60 hover:bg-white/5 hover:text-white'
             }`}
           >
@@ -125,7 +125,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             onClick={() => { setActiveView('houses'); setMobileMenuOpen(false); }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
               activeView === 'houses' || activeView === 'add-house' || activeView === 'edit-house'
-                ? 'bg-white/10 text-luxury-gold'
+                ? 'bg-white/10 text-red-600'
                 : 'text-white/60 hover:bg-white/5 hover:text-white'
             }`}
           >
@@ -136,7 +136,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             onClick={() => { setActiveView('projects'); setMobileMenuOpen(false); }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
               activeView === 'projects' || activeView === 'add-project' || activeView === 'edit-project'
-                ? 'bg-white/10 text-luxury-gold'
+                ? 'bg-white/10 text-red-600'
                 : 'text-white/60 hover:bg-white/5 hover:text-white'
             }`}
           >
@@ -147,7 +147,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             onClick={() => { setActiveView('services'); setMobileMenuOpen(false); }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
               activeView === 'services' || activeView === 'add-service' || activeView === 'edit-service'
-                ? 'bg-white/10 text-luxury-gold'
+                ? 'bg-white/10 text-red-600'
                 : 'text-white/60 hover:bg-white/5 hover:text-white'
             }`}
           >
@@ -158,7 +158,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             onClick={() => { setActiveView('inquiries'); setMobileMenuOpen(false); }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
               activeView === 'inquiries' || activeView === 'inquiry-detail'
-                ? 'bg-white/10 text-luxury-gold'
+                ? 'bg-white/10 text-red-600'
                 : 'text-white/60 hover:bg-white/5 hover:text-white'
             }`}
           >
@@ -170,7 +170,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               onClick={handleSettingsClick}
               className={`w-full flex items-center justify-between px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
                 activeView.startsWith('settings-')
-                  ? 'bg-white/10 text-luxury-gold'
+                  ? 'bg-white/10 text-red-600'
                   : 'text-white/60 hover:bg-white/5 hover:text-white'
               }`}
             >
@@ -182,19 +182,19 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             </button>
             {(isSettingsOpen || activeView.startsWith('settings-')) && (
               <div className="pl-4 mt-2 space-y-1">
-                <button onClick={() => { setActiveView('settings-permissions'); setMobileMenuOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-permissions' ? 'text-luxury-gold bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
+                <button onClick={() => { setActiveView('settings-permissions'); setMobileMenuOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-permissions' ? 'text-red-600 bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
                   <Shield size={14} />
                   Permission Settings
                 </button>
-                <button onClick={() => { setActiveView('settings-analytics'); setMobileMenuOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-analytics' ? 'text-luxury-gold bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
+                <button onClick={() => { setActiveView('settings-analytics'); setMobileMenuOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-analytics' ? 'text-red-600 bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
                   <BarChart size={14} />
                   Analytics Settings
                 </button>
-                <button onClick={() => { setActiveView('settings-site'); setMobileMenuOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-site' ? 'text-luxury-gold bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
+                <button onClick={() => { setActiveView('settings-site'); setMobileMenuOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-site' ? 'text-red-600 bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
                   <Globe size={14} />
                   Site Settings
                 </button>
-                <button onClick={() => { setActiveView('settings-email'); setMobileMenuOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-email' ? 'text-luxury-gold bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
+                <button onClick={() => { setActiveView('settings-email'); setMobileMenuOpen(false); }} className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg font-medium text-xs tracking-wider transition-all ${activeView === 'settings-email' ? 'text-red-600 bg-white/5' : 'text-white/60 hover:text-white hover:bg-white/5'}`}>
                   <Mail size={14} />
                   Email Settings
                 </button>
@@ -223,7 +223,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                <p className="font-bold text-luxury-black">Admin User</p>
                <p className="text-xs text-luxury-gray">admin@camholdings.lk</p>
              </div>
-             <div className="w-10 h-10 bg-luxury-gold rounded-full flex items-center justify-center text-white font-bold">
+             <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white font-bold">
                A
              </div>
           </div>
@@ -231,14 +231,14 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-xl shadow-sm border-l-4 border-luxury-gold relative overflow-hidden group">
+          <div className="bg-white p-6 rounded-xl shadow-sm border-l-4 border-red-600 relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-br from-luxury-gold/5 to-transparent pointer-events-none" />
             <div className="flex justify-between items-start mb-4 relative z-10">
               <div>
                 <p className="text-sm text-luxury-gray font-bold uppercase tracking-wider">Total Properties</p>
                 <h3 className="text-4xl font-serif font-bold text-luxury-black mt-2">{PROPERTIES.length}</h3>
               </div>
-              <div className="p-3 bg-luxury-gold/10 rounded-xl text-luxury-gold group-hover:scale-110 transition-transform">
+              <div className="p-3 bg-red-600/10 rounded-xl text-red-600 group-hover:scale-110 transition-transform">
                 <Building size={24} />
               </div>
             </div>
@@ -297,7 +297,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               <h2 className="text-xl font-serif font-bold text-luxury-black">Recent Properties</h2>
               <button
                 onClick={() => { setActiveView('properties'); setMobileMenuOpen(false); }}
-                className="text-sm text-luxury-gold font-bold uppercase tracking-wider hover:text-luxury-golddark"
+                className="text-sm text-red-600 font-bold uppercase tracking-wider hover:text-red-700"
               >
                 View All
               </button>
@@ -329,7 +329,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-600">
                         <div className="flex items-center gap-2">
-                          <MapPin size={14} className="text-luxury-gold" />
+                          <MapPin size={14} className="text-red-600" />
                           {prop.location.split(',')[0]}
                         </div>
                       </td>
@@ -347,7 +347,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <button className="text-luxury-gray hover:text-luxury-gold transition-colors font-bold text-xs uppercase">Edit</button>
+                        <button className="text-luxury-gray hover:text-red-600 transition-colors font-bold text-xs uppercase">Edit</button>
                       </td>
                     </tr>
                   ))}
