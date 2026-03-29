@@ -74,18 +74,18 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
 
 
           {/* Menu */}
-          <div className="hidden lg:flex items-center gap-6 ml-auto">
+          <div className="hidden lg:flex items-center gap-4 xl:gap-8 ml-auto">
             {navLinks.map((link, idx) => (
               <div
                 key={idx}
-                className="relative group/dropdown"
+                className="relative group/dropdown flex items-center h-full"
                 ref={link.page === 'dropdown' ? dropdownRef : null}
                 onMouseEnter={() => link.page === 'dropdown' && setIsPropertiesDropdownOpen(true)}
                 onMouseLeave={() => link.page === 'dropdown' && setIsPropertiesDropdownOpen(false)}
               >
                 {link.page === 'dropdown' ? (
                   <div
-                    className={`text-[14px] uppercase tracking-luxury font-bold transition-all relative flex items-center gap-1 cursor-pointer group hover:text-luxury-gold py-4 ${
+                    className={`text-[12px] xl:text-[14px] uppercase tracking-wider xl:tracking-luxury font-bold transition-all relative flex items-center gap-1 cursor-pointer group hover:text-luxury-gold py-4 ${
                       activePage === 'properties' || activePage === 'lands' || activePage === 'houses'
                         ? 'text-luxury-gold'
                         : textColorClass
@@ -98,14 +98,14 @@ const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, onNavigate, activeP
                 ) : (
                   <button
                     onClick={() => onNavigate(link.page as any)}
-                    className={`text-[14px] uppercase tracking-luxury font-bold transition-all relative group hover:text-luxury-gold py-4 ${
+                    className={`text-[12px] xl:text-[14px] uppercase tracking-wider xl:tracking-luxury font-bold transition-all relative group hover:text-luxury-gold py-4 ${
                       activePage === link.page
                         ? 'text-luxury-gold'
                         : textColorClass
                     }`}
                   >
                     {link.label}
-                    <span className={`absolute bottom-3 left-0 w-0 h-0.5 bg-luxury-gold transition-all group-hover:w-full ${activePage === link.page ? 'w-full' : ''}`}></span>
+                    <span className={`absolute bottom-0 left-0 w-0 h-[2px] bg-luxury-gold transition-all duration-300 group-hover:w-full ${activePage === link.page ? 'w-full' : ''}`}></span>
                   </button>
                 )}
 

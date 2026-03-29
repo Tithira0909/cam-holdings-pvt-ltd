@@ -12,6 +12,7 @@ import LandCard from './components/LandCard';
 import LandDetail from './components/LandDetail';
 import HouseDetail from './components/HouseDetail';
 
+import Contact from './components/Contact';
 import ConsultationModal from './components/ConsultationModal';
 import Footer from './components/Footer';
 import Login from './components/admin/Login';
@@ -711,7 +712,12 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* 7. Other Pages (Blogs, News etc.) */}
+        {/* 7. Contact Us Page */}
+        {activePage === 'contact' && (
+          <Contact onNavigate={navigate} />
+        )}
+
+        {/* 8. Other Pages (Blogs, News etc.) */}
         {['news', 'publications', 'blogs', 'testimonials', 'kyc', 'privacy', 'terms'].includes(activePage) && (
            <div className="pt-40 px-mobile min-h-screen text-center bg-[#f4f4f4]">
              <h2 className="text-4xl font-serif font-bold text-luxury-black uppercase">{activePage.replace(/-/g, ' ')}</h2>
@@ -720,12 +726,12 @@ const App: React.FC = () => {
         )}
 
 
-        {/* 8. Detail Page View */}
+        {/* 9. Detail Page View */}
         {activePage === 'detail' && (
           <div className="animate-in fade-in duration-500 bg-[#f4f4f4] pb-32">
             {propertyError ? (
               <div className="h-[60vh] flex flex-col items-center justify-center text-center">
-                <p className="text-xl text-red-500 font-serif mb-4">{propertyError}</p>
+                <p className="text-xl text-luxury-gold font-serif mb-4">{propertyError}</p>
                 <button onClick={() => navigate('properties')} className="px-6 py-2 bg-luxury-gold text-white rounded hover:bg-opacity-90 transition shadow-md">Back to Properties</button>
               </div>
             ) : !currentProperty ? (
