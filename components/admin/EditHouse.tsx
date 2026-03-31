@@ -579,7 +579,7 @@ const EditHouse: React.FC<EditHouseProps> = ({ propertyId, onSuccess, onCancel }
                       <button
                         type="button"
                         onClick={() => handleDeleteExistingImage(img.id)}
-                        className="absolute top-2 right-2 bg-red-500/80 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-md backdrop-blur-sm"
+                        className="absolute top-2 right-2 bg-red-500/80 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-luxury-gold shadow-md backdrop-blur-sm"
                         title="Remove image"
                       >
                         <X size={16} />

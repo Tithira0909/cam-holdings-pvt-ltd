@@ -14,6 +14,7 @@ import HouseDetail from './components/HouseDetail';
 
 import ConsultationModal from './components/ConsultationModal';
 import Footer from './components/Footer';
+import ContactUs from './components/ContactUs';
 import Login from './components/admin/Login';
 import Dashboard from './components/admin/Dashboard';
 import { Property, PropertyType, Project } from './types';
@@ -386,13 +387,29 @@ const App: React.FC = () => {
 
         {/* 2. Services Page */}
         {activePage === 'services' && (
-          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
-            <div className="max-w-7xl mx-auto text-center mb-16">
-              <h2 className="text-[36px] font-serif font-bold text-luxury-black mb-5 uppercase tracking-tight">Our Services</h2>
-              <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto">At CAM Holdings, we provide a range of real estate services tailored to meet your needs.</p>
+          <div className="animate-in fade-in duration-500 min-h-screen bg-[#fcfcfc] pb-24 font-sans">
+            <div className="relative w-full h-[350px] md:h-[450px] flex items-center justify-center overflow-hidden mb-12">
+              <div className="absolute inset-0 z-0">
+                <img src="https://images.unsplash.com/photo-1560518883-ce09059eeefa?auto=format&fit=crop&q=80&w=1920" alt="Services Hero" className="w-full h-full object-cover scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/80"></div>
+              </div>
+              <div className="relative z-10 w-full max-w-[1920px] mx-auto px-6 md:px-12 lg:px-24 flex flex-col items-center justify-center text-center mt-16">
+                <div className="flex items-center justify-center gap-2 text-white/80 text-sm font-bold uppercase tracking-widest mb-6 bg-black/20 px-6 py-2 rounded-full backdrop-blur-sm border border-white/10">
+                  <span className="cursor-pointer hover:text-luxury-gold transition-colors" onClick={() => navigate('home')}>Home</span>
+                  <ChevronRight size={14} className="text-luxury-gold" />
+                  <span className="text-luxury-gold">Our Services</span>
+                </div>
+                <h1 className="text-4xl md:text-6xl font-serif font-bold text-white uppercase tracking-tight drop-shadow-lg">
+                  Our Services
+                </h1>
+                <div className="w-24 h-1 bg-luxury-gold mt-6 mb-4 mx-auto rounded-full shadow-[0_0_10px_rgba(212,175,55,0.5)]"></div>
+                <p className="text-white/90 text-lg md:text-xl font-light max-w-2xl text-shadow-sm">
+                  At CAM Holdings, we provide a range of real estate services tailored to meet your needs.
+                </p>
+              </div>
             </div>
 
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-24 py-16 md:py-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {services.map((service, idx) => (
                 <div key={idx}
                   onClick={() => navigate('service-detail', service.slug)}
@@ -415,33 +432,48 @@ const App: React.FC = () => {
 
         {/* 2a. Service Detail Page */}
         {activePage === 'service-detail' && (
-          <div className="animate-in fade-in duration-500 min-h-screen bg-white">
+          <div className="animate-in fade-in duration-500 min-h-screen bg-[#fcfcfc] pb-24 font-sans">
              {currentService ? (
                <>
-                 <div className="relative h-[50vh] w-full overflow-hidden">
-                    {currentService.cover_image ? (
-                        <img src={currentService.cover_image} alt={currentService.title} className="w-full h-full object-cover" />
-                    ) : (
-                        <div className="w-full h-full bg-luxury-black flex items-center justify-center">
-                            <span className="text-white/20 text-6xl font-serif">CAM</span>
-                        </div>
-                    )}
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                        <div className="text-center px-4">
-                            <h1 className="text-4xl md:text-6xl font-serif text-white uppercase tracking-tight mb-4">{currentService.title}</h1>
-                            <p className="text-xl text-white/80 max-w-2xl mx-auto">{currentService.short_desc}</p>
-                        </div>
+                 <div className="relative w-full h-[350px] md:h-[450px] flex items-center justify-center overflow-hidden mb-12">
+                    <div className="absolute inset-0 z-0">
+                      {currentService.cover_image ? (
+                          <img src={currentService.cover_image} alt={currentService.title} className="w-full h-full object-cover scale-105" />
+                      ) : (
+                          <div className="w-full h-full bg-black"></div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/80"></div>
+                    </div>
+
+                    <div className="relative z-10 w-full max-w-[1920px] mx-auto px-6 md:px-12 lg:px-24 flex flex-col items-center justify-center text-center mt-16">
+                      <div className="flex items-center justify-center gap-2 text-white/80 text-sm font-bold uppercase tracking-widest mb-6 bg-black/20 px-6 py-2 rounded-full backdrop-blur-sm border border-white/10">
+                        <span className="cursor-pointer hover:text-luxury-gold transition-colors" onClick={() => navigate('home')}>Home</span>
+                        <ChevronRight size={14} className="text-luxury-gold" />
+                        <span className="cursor-pointer hover:text-luxury-gold transition-colors" onClick={() => navigate('services')}>Services</span>
+                        <ChevronRight size={14} className="text-luxury-gold" />
+                        <span className="text-luxury-gold truncate max-w-[150px]">{currentService.title}</span>
+                      </div>
+                      <h1 className="text-4xl md:text-6xl font-serif font-bold text-white uppercase tracking-tight drop-shadow-lg">
+                        {currentService.title}
+                      </h1>
+                      <div className="w-24 h-1 bg-luxury-gold mt-6 mb-4 mx-auto rounded-full shadow-[0_0_10px_rgba(212,175,55,0.5)]"></div>
+                      <p className="text-white/90 text-lg md:text-xl font-light max-w-2xl text-shadow-sm">
+                        {currentService.short_desc}
+                      </p>
                     </div>
                  </div>
-                 <div className="max-w-4xl mx-auto py-24 px-mobile">
-                    <div className="prose prose-lg max-w-none text-gray-600 font-light leading-relaxed whitespace-pre-wrap">
-                        {currentService.description}
-                    </div>
-                    <div className="mt-16 text-center">
-                        <button onClick={() => navigate('contact')} className="bg-luxury-gold text-white px-10 py-4 rounded-lg font-bold uppercase tracking-brand hover:bg-luxury-golddark transition-all">
-                            Enquire About This Service
-                        </button>
-                    </div>
+
+                 <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-24 py-16 md:py-24">
+                   <div className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-xl shadow-sm border border-gray-100">
+                      <div className="prose prose-lg max-w-none text-luxury-gray font-light leading-relaxed whitespace-pre-wrap">
+                          {currentService.description}
+                      </div>
+                      <div className="mt-16 text-center">
+                          <button onClick={() => navigate('contact')} className="bg-luxury-gold text-white px-10 py-4 rounded-lg font-bold uppercase tracking-widest hover:bg-luxury-gold transition-all shadow-md">
+                              Enquire About This Service
+                          </button>
+                      </div>
+                   </div>
                  </div>
                </>
              ) : (
@@ -455,19 +487,30 @@ const App: React.FC = () => {
 
         {/* 3a. Portfolio Detail Page */}
         {activePage === 'portfolio-detail' && (
-          <div className="animate-in fade-in duration-500 bg-[#f4f4f4] pb-32">
+          <div className="animate-in fade-in duration-500 bg-[#fcfcfc] pb-32 font-sans">
              {currentPortfolio ? (
                <>
                 {/* Image Gallery Hero */}
-                <div className="w-full bg-luxury-black">
+                <div className="w-full bg-black relative">
                   <div className="max-w-[1920px] mx-auto relative h-[50vh] md:h-[70vh] overflow-hidden group">
                     <img
                       src={currentPortfolio.image}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover scale-105"
                       alt={currentPortfolio.title}
                       onClick={() => setSelectedImage(currentPortfolio.image)}
                     />
-                    <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/80 pointer-events-none" />
+                  </div>
+
+                  {/* Breadcrumbs inside Hero */}
+                  <div className="absolute top-8 left-1/2 -translate-x-1/2 z-10">
+                    <div className="flex items-center justify-center gap-2 text-white/80 text-sm font-bold uppercase tracking-widest bg-black/20 px-6 py-2 rounded-full backdrop-blur-sm border border-white/10">
+                      <span className="cursor-pointer hover:text-luxury-gold transition-colors" onClick={() => navigate('home')}>Home</span>
+                      <ChevronRight size={14} className="text-luxury-gold" />
+                      <span className="cursor-pointer hover:text-luxury-gold transition-colors" onClick={() => navigate('portfolio')}>Portfolio</span>
+                      <ChevronRight size={14} className="text-luxury-gold" />
+                      <span className="text-luxury-gold truncate max-w-[150px]">{currentPortfolio.title}</span>
+                    </div>
                   </div>
 
                   {/* Thumbnails Strip */}
@@ -582,13 +625,29 @@ const App: React.FC = () => {
 
         {/* 3. Portfolio Page */}
         {activePage === 'portfolio' && (
-          <div className="animate-in fade-in duration-500 min-h-screen bg-[#f4f4f4] pt-32 pb-24 px-mobile">
-            <div className="max-w-7xl mx-auto text-center mb-12">
-              <h2 className="text-[36px] font-serif font-bold text-luxury-black mb-5 uppercase tracking-tight">Our Portfolio</h2>
-              <p className="text-[18px] text-luxury-gray font-normal max-w-2xl mx-auto">Take a look at some of our completed projects.</p>
+          <div className="animate-in fade-in duration-500 min-h-screen bg-[#fcfcfc] pb-24 font-sans">
+            <div className="relative w-full h-[350px] md:h-[450px] flex items-center justify-center overflow-hidden mb-12">
+              <div className="absolute inset-0 z-0">
+                <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=1920" alt="Portfolio Hero" className="w-full h-full object-cover scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/80"></div>
+              </div>
+              <div className="relative z-10 w-full max-w-[1920px] mx-auto px-6 md:px-12 lg:px-24 flex flex-col items-center justify-center text-center mt-16">
+                <div className="flex items-center justify-center gap-2 text-white/80 text-sm font-bold uppercase tracking-widest mb-6 bg-black/20 px-6 py-2 rounded-full backdrop-blur-sm border border-white/10">
+                  <span className="cursor-pointer hover:text-luxury-gold transition-colors" onClick={() => navigate('home')}>Home</span>
+                  <ChevronRight size={14} className="text-luxury-gold" />
+                  <span className="text-luxury-gold">Portfolio Properties</span>
+                </div>
+                <h1 className="text-4xl md:text-6xl font-serif font-bold text-white uppercase tracking-tight drop-shadow-lg">
+                  Portfolio Properties
+                </h1>
+                <div className="w-24 h-1 bg-luxury-gold mt-6 mb-4 mx-auto rounded-full shadow-[0_0_10px_rgba(212,175,55,0.5)]"></div>
+                <p className="text-white/90 text-lg md:text-xl font-light max-w-2xl text-shadow-sm">
+                  Explore our complete portfolio of premium properties, including exclusive completed projects.
+                </p>
+              </div>
             </div>
 
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px]">
+            <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-24 py-16 md:py-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {projects.map(proj => (
                 <div
                   key={proj.id}
@@ -711,6 +770,11 @@ const App: React.FC = () => {
           </div>
         )}
 
+        {/* Contact Us */}
+        {activePage === 'contact' && (
+          <ContactUs onNavigate={navigate} />
+        )}
+
         {/* 7. Other Pages (Blogs, News etc.) */}
         {['news', 'publications', 'blogs', 'testimonials', 'kyc', 'privacy', 'terms'].includes(activePage) && (
            <div className="pt-40 px-mobile min-h-screen text-center bg-[#f4f4f4]">
@@ -725,7 +789,7 @@ const App: React.FC = () => {
           <div className="animate-in fade-in duration-500 bg-[#f4f4f4] pb-32">
             {propertyError ? (
               <div className="h-[60vh] flex flex-col items-center justify-center text-center">
-                <p className="text-xl text-red-500 font-serif mb-4">{propertyError}</p>
+                <p className="text-xl text-luxury-gold font-serif mb-4">{propertyError}</p>
                 <button onClick={() => navigate('properties')} className="px-6 py-2 bg-luxury-gold text-white rounded hover:bg-opacity-90 transition shadow-md">Back to Properties</button>
               </div>
             ) : !currentProperty ? (

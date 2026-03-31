@@ -87,7 +87,7 @@ export const FeaturedHousesSection: React.FC<FeaturedHousesSectionProps> = ({ pr
                       Featured
                     </span>
                     {property.isSoldOut && (
-                       <span className="bg-red-500 text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase shadow-sm">
+                       <span className="bg-luxury-gold text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase shadow-sm">
                          Sold Out
                        </span>
                     )}

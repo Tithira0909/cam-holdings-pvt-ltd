@@ -37,17 +37,19 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
       />
 
       {/* Hero Overlay for text contrast */}
-      <div className="absolute inset-0 z-[1] bg-black/40" />
+      <div className="absolute inset-0 z-[1] bg-gradient-to-r from-black/80 via-black/50 to-black/80" />
       
       {/* Centered Hero Overlay Content */}
       <div className="relative z-10 w-full px-mobile text-center max-w-4xl mx-auto flex flex-col items-center justify-center h-full">
         <div className="animate-in fade-in slide-in-from-bottom-12 duration-1000 bg-transparent rounded-[15px] p-6 md:p-12">
-          <h1 className="text-4xl md:text-[48px] font-serif font-bold text-white mb-5 leading-[1.2] uppercase tracking-tight nav-text-shadow">
+          <h1 className="text-4xl md:text-6xl font-serif font-bold text-white mb-6 uppercase tracking-tight drop-shadow-lg">
             Find Your <br />
             <span className="text-luxury-gold">Dream Property</span>
           </h1>
           
-          <p className="text-white text-base md:text-[18px] font-sans font-normal leading-[1.6] max-w-2xl mx-auto mb-10 nav-text-shadow">
+          <div className="w-24 h-1 bg-luxury-gold mt-6 mb-8 mx-auto rounded-full shadow-[0_0_10px_rgba(212,175,55,0.5)]"></div>
+
+          <p className="text-white/90 text-lg md:text-xl font-light max-w-2xl mx-auto mb-12 text-shadow-sm">
             Everyone aspires to own a great piece of property. We, at CAM Holdings, made it our aim to make this dream a reality.
           </p>
           
@@ -55,19 +57,19 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
           <div className="flex flex-row items-center justify-center gap-5 w-full">
             <button 
               onClick={() => onNavigate('lands')}
-              className="w-[120px] sm:w-[150px] bg-white border-2 border-luxury-gold rounded-[8px] py-6 flex flex-col items-center justify-center gap-2 group transition-all duration-300 hover:bg-luxury-gold shadow-lg active:scale-95"
+              className="w-[120px] sm:w-[150px] bg-white/10 backdrop-blur-md border border-luxury-gold rounded-xl py-6 flex flex-col items-center justify-center gap-2 group transition-all duration-300 hover:bg-luxury-gold hover:border-transparent shadow-lg active:scale-95 text-white"
             >
               <MapPin size={24} className="text-luxury-gold group-hover:text-white transition-colors" />
-              <p className="text-[14px] font-sans font-bold uppercase tracking-widest text-luxury-black group-hover:text-white m-0">
+              <p className="text-[14px] font-sans font-bold uppercase tracking-widest text-white group-hover:text-white m-0">
                 Lands
               </p>
             </button>
             <button 
               onClick={() => onNavigate('houses')}
-              className="w-[120px] sm:w-[150px] bg-white border-2 border-luxury-gold rounded-[8px] py-6 flex flex-col items-center justify-center gap-2 group transition-all duration-300 hover:bg-luxury-gold shadow-lg active:scale-95"
+              className="w-[120px] sm:w-[150px] bg-white/10 backdrop-blur-md border border-luxury-gold rounded-xl py-6 flex flex-col items-center justify-center gap-2 group transition-all duration-300 hover:bg-luxury-gold hover:border-transparent shadow-lg active:scale-95 text-white"
             >
               <Home size={24} className="text-luxury-gold group-hover:text-white transition-colors" />
-              <p className="text-[14px] font-sans font-bold uppercase tracking-widest text-luxury-black group-hover:text-white m-0">
+              <p className="text-[14px] font-sans font-bold uppercase tracking-widest text-white group-hover:text-white m-0">
                 Houses
               </p>
             </button>
