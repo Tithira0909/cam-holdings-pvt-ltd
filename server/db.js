@@ -48,16 +48,19 @@ async function getMysqlPool() {
 export const query = async (sql, params = []) => {
   const client = (process.env.DB_CLIENT || "mysql").toLowerCase();
 
+  // Safely convert any undefined parameters to null for MySQL compatibility
+  const safeParams = params.map(param => param === undefined ? null : param);
+
   try {
     if (client === "sqlite") {
       const db = await getSqliteDb();
       const isSelect = sql.trim().toLowerCase().startsWith("select");
 
       if (isSelect) {
-        return await db.all(sql, params);
+        return await db.all(sql, safeParams);
       }
 
-      const result = await db.run(sql, params);
+      const result = await db.run(sql, safeParams);
       return {
         insertId: result.lastID,
         affectedRows: result.changes,
@@ -66,7 +69,7 @@ export const query = async (sql, params = []) => {
 
     // MySQL (default)
     const mysqlPool = await getMysqlPool();
-    const [results] = await mysqlPool.execute(sql, params);
+    const [results] = await mysqlPool.execute(sql, safeParams);
     return results;
   } catch (err) {
     console.error("DB Error:", err);
