@@ -16,14 +16,16 @@ import InquiriesList from './InquiriesList';
 import InquiryDetail from './InquiryDetail';
 import ServicesList from './ServicesList';
 import ServiceForm from './ServiceForm';
+import SettingsView from './Settings';
 
 interface DashboardProps {
   onLogout: () => void;
+  onDataUpdate?: () => void;
 }
 
-type ViewState = 'dashboard' | 'properties' | 'add-property' | 'edit-property' | 'inquiries' | 'inquiry-detail' | 'services' | 'add-service' | 'edit-service';
+type ViewState = 'dashboard' | 'properties' | 'add-property' | 'edit-property' | 'inquiries' | 'inquiry-detail' | 'services' | 'add-service' | 'edit-service' | 'settings';
 
-const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
+const Dashboard: React.FC<DashboardProps> = ({ onLogout, onDataUpdate }) => {
   const [activeView, setActiveView] = useState<ViewState>('dashboard');
   const [editingPropertyId, setEditingPropertyId] = useState<string | null>(null);
   const [viewingInquiryId, setViewingInquiryId] = useState<string | null>(null);
@@ -89,7 +91,14 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             <Users size={18} />
             Inquiries
           </button>
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-white/60 hover:bg-white/5 hover:text-white rounded-lg font-medium text-sm transition-all">
+          <button
+            onClick={() => setActiveView('settings')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all ${
+              activeView === 'settings'
+                ? 'bg-white/10 text-luxury-gold'
+                : 'text-white/60 hover:bg-white/5 hover:text-white'
+            }`}
+          >
             <Settings size={18} />
             Settings
           </button>
@@ -242,7 +251,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
         {activeView === 'add-property' && (
           <AddProperty
-            onSuccess={() => setActiveView('properties')}
+            onSuccess={() => {
+              setActiveView('properties');
+              if (onDataUpdate) onDataUpdate();
+            }}
             onCancel={() => setActiveView('properties')}
           />
         )}
@@ -250,7 +262,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         {activeView === 'edit-property' && editingPropertyId && (
           <EditProperty
             propertyId={editingPropertyId}
-            onSuccess={() => setActiveView('properties')}
+            onSuccess={() => {
+              setActiveView('properties');
+              if (onDataUpdate) onDataUpdate();
+            }}
             onCancel={() => setActiveView('properties')}
           />
         )}
@@ -294,6 +309,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             onSuccess={() => setActiveView('services')}
             onCancel={() => setActiveView('services')}
           />
+        )}
+
+        {activeView === 'settings' && (
+          <SettingsView />
         )}
       </main>
     </div>

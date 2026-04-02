@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapPin, Home } from 'lucide-react';
 
 interface HeroProps {
@@ -6,13 +6,32 @@ interface HeroProps {
 }
 
 const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
+  const [heroImage, setHeroImage] = useState<string>('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1600');
+
+  useEffect(() => {
+    const fetchHero = async () => {
+      try {
+        const res = await fetch('/api/settings/hero');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.hero_image) {
+            setHeroImage(data.hero_image);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch hero image:', error);
+      }
+    };
+    fetchHero();
+  }, []);
+
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-transparent">
       {/* Cinematic Background Image Layer - Full Screen */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{ 
-          backgroundImage: `url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1600')`,
+          backgroundImage: `url('${heroImage}')`,
           animation: 'cinematicMotion 25s linear infinite'
         }}
       />
