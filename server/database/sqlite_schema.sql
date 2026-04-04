@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS properties (
   status TEXT DEFAULT 'Active',
   description TEXT,
   image TEXT,
+  beds INTEGER,
+  baths INTEGER,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

@@ -17,8 +17,10 @@ const AddProperty: React.FC<AddPropertyProps> = ({ onSuccess, onCancel }) => {
   const [location, setLocation] = useState('');
   const [price, setPrice] = useState('');
   const [type, setType] = useState<PropertyType>(PropertyType.HOUSE);
-  const [status, setStatus] = useState('Active');
+  const [status, setStatus] = useState('Available');
   const [description, setDescription] = useState('');
+  const [beds, setBeds] = useState('');
+  const [baths, setBaths] = useState('');
 
   // File State
   const [mainImage, setMainImage] = useState<File | null>(null);
@@ -42,7 +44,7 @@ const AddProperty: React.FC<AddPropertyProps> = ({ onSuccess, onCancel }) => {
       const files = Array.from(e.target.files);
       setGalleryImages(prev => [...prev, ...files]);
 
-      const newPreviews = files.map(file => URL.createObjectURL(file));
+      const newPreviews = files.map(file => URL.createObjectURL(file as unknown as Blob));
       setGalleryPreviews(prev => [...prev, ...newPreviews]);
     }
   };
@@ -66,6 +68,8 @@ const AddProperty: React.FC<AddPropertyProps> = ({ onSuccess, onCancel }) => {
       formData.append('type', type);
       formData.append('status', status);
       formData.append('description', description);
+      if (beds) formData.append('beds', beds);
+      if (baths) formData.append('baths', baths);
 
       if (mainImage) {
         formData.append('image', mainImage);
@@ -191,13 +195,39 @@ const AddProperty: React.FC<AddPropertyProps> = ({ onSuccess, onCancel }) => {
                   onChange={(e) => setStatus(e.target.value)}
                   className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-transparent outline-none transition-all"
                 >
-                  <option value="Active">Active</option>
-                  <option value="Sold">Sold</option>
-                  <option value="Pending">Pending</option>
+                  <option value="Available">Available</option>
+                  <option value="Listed">Listed</option>
+                  <option value="Sold Out">Sold Out</option>
                 </select>
               </div>
             </div>
           </div>
+
+          {/* Details */}
+          {type !== PropertyType.LAND && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <label className="block text-sm font-bold text-luxury-gray mb-2 uppercase tracking-wider">Number of Bedrooms</label>
+                <input
+                  type="number"
+                  value={beds}
+                  onChange={(e) => setBeds(e.target.value)}
+                  className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-transparent outline-none transition-all"
+                  placeholder="e.g. 3"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-luxury-gray mb-2 uppercase tracking-wider">Number of Bathrooms</label>
+                <input
+                  type="number"
+                  value={baths}
+                  onChange={(e) => setBaths(e.target.value)}
+                  className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-luxury-gold focus:border-transparent outline-none transition-all"
+                  placeholder="e.g. 2"
+                />
+              </div>
+            </div>
+          )}
 
           {/* Description */}
           <div>

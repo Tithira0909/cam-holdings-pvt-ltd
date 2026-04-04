@@ -1,0 +1,2 @@
+ALTER TABLE properties ADD COLUMN beds INTEGER;
+ALTER TABLE properties ADD COLUMN baths INTEGER;

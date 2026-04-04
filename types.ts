@@ -20,8 +20,10 @@ export interface Property {
   beds?: number;
   baths?: number;
   sqft?: number;
+  status?: string; // 'Available', 'Listed', 'Sold Out'
   featured?: boolean;
   floorPlans?: FloorPlan[];
+  gallery?: string[];
 }
 
 export interface Project {

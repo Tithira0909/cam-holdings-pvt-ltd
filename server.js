@@ -145,7 +145,7 @@ app.get('/api/settings/site', (req, res) => {
         contact_email: data.contact_email || '',
         contact_phone: data.contact_phone || '',
         address: data.address || '',
-        site_logo_url: data.site_logo_url || null
+        hero_image_url: data.hero_image_url || null
       });
     } else {
       res.json({});
@@ -176,7 +176,7 @@ app.put('/api/settings/site', (req, res) => {
         contact_email: updatedSettings.contact_email,
         contact_phone: updatedSettings.contact_phone,
         address: updatedSettings.address,
-        site_logo_url: updatedSettings.site_logo_url || null
+        hero_image_url: updatedSettings.hero_image_url || null
     });
   } catch (error) {
     console.error('Error updating site settings:', error);
@@ -184,14 +184,14 @@ app.put('/api/settings/site', (req, res) => {
   }
 });
 
-app.post('/api/settings/site/logo', upload.single('logo'), (req, res) => {
+app.post('/api/settings/site/hero', upload.single('hero'), (req, res) => {
   const settingsPath = path.join(__dirname, 'database/settings.json');
   try {
     if (!req.file) {
-      return res.status(400).json({ error: 'No logo file provided' });
+      return res.status(400).json({ error: 'No hero file provided' });
     }
 
-    const logoUrl = `/uploads/${req.file.filename}`;
+    const heroUrl = `/uploads/${req.file.filename}`;
 
     let currentSettings = {};
     if (fs.existsSync(settingsPath)) {
@@ -200,18 +200,18 @@ app.post('/api/settings/site/logo', upload.single('logo'), (req, res) => {
 
     const updatedSettings = {
         ...currentSettings,
-        site_logo_url: logoUrl
+        hero_image_url: heroUrl
     };
 
     fs.writeFileSync(settingsPath, JSON.stringify(updatedSettings, null, 2), 'utf8');
 
     res.json({
-        message: 'Logo uploaded successfully',
-        logo_url: logoUrl
+        message: 'Hero image uploaded successfully',
+        hero_image_url: heroUrl
     });
   } catch (error) {
-    console.error('Error uploading site logo:', error);
-    res.status(500).json({ error: 'Failed to upload site logo' });
+    console.error('Error uploading hero image:', error);
+    res.status(500).json({ error: 'Failed to upload hero image' });
   }
 });
 
@@ -472,6 +472,26 @@ app.get('/api/properties', async (req, res) => {
     sql += ' ORDER BY created_at DESC';
 
     const properties = await query(sql, params);
+
+    // Fetch gallery images efficiently for all properties
+    if (properties.length > 0) {
+      const propertyIds = properties.map(p => p.id);
+      const placeholders = propertyIds.map(() => '?').join(',');
+      const images = await query(`SELECT property_id, image_url FROM property_images WHERE property_id IN (${placeholders})`, propertyIds);
+
+      const imagesByPropertyId = images.reduce((acc, img) => {
+        if (!acc[img.property_id]) {
+          acc[img.property_id] = [];
+        }
+        acc[img.property_id].push(img.image_url);
+        return acc;
+      }, {});
+
+      for (const property of properties) {
+        property.gallery = imagesByPropertyId[property.id] || [];
+      }
+    }
+
     res.json(properties);
   } catch (err) {
     console.error('Error fetching properties:', err);
@@ -505,7 +525,7 @@ app.get('/api/properties/:id', async (req, res) => {
 // POST new property
 app.post('/api/properties', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'gallery', maxCount: 10 }]), async (req, res) => {
   try {
-    const { title, slug, location, price, type, status, description } = req.body;
+    const { title, slug, location, price, type, status, description, beds, baths } = req.body;
 
     // Handle main image
     let mainImageUrl = null;
@@ -515,8 +535,8 @@ app.post('/api/properties', upload.fields([{ name: 'image', maxCount: 1 }, { nam
 
     // Insert property
     const result = await query(
-      'INSERT INTO properties (title, slug, location, price, type, status, description, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [title, slug, location, price, type, status || 'Active', description, mainImageUrl]
+      'INSERT INTO properties (title, slug, location, price, type, status, description, image, beds, baths) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [title, slug, location, price, type, status || 'Active', description, mainImageUrl, beds || null, baths || null]
     );
 
     const propertyId = result.insertId;
@@ -545,7 +565,7 @@ app.post('/api/properties', upload.fields([{ name: 'image', maxCount: 1 }, { nam
 app.put('/api/properties/:id', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'gallery', maxCount: 10 }]), async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, slug, location, price, type, status, description } = req.body;
+    const { title, slug, location, price, type, status, description, beds, baths } = req.body;
 
     const existing = await query('SELECT * FROM properties WHERE id = ?', [id]);
     if (!existing || existing.length === 0) {
@@ -558,8 +578,8 @@ app.put('/api/properties/:id', upload.fields([{ name: 'image', maxCount: 1 }, { 
     }
 
     await query(
-      'UPDATE properties SET title = ?, slug = ?, location = ?, price = ?, type = ?, status = ?, description = ?, image = ? WHERE id = ?',
-      [title, slug, location, price, type, status, description, mainImageUrl, id]
+      'UPDATE properties SET title = ?, slug = ?, location = ?, price = ?, type = ?, status = ?, description = ?, image = ?, beds = ?, baths = ? WHERE id = ?',
+      [title, slug, location, price, type, status, description, mainImageUrl, beds || null, baths || null, id]
     );
 
     if (req.files['gallery']) {
